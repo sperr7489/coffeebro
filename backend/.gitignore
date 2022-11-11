@@ -1,0 +1,14 @@
+node_modules/*
+log/*
+config/database.js
+config/secret.js
+config/email.js
+config/swagger.js
+index.js
+.env
+config/crawling.js
+config/easyelec.pem
+node_modules
+test
+*.pem
+./public
