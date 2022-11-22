@@ -12,7 +12,7 @@ export const Container = styled.div`
 	}
 	& > button {
 		align-self: center;
-		margin-top: 20px;
+		/* margin-top: 20px; */
 	}
 
 	option {
@@ -29,7 +29,7 @@ export const MainForm = styled.form`
 		margin-bottom: 10px;
 		margin-top: 20px;
 	}
-	button[type="button"] {
+	& > button[type="button"] {
 		width: 100px;
 		height: 50px;
 		background: none;
@@ -46,8 +46,9 @@ export const MainForm = styled.form`
 		border: 1px solid black;
 		cursor: pointer;
 	}
-	button:last-child {
-		margin-top: 20px;
+	& > button:last-child {
+		position: fixed;
+		bottom: 20px;
 		align-self: center;
 	}
 `;
@@ -60,6 +61,13 @@ export const CafeSelect = styled.select`
 
 export const TimeContainer = styled.div`
 	width: 500px;
+	button[type="button"] {
+		width: 100px;
+		height: 50px;
+		background: none;
+		border: 1px solid black;
+		font-size: 36px;
+	}
 	select {
 		width: 110px;
 		height: 50px;
