@@ -1,8 +1,8 @@
-const baseResponseStatus = require("../config/baseResponseStatus");
-const { basicResponse, resultResponse } = require("../config/response");
+const { basicResponse, resultResponse } = require("../../config/response");
 const userDao = require("./userDao");
-const { pool } = require("../config/database");
+const { pool } = require("../../config/database");
 const crypto = require("crypto");
+const baseResponseStatus = require("../../config/baseResponseStatus");
 
 // user의 email의 존재 여부 체크
 exports.emailCheck = async (email) => {

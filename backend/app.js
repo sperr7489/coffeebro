@@ -21,7 +21,8 @@ const { pool } = require("./config/database");
 
 // const { SESSION_KEY, SESSION_SECRET } = process.env;
 
-var userRouter = require("./User/userRoute");
+const userRouter = require("./Router/User/userRoute");
+const cafeRouter = require("./Router/cafe/cafeRoute");
 
 var app = express();
 
@@ -45,6 +46,7 @@ app.use(cors());
 // );
 
 app.use("/user", userRouter);
+app.use("/cafe", cafeRouter);
 
 app.listen(3000, () => {
   console.log("3000번 포트에서 시작");

@@ -1,9 +1,9 @@
-const baseResponseStatus = require("../config/baseResponseStatus");
-const { basicResponse, resultResponse } = require("../config/response");
+const baseResponseStatus = require("../../config/baseResponseStatus");
+const { basicResponse, resultResponse } = require("../../config/response");
 const userService = require("./userService");
 const userProvider = require("./userProvider");
-const regex = require("../config/regex");
-const response = require("../config/response");
+const regex = require("../../config/regex");
+const response = require("../../config/response");
 
 //회원가입
 exports.signUp = async (req, res) => {
@@ -62,14 +62,18 @@ exports.login = async (req, res) => {
   return res.send(signInResult);
 };
 
-//로그아웃
-exports.logout = async (req, res) => {
-  console.log(req.session.cookie);
+// //로그아웃
+// exports.logout = async (req, res) => {
 
-  if (req.session) {
-    req.session.destroy(() => {
-      return res.redirect("/").send(basicResponse(baseResponseStatus.SUCCESS));
-    });
-  }
-  return res.send(basicResponse(baseResponseStatus.NOT_LOGINED));
+//   if (req.session) {
+//     req.session.destroy(() => {
+//       return res.redirect("/").send(basicResponse(baseResponseStatus.SUCCESS));
+//     });
+//   }
+//   return res.send(basicResponse(baseResponseStatus.NOT_LOGINED));
+// };
+
+// 배달 대행 서비스 신청
+exports.delivery = async (req, res) => {
+  const userIdx = req.userIdx;
 };
