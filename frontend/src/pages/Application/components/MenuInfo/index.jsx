@@ -1,0 +1,57 @@
+import { MenuInfoListContainer, MenuInfoListTitleWrapper, MenuInfoListWrapper } from "./index.style";
+
+export default function MenuInfo(props) {
+	const { setMenuInfoList, menuInfoList } = props;
+	const handleMenuNum = (action, idx) => {
+		const newList = [...menuInfoList];
+		const newState = { ...newList[idx] };
+		if (action === "minus") {
+			if (newState.num === 1) {
+				setMenuInfoList((prev) => newList.filter((item, index) => index !== idx));
+				return;
+			}
+			newState.num -= 1;
+			newList[idx] = newState;
+			setMenuInfoList(newList);
+			return;
+		}
+		newState.num += 1;
+		newList[idx] = newState;
+		setMenuInfoList(newList);
+	};
+	const handleChangeRequest = (e, idx) => {
+		const newList = [...menuInfoList];
+		const newState = { ...newList[idx] };
+		newState.request = e.target.value;
+		newList[idx] = newState;
+		setMenuInfoList(newList);
+	};
+	return (
+		<MenuInfoListWrapper>
+			<MenuInfoListTitleWrapper>
+				<h3>카페이름</h3>
+				<h3>음료</h3>
+				<h3>개수</h3>
+				<h3>요청사항</h3>
+			</MenuInfoListTitleWrapper>
+			<MenuInfoListContainer>
+				{menuInfoList.map((menu, idx) => (
+					<div>
+						<span>{menu.cafe}</span>
+						<span>{menu.menu}</span>
+						<div>
+							<button type="button" onClick={() => handleMenuNum("minus", idx)}>
+								-
+							</button>
+							<span>{menu.num}</span>
+							<button type="button" onClick={() => handleMenuNum("plus", idx)}>
+								+
+							</button>
+						</div>
+						<input onChange={(e) => handleChangeRequest(e, idx)} defaultValue={menu.request} />
+					</div>
+				))}
+			</MenuInfoListContainer>
+		</MenuInfoListWrapper>
+	);
+}
