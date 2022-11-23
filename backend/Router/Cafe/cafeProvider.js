@@ -16,3 +16,16 @@ exports.getCafeInfo = async () => {
     connection.release();
   }
 };
+// 카페 정보 가져오기
+exports.cafeNameIdx = async (cafeName) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const cafeNameIdx = await cafeDao.getCafeIdx(connection, cafeName);
+    return cafeNameIdx;
+  } catch (error) {
+    console.log("cafeNameExist Provider Error ", error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};

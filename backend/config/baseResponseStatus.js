@@ -143,5 +143,10 @@ module.exports = {
     message: "이미지 파일이 존재하지 않습니다. ",
   },
 
+  BODY_NOT_CORRECT: {
+    isSuccess: false,
+    code: 2013,
+    message: "바디에 정확하게 데이터가 들어있지 않습니다. 다시 확인해주세요",
+  },
   DB_ERROR: { isSuccess: false, code: 4000, message: "데이터 베이스 에러" },
 };

@@ -7,6 +7,9 @@ const cafeController = require("./cafeController");
 router.get("/", cafeController.getCafeInfo);
 
 // 카페 선택후 해당 카페의 음료수들 가져오기
-router.get("/drinks", cafeController.getCafeDrink);
+// router.get("/drinks", cafeController.getCafeDrink);
+
+// 카페와 카페의 음료수 넣기
+router.post("/drink", cafeController.insertCafeDrink);
 
 module.exports = router;
