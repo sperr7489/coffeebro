@@ -45,3 +45,27 @@ exports.insertDrink = async (cafeIdx, drinkName, price, drinkImage) => {
     connection.release();
   }
 };
+
+// 카페의 옵션을 넣기
+exports.insertCafeOption = async (cafeIdx, optionName, price) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    await connection.beginTransaction();
+    const insertCafeOption = await cafeDao.insertOption(
+      connection,
+      cafeIdx,
+      optionName,
+      price
+    );
+
+    const optionInfo = { cafeIdx, optionName, price };
+    await connection.commit();
+    return resultResponse(baseResponseStatus.SUCCESS, optionInfo);
+  } catch (error) {
+    await connection.rollback();
+    console.error("insertCafeOption Service Error", error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};

@@ -12,4 +12,6 @@ router.get("/", cafeController.getCafeInfo);
 // 카페와 카페의 음료수 넣기
 router.post("/drink", cafeController.insertCafeDrink);
 
+router.post("/option", cafeController.insertCafeOption);
+
 module.exports = router;

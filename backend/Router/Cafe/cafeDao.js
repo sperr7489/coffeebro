@@ -20,6 +20,17 @@ exports.getCafeIdx = async (connection, cafeName) => {
   return cafeNameExistResult;
 };
 
+// 카페 인덱스 존재성
+exports.getCafeIdxExist = async (connection, cafeIdx) => {
+  const getCafeIdxExistQeury = `
+    select exists (select * from cafe where cafeIdx= ? ) as exist;
+`;
+  const [[getCafeIdxExistResult]] = await connection.query(
+    getCafeIdxExistQeury,
+    cafeIdx
+  );
+  return getCafeIdxExistResult;
+};
 // 카페 넣기
 exports.insertCafe = async (connection, cafeName) => {
   const insertCafeQuery = `
@@ -47,4 +58,16 @@ exports.insertDrink = async (
     drinkImage,
   ]);
   return insertDrinkRow;
+};
+
+exports.insertOption = async (connection, cafeIdx, optionName, price) => {
+  const insertOptionQuery = `
+  insert into drinkOption(cafeIdx, optionName,price) values (?,?,?)
+  `;
+  const [insertOptionRow] = await connection.query(insertOptionQuery, [
+    cafeIdx,
+    optionName,
+    price,
+  ]);
+  return insertOptionRow;
 };

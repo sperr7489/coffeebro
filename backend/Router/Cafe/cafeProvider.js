@@ -29,3 +29,31 @@ exports.cafeNameIdx = async (cafeName) => {
     connection.release();
   }
 };
+
+// 카페 인덱스 가져오기
+exports.cafeNameIdx = async (cafeName) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const cafeNameIdx = await cafeDao.getCafeIdx(connection, cafeName);
+    return cafeNameIdx;
+  } catch (error) {
+    console.log("cafeNameExist Provider Error ", error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
+
+// 카페의 인덱스 존재성
+exports.getCafeIdxExist = async (cafeIdx) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const getCafeIdxExist = await cafeDao.getCafeIdxExist(connection, cafeIdx);
+    return getCafeIdxExist;
+  } catch (error) {
+    console.log("getCafeIdxExist Provider Error ", error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};

@@ -38,3 +38,28 @@ exports.insertCafeDrink = async (req, res) => {
     console.error("insertCafeDrink Controller Error");
   }
 };
+
+// 카페에서 제공하는 옵션 등록하기
+exports.insertCafeOption = async (req, res) => {
+  try {
+    const { cafeIdx, optionName, price } = req.body;
+    // 데이터 검사
+    if (!cafeIdx || !optionName || !price) {
+      return res.send(basicResponse(baseResponseStatus.BODY_NOT_CORRECT));
+    }
+
+    const { exist } = await cafeProvider.getCafeIdxExist(cafeIdx);
+    if (!exist) {
+      return res.send(basicResponse(baseResponseStatus.CAFE_NOT_EXIST));
+    }
+    const insertCafeOptionResult = await cafeService.insertCafeOption(
+      cafeIdx,
+      optionName,
+      price
+    );
+
+    return res.send(insertCafeOptionResult);
+  } catch (error) {
+    console.error("insertCafeOption Controller Error");
+  }
+};
