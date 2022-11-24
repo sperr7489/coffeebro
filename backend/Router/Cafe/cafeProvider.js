@@ -1,6 +1,7 @@
 const cafeDao = require("./cafeDao");
 const { basicResponse, resultResponse } = require("../../config/response");
 const { pool } = require("../../config/database");
+const baseResponseStatus = require("../../config/baseResponseStatus");
 
 // 카페 정보 가져오기
 exports.getCafeInfo = async () => {
@@ -21,6 +22,7 @@ exports.cafeNameIdx = async (cafeName) => {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     const cafeNameIdx = await cafeDao.getCafeIdx(connection, cafeName);
+    console.log("cafeNameIdx: ", cafeNameIdx);
     return cafeNameIdx;
   } catch (error) {
     console.log("cafeNameExist Provider Error ", error);
@@ -52,6 +54,23 @@ exports.getCafeIdxExist = async (cafeIdx) => {
     return getCafeIdxExist;
   } catch (error) {
     console.log("getCafeIdxExist Provider Error ", error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
+
+// 해당 카페의 정보들 가져오기
+exports.getCafeMenu = async (cafeIdx) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const getCafeMenu = await cafeDao.getCafeMenu(connection, cafeIdx);
+    const getCafeOption = await cafeDao.getCafeOption(connection, cafeIdx);
+
+    const result = { drinkMenu: getCafeMenu, drinkOption: getCafeOption };
+    return resultResponse(baseResponseStatus.SUCCESS, result);
+  } catch (error) {
+    console.log("getCafeMenu Provider Error ", error);
     return basicResponse(baseResponseStatus.DB_ERROR);
   } finally {
     connection.release();

@@ -60,6 +60,7 @@ exports.insertDrink = async (
   return insertDrinkRow;
 };
 
+// 카페에 샷추가, 연하게 와 같은 옵션 넣기
 exports.insertOption = async (connection, cafeIdx, optionName, price) => {
   const insertOptionQuery = `
   insert into drinkOption(cafeIdx, optionName,price) values (?,?,?)
@@ -70,4 +71,31 @@ exports.insertOption = async (connection, cafeIdx, optionName, price) => {
     price,
   ]);
   return insertOptionRow;
+};
+
+//카페 메뉴 가져오기
+exports.getCafeMenu = async (connection, cafeIdx) => {
+  const getCafeMenuQuery = `
+    select c.cafeIdx,c.cafeName,d.drinkIdx,d.drinkName,d.price as drinkPrice, d.drinkImage from Cafe c 
+    join drink d on d.cafeIdx = c.cafeIdx
+    where c.cafeIdx = ?
+    ; 
+`;
+  const [getCafeMenuRow] = await connection.query(getCafeMenuQuery, cafeIdx);
+  return getCafeMenuRow;
+};
+
+//카페 옵션 가져오기
+exports.getCafeOption = async (connection, cafeIdx) => {
+  const getCafeOptionQuery = `
+    select c.cafeIdx,c.cafeName,do.optionIdx,do.optionName,do.price as optionPrice from Cafe c 
+    join drinkOption do on do.cafeIdx = c.cafeIdx
+    where c.cafeIdx = ?
+    ; 
+`;
+  const [getCafeOptionRow] = await connection.query(
+    getCafeOptionQuery,
+    cafeIdx
+  );
+  return getCafeOptionRow;
 };

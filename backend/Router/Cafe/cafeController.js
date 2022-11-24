@@ -19,10 +19,12 @@ exports.insertCafeDrink = async (req, res) => {
       return res.send(basicResponse(baseResponseStatus.BODY_NOT_CORRECT));
     }
 
-    let { cafeIdx } = await cafeProvider.cafeNameIdx(cafeName);
+    let cafeIdx = await cafeProvider.cafeNameIdx(cafeName);
     if (!cafeIdx) {
       const { insertId } = await cafeService.insertCafe(cafeName);
       cafeIdx = insertId;
+    } else {
+      cafeIdx = cafeIdx.cafeIdx;
     }
 
     const result = await cafeService.insertDrink(
@@ -61,5 +63,25 @@ exports.insertCafeOption = async (req, res) => {
     return res.send(insertCafeOptionResult);
   } catch (error) {
     console.error("insertCafeOption Controller Error");
+  }
+};
+
+//카페의 음료정보들 및 옵션 정보 가져오기
+exports.getCafeMenu = async (req, res) => {
+  try {
+    const { cafeIdx } = req.params;
+    // 데이터 검사
+    if (!cafeIdx) {
+      return res.send(basicResponse(baseResponseStatus.PARAMS_NOT_EXACT));
+    }
+    const { exist } = await cafeProvider.getCafeIdxExist(cafeIdx);
+    if (!exist) {
+      return res.send(basicResponse(baseResponseStatus.CAFE_NOT_EXIST));
+    }
+    const getCafeMenuResult = await cafeProvider.getCafeMenu(cafeIdx);
+
+    return res.send(getCafeMenuResult);
+  } catch (error) {
+    console.error("getCafeMenu Controller Error");
   }
 };
