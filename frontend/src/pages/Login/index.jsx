@@ -64,7 +64,7 @@ const LoginPage = () => {
         </div>
         <div className={style.term}>
           <span className={style.label}>비밀번호</span><br />
-          <input type="text" onChange={pwdHandler} className={style.input}/>
+          <input type="password" onChange={pwdHandler} className={style.input}/>
         </div>
         <div className={style.final}>
           <input className={style.button} type="button" value="로그인" onClick={buttonHandler}/>
