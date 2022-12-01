@@ -25,6 +25,8 @@ const userRouter = require("./Router/User/userRoute");
 const cafeRouter = require("./Router/cafe/cafeRoute");
 
 var app = express();
+const http = require("http").createServer(app);
+const io = require("socket.io")(http, { cors: { origin: "*" } });
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -48,8 +50,16 @@ app.use(cors());
 app.use("/user", userRouter);
 app.use("/cafe", cafeRouter);
 
-app.listen(3000, () => {
-  console.log("3000번 포트에서 시작");
+http.listen(3001, () => {
+  console.log("3001 포트에서 시작");
 });
 
-module.exports = app;
+// module.exports = app;
+app.get("/"); //Todo => 소켓 라우팅 개발하기
+
+io.on("connection", (socket) => {
+  console.log("test");
+  socket.on("chat message", (msg) => {
+    io.emit("chat message", msg);
+  });
+});
