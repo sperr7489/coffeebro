@@ -5,12 +5,15 @@ const { pool } = require("../../config/database");
 const cafeDao = require("./cafeDao");
 
 //카페 넣기
-exports.insertCafe = async (cafeName) => {
+exports.insertCafe = async (cafeName, cafeImg) => {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
-    await connection.beginTransaction();
-    const insertCafeResult = await cafeDao.insertCafe(connection, cafeName);
-    await connection.commit();
+    const insertCafeResult = await cafeDao.insertCafe(
+      connection,
+      cafeName,
+      cafeImg
+    );
+    console.log("insertCafeResult :", insertCafeResult);
     return insertCafeResult;
   } catch (error) {
     await connection.rollback();

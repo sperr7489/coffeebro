@@ -32,11 +32,14 @@ exports.getCafeIdxExist = async (connection, cafeIdx) => {
   return getCafeIdxExistResult;
 };
 // 카페 넣기
-exports.insertCafe = async (connection, cafeName) => {
+exports.insertCafe = async (connection, cafeName, cafeImg) => {
   const insertCafeQuery = `
-    insert into cafe(cafeName) values (?)
+    insert into cafe(cafeName,cafeImg) values (?,?)
   `;
-  const [insertCafeRow] = await connection.query(insertCafeQuery, cafeName);
+  const [insertCafeRow] = await connection.query(insertCafeQuery, [
+    cafeName,
+    cafeImg,
+  ]);
   return insertCafeRow;
 };
 

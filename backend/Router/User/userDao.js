@@ -138,3 +138,45 @@ exports.updateAccessToken = async (connection, id, accessToken) => {
   ]);
   return updateAccessTokenRow;
 };
+
+// 배달 대행 서비스 신청자 기입하기
+exports.insertServiceApplication = async (
+  connection,
+  applicantIdx,
+  cafeIdx,
+  receiptTime,
+  receiptPlace
+) => {
+  const insertServiceApplicationQuery = `
+  insert into serviceApplication (
+    userIdx,
+    cafeIdx,
+    receiptTime,
+    receiptPlace
+    ) 
+    values(?,?,?,?);
+  `;
+
+  const [insertServiceApplicationRow] = await connection.query(
+    insertServiceApplicationQuery,
+    [applicantIdx, cafeIdx, receiptTime, receiptPlace]
+  );
+
+  console.log("test : 더!");
+  return insertServiceApplicationRow;
+};
+
+exports.insertRequestDrink = async (connection, insertId, drinkIdx) => {
+  const insertRequestDrinkQuery = `
+  insert into requestDrinkList
+  (serviceApplicationIdx,
+    drinkIdx)  
+    value(?,?);
+  `;
+
+  const [insertRequestDrinkRow] = await connection.query(
+    insertRequestDrinkQuery,
+    [insertId, drinkIdx]
+  );
+  return insertRequestDrinkRow;
+};

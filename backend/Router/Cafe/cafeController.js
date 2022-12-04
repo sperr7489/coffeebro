@@ -12,7 +12,7 @@ exports.getCafeInfo = async (req, res) => {
 // 카페와 카페의 음료 넣기
 exports.insertCafeDrink = async (req, res) => {
   try {
-    const { cafeName, drinkName, price, drinkImage } = req.body;
+    const { cafeName, drinkName, price, drinkImage, cafeImg } = req.body;
 
     // 데이터 검사
     if (!cafeName || !drinkName || !price || !drinkImage) {
@@ -20,12 +20,15 @@ exports.insertCafeDrink = async (req, res) => {
     }
 
     let cafeIdx = await cafeProvider.cafeNameIdx(cafeName);
+    console.log("cafeIdx : ", cafeIdx);
     if (!cafeIdx) {
-      const { insertId } = await cafeService.insertCafe(cafeName);
+      const { insertId } = await cafeService.insertCafe(cafeName, cafeImg);
+      console.log("insertId : ", insertId);
       cafeIdx = insertId;
     } else {
       cafeIdx = cafeIdx.cafeIdx;
     }
+    console.log("cafeIdx2 : ", cafeIdx);
 
     const result = await cafeService.insertDrink(
       cafeIdx,

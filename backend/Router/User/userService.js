@@ -123,3 +123,37 @@ exports.updateAccessToken = async (id, accessToken) => {
     connection.release();
   }
 };
+
+// 배달 대행 서비스 신청
+exports.delivery = async (
+  applicantIdx = userIdx,
+  cafeIdx,
+  receiptTime,
+  receiptPlace,
+  drinkIdx
+) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    await connection.beginTransaction();
+
+    // 서비스 신청에 대한 쿼리
+    const { insertId } = await userDao.insertServiceApplication(
+      connection,
+      applicantIdx,
+      cafeIdx,
+      receiptTime,
+      receiptPlace
+    );
+
+    await userDao.insertRequestDrink(connection, insertId, drinkIdx);
+
+    await connection.commit();
+    return basicResponse(baseResponseStatus.SUCCESS);
+  } catch (error) {
+    await connection.rollback();
+    console.log(error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
