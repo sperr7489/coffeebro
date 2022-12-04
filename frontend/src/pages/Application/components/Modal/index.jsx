@@ -77,6 +77,7 @@ export default function ApplicationModal(props) {
 		}
 		setModalIdx((prev) => prev + 1);
 	};
+
 	const removeRequestModal = () => {
 		if (!isRequestOpen) {
 			return;
@@ -87,6 +88,7 @@ export default function ApplicationModal(props) {
 			setAnimationName("slide-in");
 		}, 450);
 	};
+
 	const handleRequestClick = (request) => {
 		if (requestList.includes(request)) {
 			setRequestList((prev) => prev.filter((req) => req !== request));
@@ -94,10 +96,12 @@ export default function ApplicationModal(props) {
 		}
 		setRequestList((prev) => [...prev, request]);
 	};
+
 	useEffect(() => {
 		setIsRequestOpen(false);
 		setRequestList([]);
 	}, [modalIdx]);
+
 	useEffect(() => {
 		if (modalIdx === 2) {
 			setMenuInfoList((prev) => [...prev, { ...menuInfo, num: 1, request: requestList.join(", ") }]);

@@ -36,25 +36,17 @@ export const ApplicationModalContainer = styled.div`
 	@keyframes slidein {
 		from {
 			bottom: 0px;
-			/* bottom: -100%; */
-			/* opacity: 0; */
 		}
 		to {
 			bottom: 116px;
-			/* bottom: 0%; */
-			/* opacity: 1; */
 		}
 	}
 	@keyframes slideout {
 		from {
 			bottom: 116px;
-			/* bottom: 0%; */
-			/* opacity: 1; */
 		}
 		to {
 			bottom: 0px;
-			/* bottom: -100%; */
-			/* opacity: 0; */
 		}
 	}
 `;

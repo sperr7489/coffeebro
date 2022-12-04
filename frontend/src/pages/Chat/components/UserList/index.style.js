@@ -12,10 +12,12 @@ export const UserInfoContainer = styled.div`
 	width: 400px;
 	padding: 10px;
 	align-items: center;
+
+	background-color: ${(props) => (props.isSelected ? "#c5875b" : "white")};
 	& > span {
 		display: inline-block;
 		width: 300px;
-		color: #9f9f9f;
+		color: ${(props) => (props.isSelected ? "white" : "#9f9f9f")};
 		overflow: hidden;
 		text-overflow: ellipsis;
 		white-space: nowrap;
