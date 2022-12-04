@@ -33,10 +33,11 @@ router.post(
 // 배달 대행 신청에 대해서 정보 가져오기
 router.get("/apply/infos", verifyAccessToken, userController.getApplyInfos);
 
-// 배달 대행 지원
-router.post("/deliver/apply", verifyAccessToken);
-
-// 배달 서비스 신청 내역 조회
-router.get("/service");
+// 배달 서비스 신청 수락/거절 하기 => 신청 등록자 입장에서
+router.post(
+  "/apply/acception/:serviceApplicationIdx",
+  verifyAccessToken,
+  userController.acception
+);
 
 module.exports = router;

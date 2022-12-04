@@ -245,18 +245,49 @@ exports.existsDeliverApply = async (
   return existsDeliverApplyRow;
 };
 
+// 배달 대행을 하겠다고 신청한 내역 가져오기
 exports.getApplyInfos = async (connection, userIdx) => {
   const getAgentIdxsQuery = `
-  select da.deliveryAgentIdx, sa.receiptTime, c.cafeName, d.drinkName,ifnull(do.optionName,"옵션X") as optionName,(d.price + ifnull(do.price,0)) as price   from deliveryApplication da 
+  select sa.serviceApplicationIdx,da.deliveryAgentIdx,u.userName,u.department,u.studentId,u.sex,u.userImg,ifnull(u.deliveryAgentScore,0) as "배달 대행 평점", sa.receiptTime, c.cafeName, d.drinkName,ifnull(do.optionName,"옵션X"),(d.price + ifnull(do.price,0)) as price   from deliveryApplication da 
   left join serviceApplication sa on da.serviceApplicationIdx = sa.serviceApplicationIdx
   left join RequestDrinkList rdl on rdl.serviceApplicationIdx = sa.serviceApplicationIdx
   left join  drink d on d.drinkIdx = rdl.drinkIdx
   left join cafe c on c.cafeIdx = d.cafeIdx
   left join requestOptionList rol on rol.serviceApplicationIdx=sa.serviceApplicationIdx
   left join drinkOption do on do.optionIdx = rol.optionIdx
+  left join user u on u.userIdx = da.deliveryAgentIdx
   where sa.userIdx = ?
   ;
   `;
   const [getAgentIdxsRow] = await connection.query(getAgentIdxsQuery, userIdx);
   return getAgentIdxsRow;
+};
+
+// 배달 서비스 신청 수락/거절 하기 => 신청 등록자 입장에서
+exports.updateStatusOnAccept = async (
+  connection,
+  serviceApplicationIdx,
+  acceptFlag,
+  agentIdx
+) => {
+  const updateStatusOnAcceptQuery = [
+    `update deliveryApplication set status = ${acceptFlag} where serviceApplicationIdx = ${serviceApplicationIdx} and deliveryAgentIdx = ${agentIdx};`,
+    `update serviceApplication set status =${acceptFlag} where serviceApplicationIdx = ${serviceApplicationIdx}  ;`,
+  ];
+  if (acceptFlag == 1) {
+    const updateOtherStatusQuery = `
+    update deliveryApplication set status = -1 where serviceApplicationIdx = ${serviceApplicationIdx} and deliveryAgentIdx != ${agentIdx};
+      `;
+    updateStatusOnAcceptQuery.push(updateOtherStatusQuery);
+  }
+
+  let updateStatusOnAcceptRow = [];
+  await Promise.all(
+    updateStatusOnAcceptQuery.map(async (v, i) => {
+      const [result] = await connection.query(v);
+      updateStatusOnAcceptRow.push(result);
+    })
+  );
+
+  return updateStatusOnAcceptRow;
 };

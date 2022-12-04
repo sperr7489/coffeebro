@@ -4,6 +4,7 @@ const { resultResponse, basicResponse } = require("../../config/response");
 const baseResponseStatus = require("../../config/baseResponseStatus");
 const { tokenSet } = require("../../config/jwt");
 const { pool } = require("../../config/database");
+const chatDao = require("../Chat/chatDao");
 
 // 회원가입
 exports.createUser = async (
@@ -174,6 +175,7 @@ exports.deliveryApply = async (userIdx, serviceApplicationIdx) => {
       userIdx,
       serviceApplicationIdx
     );
+    console.log(exist);
     if (exist) {
       return basicResponse(baseResponseStatus.EXIST_DELIVERY_APPLY);
     }
@@ -185,7 +187,49 @@ exports.deliveryApply = async (userIdx, serviceApplicationIdx) => {
       serviceApplicationIdx
     );
 
-    console.log("test : ", test);
+    await connection.commit();
+
+    return basicResponse(baseResponseStatus.SUCCESS);
+  } catch (error) {
+    await connection.rollback();
+    console.log(error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
+
+// 배달 서비스 신청 수락/거절 하기 => 신청 등록자 입장에서
+exports.acception = async (
+  userIdx,
+  serviceApplicationIdx,
+  acceptFlag,
+  agentIdx
+) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    await connection.beginTransaction();
+
+    // acceptFlag가 1이면 승낙, -1이면 거절 => 승낙할 경우 다른 대행 신청자들에 대한 내역은 -1로 바꿔준다.
+    const acceptionStaus = await userDao.updateStatusOnAccept(
+      connection,
+      serviceApplicationIdx,
+      acceptFlag,
+      agentIdx
+    );
+
+    if (acceptFlag) {
+      // 채팅방을 개설해야한다.
+      // userIdx : 배달 서비스 신청자
+      // agentIdx : 배달 대행 신청자
+      await chatDao.createChatRoom(
+        connection,
+        serviceApplicationIdx,
+        userIdx,
+        agentIdx
+      );
+    }
+
     await connection.commit();
 
     return basicResponse(baseResponseStatus.SUCCESS);

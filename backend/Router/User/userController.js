@@ -125,7 +125,7 @@ exports.deliveryApply = async (req, res) => {
     userIdx,
     serviceApplicationIdx
   );
-  return res.send(basicResponse(baseResponseStatus.SUCCESS));
+  return res.send(deliveryApplyResult);
 };
 
 // 배달 대행 신청에 대해서 정보 가져오기
@@ -134,7 +134,23 @@ exports.getApplyInfos = async (req, res) => {
 
   // 배달 대행을 하겠다고 신청한사람들에 인덱스 가져오기
   const getApplyInfos = await userProvider.getApplyInfos(userIdx);
-  console.log("getApplyInfos :  ", getApplyInfos);
 
   return res.send(resultResponse(baseResponseStatus.SUCCESS, getApplyInfos));
+};
+
+// 배달 서비스 신청 수락/거절 하기 => 신청 등록자 입장에서
+// 수락 시 채팅방이 생성되어야 한다.
+exports.acception = async (req, res) => {
+  const userIdx = req.userIdx;
+  const { serviceApplicationIdx } = req.params;
+  const { acceptFlag, deliveryAgentIdx: agentIdx } = req.query;
+
+  const acceptionResult = await userService.acception(
+    userIdx,
+    serviceApplicationIdx,
+    acceptFlag,
+    agentIdx
+  );
+
+  return res.send(acceptionResult);
 };
