@@ -1,8 +1,8 @@
-const baseResponseStatus = require("../config/baseResponseStatus");
-const { basicResponse, resultResponse } = require("../config/response");
+const { basicResponse, resultResponse } = require("../../config/response");
 const userDao = require("./userDao");
-const { pool } = require("../config/database");
+const { pool } = require("../../config/database");
 const crypto = require("crypto");
+const baseResponseStatus = require("../../config/baseResponseStatus");
 
 // user의 email의 존재 여부 체크
 exports.emailCheck = async (email) => {
@@ -51,6 +51,39 @@ exports.getRefreshToken = async (accessToken) => {
   }
 };
 
+// 배달 대행 서비스 신청한 사람의 정보 가져오기.
+exports.getDeliveryInfo = async (serviceApplicationIdx) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const getDeliveryInfoResult = await userDao.getDeliveryInfo(
+      connection,
+      serviceApplicationIdx
+    );
+    return getDeliveryInfoResult;
+  } catch (error) {
+    console.log(error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
+
+// 배달 대행을 하겠다고 신청한 내역 가져오기
+exports.getApplyInfos = async (userIdx) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const getApplyInfosResult = await userDao.getApplyInfos(
+      connection,
+      userIdx
+    );
+    return getApplyInfosResult;
+  } catch (error) {
+    console.log(error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
 // 로그인 => 세션 방식
 // exports.logIn = async (email, passwd, session) => {
 //   const connection = await pool.getConnection(async (conn) => conn);
@@ -79,6 +112,7 @@ exports.getRefreshToken = async (accessToken) => {
 //         baseResponseStatus.LOGIN_SUCCESS,
 //         userIdx,
 //         userName
+
 //       );
 //     } else {
 //       return basicResponse(baseResponseStatus.PASSWD_NOT_EXACT);

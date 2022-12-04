@@ -5,8 +5,8 @@ require("dotenv").config();
 // const JWT_SECRET = process.env.JWT_SECRET;
 // require("dotenv").config();
 const { ACCESS_TOKEN_SECRET, REFRESH_TOKEN_SECRET } = process.env;
-const userProvider = require("../User/userProvider");
-const userService = require("../User/userService");
+const userProvider = require("../Router/User/userProvider");
+const userService = require("../Router/User/userService");
 
 //토큰을 발급하는 함수에 대한 셋
 
