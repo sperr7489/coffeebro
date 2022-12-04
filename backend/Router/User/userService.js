@@ -164,12 +164,23 @@ exports.deliveryApply = async (userIdx, serviceApplicationIdx) => {
   try {
     await connection.beginTransaction();
 
-    // 서비스 신청에 대한 쿼리
-    await userDao.insertDeliveryApply(
+    const [{ exist }] = await userDao.existsDeliverApply(
       connection,
       userIdx,
       serviceApplicationIdx
     );
+    if (exist) {
+      return basicResponse(baseResponseStatus.EXIST_DELIVERY_APPLY);
+    }
+
+    // 서비스 신청에 대한 쿼리
+    const test = await userDao.insertDeliveryApply(
+      connection,
+      userIdx,
+      serviceApplicationIdx
+    );
+
+    console.log("test : ", test);
     await connection.commit();
 
     return basicResponse(baseResponseStatus.SUCCESS);

@@ -109,6 +109,7 @@ exports.getDeliveryInfo = async (req, res) => {
 exports.deliveryApply = async (req, res) => {
   const { serviceApplicationIdx } = req.params;
   const userIdx = req.userIdx; // 배달 대행을 지원하는 사람
+
   // 배달 대행을 해주는 사람과 배달 대행을 신청한 사람은 동일인물일 수 없다. 배달 서비스를 이용하는 사람
   const getDeliveryInfoResult = await userProvider.getDeliveryInfo(
     serviceApplicationIdx
@@ -124,4 +125,12 @@ exports.deliveryApply = async (req, res) => {
     serviceApplicationIdx
   );
   return res.send(basicResponse(baseResponseStatus.SUCCESS));
+};
+
+// 배달 대행 신청에 대해서 정보 가져오기
+exports.getApplyInfos = async (req, res) => {
+  const userIdx = req.userIdx; // userIdx 자체가 배달 서비스를 신청한 사람의 index가 된다.
+
+  // 배달 대행을 하겠다고 신청한사람들에 인덱스 가져오기
+  const getAgentIdxs = await userProvider.getAgentIdxs(userIdx);
 };

@@ -211,3 +211,27 @@ exports.insertDeliveryApply = async (
   );
   return insertDeliveryApplyRow;
 };
+
+// 내가 이미 신청한 배달 서비스 요청인지 확인하기
+exports.existsDeliverApply = async (
+  connection,
+  userIdx,
+  serviceApplicationIdx
+) => {
+  const existsDeliverApplyQuery = `
+  select exists (
+    select * from deliveryApplication where  serviceApplicationIdx= ? and deliveryAgentIdx = ?
+    ) as exist
+  `;
+  const [existsDeliverApplyRow] = await connection.query(
+    existsDeliverApplyQuery,
+    [serviceApplicationIdx, userIdx]
+  );
+  return existsDeliverApplyRow;
+};
+
+exports.getAgentIdxs = async (connection, userIdx) => {
+  const getAgentIdxsQuery = `
+  
+  `;
+};

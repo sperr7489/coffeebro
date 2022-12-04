@@ -159,5 +159,11 @@ module.exports = {
     code: 2013,
     message: "신청자와 대행자가 동일할 수 없다. ",
   },
+  EXIST_DELIVERY_APPLY: {
+    isSuccess: false,
+    code: 2014,
+    message: "이미 신청한 신청 내역입니다. ",
+  },
+
   DB_ERROR: { isSuccess: false, code: 4000, message: "데이터 베이스 에러" },
 };
