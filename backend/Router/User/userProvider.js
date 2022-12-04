@@ -59,8 +59,8 @@ exports.getDeliveryInfo = async (serviceApplicationIdx) => {
       connection,
       serviceApplicationIdx
     );
-    console.log(getDeliveryInfoResult);
-    return resultResponse(baseResponseStatus.SUCCESS, getDeliveryInfoResult);
+    console.log("getDeliveryInfoResult : ", getDeliveryInfoResult);
+    return getDeliveryInfoResult;
   } catch (error) {
     console.log(error);
     return basicResponse(baseResponseStatus.DB_ERROR);
@@ -97,6 +97,7 @@ exports.getDeliveryInfo = async (serviceApplicationIdx) => {
 //         baseResponseStatus.LOGIN_SUCCESS,
 //         userIdx,
 //         userName
+
 //       );
 //     } else {
 //       return basicResponse(baseResponseStatus.PASSWD_NOT_EXACT);

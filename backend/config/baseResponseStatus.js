@@ -153,5 +153,11 @@ module.exports = {
     code: 2013,
     message: "해당 카페인덱스는 존재하지 않습니다. 다시 확인해주세요",
   },
+
+  IMPOSSIBLE_SAME_USER: {
+    isSuccess: false,
+    code: 2013,
+    message: "신청자와 대행자가 동일할 수 없다. ",
+  },
   DB_ERROR: { isSuccess: false, code: 4000, message: "데이터 베이스 에러" },
 };

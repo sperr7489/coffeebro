@@ -100,5 +100,28 @@ exports.getDeliveryInfo = async (req, res) => {
     serviceApplicationIdx
   );
 
-  return res.send(getDeliveryInfoResult);
+  return res.send(
+    resultResponse(baseResponseStatus.SUCCESS, getDeliveryInfoResult)
+  );
+};
+
+// 배달 신청자에게 신청하기
+exports.deliveryApply = async (req, res) => {
+  const { serviceApplicationIdx } = req.params;
+  const userIdx = req.userIdx; // 배달 대행을 지원하는 사람
+  // 배달 대행을 해주는 사람과 배달 대행을 신청한 사람은 동일인물일 수 없다. 배달 서비스를 이용하는 사람
+  const getDeliveryInfoResult = await userProvider.getDeliveryInfo(
+    serviceApplicationIdx
+  );
+  const { userIdx: receiverIdx } = getDeliveryInfoResult[0];
+
+  if (userIdx == receiverIdx) {
+    return res.send(basicResponse(baseResponseStatus.IMPOSSIBLE_SAME_USER));
+  }
+
+  const deliveryApplyResult = await userService.deliveryApply(
+    userIdx,
+    serviceApplicationIdx
+  );
+  return res.send(basicResponse(baseResponseStatus.SUCCESS));
 };

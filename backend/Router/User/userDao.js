@@ -166,6 +166,7 @@ exports.insertServiceApplication = async (
   return insertServiceApplicationRow;
 };
 
+// 배달 신청한 음료를 넣기
 exports.insertRequestDrink = async (connection, insertId, drinkIdx) => {
   const insertRequestDrinkQuery = `
   insert into requestDrinkList
@@ -181,6 +182,7 @@ exports.insertRequestDrink = async (connection, insertId, drinkIdx) => {
   return insertRequestDrinkRow;
 };
 
+// 배달 신청의 정보가져오기
 exports.getDeliveryInfo = async (connection, serviceApplicationIdx) => {
   const getDeliveryInfoQuery = `
     select * from serviceApplication sa 
@@ -192,4 +194,20 @@ exports.getDeliveryInfo = async (connection, serviceApplicationIdx) => {
     serviceApplicationIdx
   );
   return getDeliveryInfoQueryRow;
+};
+
+exports.insertDeliveryApply = async (
+  connection,
+  userIdx,
+  serviceApplicationIdx
+) => {
+  const insertDeliveryApplyQuery = `
+    insert into deliveryApplication(deliveryAgentIdx,serviceApplicationIdx)
+    values(?,?)
+  `;
+  const [insertDeliveryApplyRow] = await connection.query(
+    insertDeliveryApplyQuery,
+    [userIdx, serviceApplicationIdx]
+  );
+  return insertDeliveryApplyRow;
 };

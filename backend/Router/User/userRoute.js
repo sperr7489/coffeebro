@@ -23,8 +23,12 @@ router.get(
   userController.getDeliveryInfo
 );
 
-// 배달 신청자에게 신청하기
-router.post("");
+// 배달 신청자에게 신청하기 verifyAccessToken 넣기 테스트후에
+router.post(
+  "/delivery/:serviceApplicationIdx",
+  verifyAccessToken,
+  userController.deliveryApply
+);
 
 // 배달 대행 지원
 router.post("/deliver/apply", verifyAccessToken);
