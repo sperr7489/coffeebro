@@ -1,0 +1,40 @@
+.outter{
+    margin: 0% 35%;
+}
+
+.label{
+    font-size: 120%;
+}
+
+.input{
+    width: 100%;
+    padding: 3% 0%;
+}
+
+.inOutter{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+}
+
+.inner{
+    width: inherit;
+}
+
+.info{
+    margin: 5% 0%;
+}
+
+.finalButton{
+    margin: 5% 0%;
+    text-align: center;
+}
+
+.button{
+    font-size: 130%;
+    padding: 5% 20%
+}
+
+.inButton{
+    padding: 0% 4%
+}
