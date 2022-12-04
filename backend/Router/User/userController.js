@@ -77,16 +77,6 @@ exports.login = async (req, res) => {
 exports.delivery = async (req, res) => {
   const userIdx = req.userIdx; // 배달 대행 서비스를 신청한 사람의 userIdx
   const { cafeIdx, receiptTime, receiptPlace, drinkIdx } = req.body;
-  console.log(
-    "cafeIdx : ",
-    cafeIdx,
-    " receiptTime : ",
-    receiptTime,
-    " receiptPlace : ",
-    receiptPlace,
-    " drinkIdx : ",
-    drinkIdx
-  );
 
   if (!cafeIdx || !receiptTime || !receiptPlace || !drinkIdx)
     return res.send(basicResponse(baseResponseStatus.PARAMS_NOT_EXACT));
@@ -103,4 +93,12 @@ exports.delivery = async (req, res) => {
 };
 
 // 배달 신청자의 신청 내용 가져오기
-exports.getDeliveryInfo = async (req, res) => {};
+exports.getDeliveryInfo = async (req, res) => {
+  const { serviceApplicationIdx } = req.params;
+
+  const getDeliveryInfoResult = await userProvider.getDeliveryInfo(
+    serviceApplicationIdx
+  );
+
+  return res.send(getDeliveryInfoResult);
+};

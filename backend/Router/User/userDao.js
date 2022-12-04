@@ -180,3 +180,16 @@ exports.insertRequestDrink = async (connection, insertId, drinkIdx) => {
   );
   return insertRequestDrinkRow;
 };
+
+exports.getDeliveryInfo = async (connection, serviceApplicationIdx) => {
+  const getDeliveryInfoQuery = `
+    select * from serviceApplication sa 
+    join requestDrinkList rd on rd.serviceApplicationIdx =sa.serviceApplicationIdx
+    where sa.serviceApplicationIdx = ?
+  `;
+  const [getDeliveryInfoQueryRow] = await connection.query(
+    getDeliveryInfoQuery,
+    serviceApplicationIdx
+  );
+  return getDeliveryInfoQueryRow;
+};

@@ -51,6 +51,24 @@ exports.getRefreshToken = async (accessToken) => {
   }
 };
 
+// 배달 대행 서비스 신청한 사람의 정보 가져오기.
+exports.getDeliveryInfo = async (serviceApplicationIdx) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const getDeliveryInfoResult = await userDao.getDeliveryInfo(
+      connection,
+      serviceApplicationIdx
+    );
+    console.log(getDeliveryInfoResult);
+    return resultResponse(baseResponseStatus.SUCCESS, getDeliveryInfoResult);
+  } catch (error) {
+    console.log(error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
+
 // 로그인 => 세션 방식
 // exports.logIn = async (email, passwd, session) => {
 //   const connection = await pool.getConnection(async (conn) => conn);
