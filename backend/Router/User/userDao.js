@@ -182,6 +182,21 @@ exports.insertRequestDrink = async (connection, insertId, drinkIdx) => {
   return insertRequestDrinkRow;
 };
 
+// 배달 신청한 옵션 넣기
+exports.insertRequestOption = async (connection, insertId, optionIdx) => {
+  const insertRequestOptionQuery = `
+  insert into requestOptionList
+  (serviceApplicationIdx,
+    optionIdx)  
+    value(?,?);
+  `;
+
+  const [insertRequestOptionRow] = await connection.query(
+    insertRequestOptionQuery,
+    [insertId, optionIdx]
+  );
+  return insertRequestOptionRow;
+};
 // 배달 신청의 정보가져오기
 exports.getDeliveryInfo = async (connection, serviceApplicationIdx) => {
   const getDeliveryInfoQuery = `
@@ -230,8 +245,18 @@ exports.existsDeliverApply = async (
   return existsDeliverApplyRow;
 };
 
-exports.getAgentIdxs = async (connection, userIdx) => {
+exports.getApplyInfos = async (connection, userIdx) => {
   const getAgentIdxsQuery = `
-  
+  select da.deliveryAgentIdx, sa.receiptTime, c.cafeName, d.drinkName,ifnull(do.optionName,"옵션X") as optionName,(d.price + ifnull(do.price,0)) as price   from deliveryApplication da 
+  left join serviceApplication sa on da.serviceApplicationIdx = sa.serviceApplicationIdx
+  left join RequestDrinkList rdl on rdl.serviceApplicationIdx = sa.serviceApplicationIdx
+  left join  drink d on d.drinkIdx = rdl.drinkIdx
+  left join cafe c on c.cafeIdx = d.cafeIdx
+  left join requestOptionList rol on rol.serviceApplicationIdx=sa.serviceApplicationIdx
+  left join drinkOption do on do.optionIdx = rol.optionIdx
+  where sa.userIdx = ?
+  ;
   `;
+  const [getAgentIdxsRow] = await connection.query(getAgentIdxsQuery, userIdx);
+  return getAgentIdxsRow;
 };

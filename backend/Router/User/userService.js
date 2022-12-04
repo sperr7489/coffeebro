@@ -130,7 +130,8 @@ exports.delivery = async (
   cafeIdx,
   receiptTime,
   receiptPlace,
-  drinkIdx
+  drinkIdx,
+  optionIdx
 ) => {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
@@ -146,6 +147,10 @@ exports.delivery = async (
     );
 
     await userDao.insertRequestDrink(connection, insertId, drinkIdx);
+
+    if (optionIdx) {
+      await userDao.insertRequestOption(connection, insertId, optionIdx);
+    }
 
     await connection.commit();
     return basicResponse(baseResponseStatus.SUCCESS);

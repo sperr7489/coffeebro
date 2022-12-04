@@ -76,7 +76,7 @@ exports.login = async (req, res) => {
 // 배달 대행 서비스 신청
 exports.delivery = async (req, res) => {
   const userIdx = req.userIdx; // 배달 대행 서비스를 신청한 사람의 userIdx
-  const { cafeIdx, receiptTime, receiptPlace, drinkIdx } = req.body;
+  const { cafeIdx, receiptTime, receiptPlace, drinkIdx, optionIdx } = req.body;
 
   if (!cafeIdx || !receiptTime || !receiptPlace || !drinkIdx)
     return res.send(basicResponse(baseResponseStatus.PARAMS_NOT_EXACT));
@@ -86,7 +86,8 @@ exports.delivery = async (req, res) => {
     cafeIdx,
     receiptTime,
     receiptPlace,
-    drinkIdx
+    drinkIdx,
+    optionIdx
   );
 
   return res.send(deliveryResult);
@@ -132,5 +133,8 @@ exports.getApplyInfos = async (req, res) => {
   const userIdx = req.userIdx; // userIdx 자체가 배달 서비스를 신청한 사람의 index가 된다.
 
   // 배달 대행을 하겠다고 신청한사람들에 인덱스 가져오기
-  const getAgentIdxs = await userProvider.getAgentIdxs(userIdx);
+  const getApplyInfos = await userProvider.getApplyInfos(userIdx);
+  console.log("getApplyInfos :  ", getApplyInfos);
+
+  return res.send(resultResponse(baseResponseStatus.SUCCESS, getApplyInfos));
 };

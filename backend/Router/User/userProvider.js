@@ -68,12 +68,15 @@ exports.getDeliveryInfo = async (serviceApplicationIdx) => {
   }
 };
 
-// 배달 대행을 하겠다고 신청한사람들의 인덱스 가져오기
-exports.getAgentIdxs = async (userIdx) => {
+// 배달 대행을 하겠다고 신청한 내역 가져오기
+exports.getApplyInfos = async (userIdx) => {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
-    const getAgentIdxsResult = await userDao.getAgentIdxs(connection, userIdx);
-    return getAgentIdxsResult;
+    const getApplyInfosResult = await userDao.getApplyInfos(
+      connection,
+      userIdx
+    );
+    return getApplyInfosResult;
   } catch (error) {
     console.log(error);
     return basicResponse(baseResponseStatus.DB_ERROR);
