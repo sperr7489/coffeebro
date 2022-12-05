@@ -23,7 +23,8 @@ require("dotenv").config({ path: path.join(__dirname, "/config/.env") });
 
 const userRouter = require("./Router/User/userRoute");
 const cafeRouter = require("./Router/cafe/cafeRoute");
-// const chatRouter = require("./Router/chat/chatRouter");
+
+const chatRouter = require("./Router/Chat/chatRoute");
 
 var app = express();
 const http = require("http").createServer(app);
@@ -31,14 +32,10 @@ const http = require("http").createServer(app);
 
 // io.adapter(redisAdapter({ host: "localhost", port: 6379 }));
 
-// const io = require('socket.io')(3000);
+// const io = require("socket.io")(3000);
 const io = require("socket.io")(http, { cors: { origin: "*" } });
-const redisAdapter = require("socket.io-redis");
-io.adapter(redisAdapter({ host: "localhost", port: 6379 }));
-io.of("/").adapter.on("error", function (msg) {
-  console.log("msg : ", msg);
-});
-// const test = require("./config/socket");
+
+app.set("socketIo", io);
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -61,6 +58,9 @@ app.use(cors());
 
 app.use("/user", userRouter);
 app.use("/cafe", cafeRouter);
+app.use("/chat", chatRouter);
+
+// app.use("/chat", chatRouter);
 
 const port = 3000;
 
@@ -68,16 +68,15 @@ http.listen(port, () => {
   console.log(`${port} 포트에서 시작`);
 });
 
-// module.exports = app;
-app.get("/"); //Todo => 소켓 라우팅 개발하기
-
-require("./config/socket")(io);
-// io.on("connection", (socket) => {
-//   console.log("test");
-//   socket.on("chat message", (msg) => {
-//     io.emit("chat message", msg);
-//   });
-// });
+io.on("connection", (socket) => {
+  app.use("/", (req, res) => {
+    console.log(req);
+  });
+  console.log("test");
+  socket.on("chat message", (msg) => {
+    io.emit("chat message", msg);
+  });
+});
 
 // io.on("connection", chatRouter);
 /**
