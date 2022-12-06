@@ -19,9 +19,6 @@ const LoginPage = () => {
 
   const buttonHandler = () => {
     let regex = new RegExp('[a-z0-9]+@ajou.ac.kr');
-    
-    console.log(email)
-    console.log(pwd)
 
     if(regex.test(email) === false){
       alert("아주대학교 이메일 계정으로 로그인 바랍니다.")
@@ -43,7 +40,15 @@ const LoginPage = () => {
       "passwd" : pwd
     })
     .then(response => {
-      console.log(response)
+      if(response.data.code === 1112){
+        navigate("/")
+      }
+      else if(response.data.code === 2008){
+        alert("회원가입 때 등록한 비밀번호를 입력해주세요")
+      }
+      else{
+        alert("등록된 계정이 아닙니다");
+      }
     })
     .catch(error => {
       console.log(error)

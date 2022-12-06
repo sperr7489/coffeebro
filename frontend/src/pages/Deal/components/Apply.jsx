@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import style from '../index.module.css'
 import ApplyModal from './ApplyModal';
@@ -29,6 +30,7 @@ const Apply = () => {
         setOpen(true)
         setModalIdx(index)
     }
+    
 
     return (
         <div className={style.contentOutter}>
