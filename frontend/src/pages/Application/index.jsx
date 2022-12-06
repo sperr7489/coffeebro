@@ -33,7 +33,6 @@ export default function ApplicationPage() {
 	}, [isModalOpen]);
 	return (
 		<Container>
-			<Header />
 			<MainForm onSubmit={handleSubmit}>
 				<label htmlFor="cafe">카페</label>
 				<CafeSelect name="cafe">

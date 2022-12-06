@@ -6,7 +6,6 @@ import { ChatPageContainer, ChatMainContainer } from "./index.style";
 export default function ChatPage() {
 	return (
 		<ChatPageContainer>
-			<Header />
 			<ChatMainContainer>
 				<Chatting />
 				<UserList />
