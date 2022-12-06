@@ -26,9 +26,15 @@ const Register = () => {
 
     const [pwdConfirmMsg, setPwdConfirmMsg] = useState("")
 
+    const [test, setTest] = useState(0)
+
     useEffect(() => {
         setConfirm("")
     }, [])
+
+    // useEffect(() => {
+    //     console.log(confirm)
+    // },[confirm])
 
     const nameHandler = (event) => {
         setName(event.target.value)
@@ -119,8 +125,10 @@ const Register = () => {
 
     const pwdConfirmHandler = (event) => {
         console.log("in")
-        setConfirm(event.target.value)
+        setConfirm(()=>{return event.target.value})
         console.log(confirm)
+    }
+    useEffect(()=>{
         if(pwd !== confirm){
             setPwdConfirmMsg("입력하신 비밀번호와 동일하게 입력해주십시오")
             setIsPwdConfirm(false)
@@ -129,7 +137,7 @@ const Register = () => {
             setPwdConfirmMsg("입력하신 비밀번호와 동일합니다")
             setIsPwdConfirm(true)
         }
-    }
+    },[confirm])
 
     const finalButtonHandle = () => {
         if(isName && isEmailConfirm && isPwd && isDept && isSex && isPwdConfirm && isId)
