@@ -167,36 +167,41 @@ exports.insertServiceApplication = async (
 };
 
 // 배달 신청한 음료를 넣기
-exports.insertRequestDrink = async (connection, insertId, drinkIdx) => {
+exports.insertRequestDrink = async (
+  connection,
+  insertId,
+  drinkIdx,
+  optionList
+) => {
   const insertRequestDrinkQuery = `
   insert into requestDrinkList
   (serviceApplicationIdx,
-    drinkIdx)  
-    value(?,?);
+    drinkIdx,optionList)  
+    value(?,?,?);
   `;
 
   const [insertRequestDrinkRow] = await connection.query(
     insertRequestDrinkQuery,
-    [insertId, drinkIdx]
+    [insertId, drinkIdx, optionList]
   );
   return insertRequestDrinkRow;
 };
 
-// 배달 신청한 옵션 넣기
-exports.insertRequestOption = async (connection, insertId, optionIdx) => {
-  const insertRequestOptionQuery = `
-  insert into requestOptionList
-  (serviceApplicationIdx,
-    optionIdx)  
-    value(?,?);
-  `;
+// // 배달 신청한 옵션 넣기
+// exports.insertRequestOption = async (connection, insertId, optionIdx) => {
+//   const insertRequestOptionQuery = `
+//   insert into requestOptionList
+//   (serviceApplicationIdx,
+//     optionIdx)
+//     value(?,?);
+//   `;
 
-  const [insertRequestOptionRow] = await connection.query(
-    insertRequestOptionQuery,
-    [insertId, optionIdx]
-  );
-  return insertRequestOptionRow;
-};
+//   const [insertRequestOptionRow] = await connection.query(
+//     insertRequestOptionQuery,
+//     [insertId, optionIdx]
+//   );
+//   return insertRequestOptionRow;
+// };
 // 배달 신청의 정보가져오기
 exports.getDeliveryInfo = async (connection, serviceApplicationIdx) => {
   const getDeliveryInfoQuery = `

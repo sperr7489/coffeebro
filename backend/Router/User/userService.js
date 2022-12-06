@@ -131,9 +131,20 @@ exports.delivery = async (
   cafeIdx,
   receiptTime,
   receiptPlace,
-  drinkIdx,
-  optionIdx
+  drinkInfos
 ) => {
+  //  drinkInfos:
+  //  [
+  //   {
+  //     drinkIdx :1,
+  //     optionList : [1,2,3]
+  //   }
+  //   {
+  //     drinkIdx :2,
+  //     optionList : [1,2,3]
+  //   }
+  //  ]
+
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     await connection.beginTransaction();
@@ -147,11 +158,17 @@ exports.delivery = async (
       receiptPlace
     );
 
-    await userDao.insertRequestDrink(connection, insertId, drinkIdx);
-
-    if (optionIdx) {
-      await userDao.insertRequestOption(connection, insertId, optionIdx);
-    }
+    await Promise.all(
+      drinkInfos.map(async (v, i) => {
+        console.log("v.optionList : ", v.optionList);
+        await userDao.insertRequestDrink(
+          connection,
+          insertId,
+          v.drinkIdx,
+          v.optionList.toString()
+        );
+      })
+    );
 
     await connection.commit();
     return basicResponse(baseResponseStatus.SUCCESS);
