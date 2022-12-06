@@ -19,13 +19,7 @@ export default function MenuInfo(props) {
 		newList[idx] = newState;
 		setMenuInfoList(newList);
 	};
-	const handleChangeRequest = (e, idx) => {
-		const newList = [...menuInfoList];
-		const newState = { ...newList[idx] };
-		newState.request = e.target.value;
-		newList[idx] = newState;
-		setMenuInfoList(newList);
-	};
+
 	return (
 		<MenuInfoListWrapper>
 			<MenuInfoListTitleWrapper>
@@ -48,7 +42,7 @@ export default function MenuInfo(props) {
 								+
 							</button>
 						</div>
-						<input onChange={(e) => handleChangeRequest(e, idx)} defaultValue={menu.request} />
+						<span>{menu.request}</span>
 					</div>
 				))}
 			</MenuInfoListContainer>

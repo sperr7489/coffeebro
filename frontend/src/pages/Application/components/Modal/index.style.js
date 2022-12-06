@@ -22,6 +22,41 @@ export const ApplicationModalContainer = styled.div`
 	/* margin-left: -10px;
 	margin-top: -10px; */
 	background-color: white;
+
+	.slide-in {
+		animation-duration: 0.45s;
+		animation-name: slidein;
+	}
+
+	.slide-out {
+		animation-duration: 0.45s;
+		animation-name: slideout;
+	}
+
+	@keyframes slidein {
+		from {
+			bottom: 0px;
+			/* bottom: -100%; */
+			/* opacity: 0; */
+		}
+		to {
+			bottom: 116px;
+			/* bottom: 0%; */
+			/* opacity: 1; */
+		}
+	}
+	@keyframes slideout {
+		from {
+			bottom: 116px;
+			/* bottom: 0%; */
+			/* opacity: 1; */
+		}
+		to {
+			bottom: 0px;
+			/* bottom: -100%; */
+			/* opacity: 0; */
+		}
+	}
 `;
 
 export const ItemListConatiner = styled.div`
@@ -51,9 +86,13 @@ export const ItemListConatiner = styled.div`
 `;
 export const ButtonWrapper = styled.div`
 	width: 780px;
+	height: 120px;
+	background-color: white;
 	padding: 0px 20px 0px 20px;
+	z-index: 999;
 	display: flex;
 	justify-content: space-between;
+	align-items: center;
 	button:first-child {
 		width: 200px;
 		height: 80px;
@@ -62,8 +101,39 @@ export const ButtonWrapper = styled.div`
 		border: none;
 		background-color: lightgray;
 	}
-	button:last-child {
-		align-self: center;
-		margin-bottom: 20px;
+`;
+
+export const RequestListContainer = styled.div`
+	z-index: 0;
+	position: absolute;
+	width: 760px;
+	height: 120px;
+	background-color: white;
+	bottom: 116px;
+	padding: 10px;
+	display: flex;
+	flex-direction: column;
+	& > div {
+		display: flex;
+		flex-wrap: nowrap;
+		overflow-x: scroll;
 	}
+	& > button {
+		width: 40px;
+		align-self: flex-end;
+	}
+	border: 1px solid black;
+`;
+
+export const RequestContainer = styled.div`
+	width: 80px;
+	height: 80px;
+	flex: 0 0 auto;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	border-radius: 10px;
+	border: 1px solid black;
+	margin-right: 10px;
+	background-color: ${(props) => (props.isSelected ? "#c5875b" : "white")};
 `;

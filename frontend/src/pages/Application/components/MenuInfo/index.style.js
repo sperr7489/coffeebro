@@ -25,7 +25,8 @@ export const MenuInfoListContainer = styled.div`
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		input {
+
+		span:last-child {
 			width: 200px;
 		}
 		div {

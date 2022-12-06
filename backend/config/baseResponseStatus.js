@@ -26,6 +26,11 @@ module.exports = {
     code: 1104,
     message: "회원가입이 필요한 계정입니다.",
   },
+  FIND_PASSWORD_SUCCESS: {
+    isSuccess: true,
+    code: 1105,
+    message: "해당 핸드폰 번호로 임시 비밀번호를 발송하였습니다.",
+  },
   PASSWORD_CORRESPOND_SUCCESS: {
     isSuccess: true,
     code: 1106,
@@ -51,7 +56,11 @@ module.exports = {
     code: 1110,
     message: "회원탈퇴에 성공하였습니다.",
   },
-
+  VERIFICATION_SUCCESS: {
+    isSuccess: true,
+    code: 1111,
+    message: "토큰 검증에 성공하였습니다.",
+  },
   LOGIN_SUCCESS: {
     isSuccess: true,
     code: 1112,
@@ -63,7 +72,21 @@ module.exports = {
     code: 3000,
     message: "정확하지 않은 인자가 존재합니다. ",
   },
-
+  TOKEN_EXPIRED: {
+    isSuccess: false,
+    code: 2000,
+    message: "토큰이 만료되었습니다. ",
+  },
+  TOKEN_NOT_VALID: {
+    isSuccess: false,
+    code: 2001,
+    message: " 유효하지 않은 토큰입니다.  ",
+  },
+  TOKEN_EMPTY: {
+    isSuccess: false,
+    code: 2002,
+    message: " 토큰이 존재하지 않습니다. ",
+  },
   EMAIL_EXISTS: {
     isSuccess: false,
     code: 2003,
@@ -94,6 +117,16 @@ module.exports = {
     code: 2008,
     message: "패스워드가 일치하지 않습니다. ",
   },
+  TOKEN_NOT_EXIST: {
+    isSuccess: false,
+    code: 2009,
+    message: "토큰이 존재하지 않습니다. ",
+  },
+  TOKEN_NOT_VERIFIED: {
+    isSuccess: false,
+    code: 2009,
+    message: "정상적인 토큰이 아닙니다.",
+  },
   USER_NOT_EXIST: {
     isSuccess: false,
     code: 2010,
@@ -110,30 +143,27 @@ module.exports = {
     message: "이미지 파일이 존재하지 않습니다. ",
   },
 
-  EMAIL_TRANSPORT_ERROR: {
+  BODY_NOT_CORRECT: {
     isSuccess: false,
     code: 2013,
-    message: "이메일 발송에 실패하였습니다.",
+    message: "바디에 정확하게 데이터가 들어있지 않습니다. 다시 확인해주세요",
   },
-  EMAIL_AJOU_FALSE: {
+  CAFE_NOT_EXIST: {
+    isSuccess: false,
+    code: 2013,
+    message: "해당 카페인덱스는 존재하지 않습니다. 다시 확인해주세요",
+  },
+
+  IMPOSSIBLE_SAME_USER: {
+    isSuccess: false,
+    code: 2013,
+    message: "신청자와 대행자가 동일할 수 없다. ",
+  },
+  EXIST_DELIVERY_APPLY: {
     isSuccess: false,
     code: 2014,
-    message: "이메일은 반드시 아주 메일로 부탁드립니다!",
+    message: "이미 신청한 신청 내역입니다. ",
   },
-  NOT_LOGINED: {
-    isSuccess: false,
-    code: 2015,
-    message: "로그인 되어 있지 않습니다.",
-  },
-  TOKEN_NOT_EXIST: {
-    isSuccess: false,
-    code: 2016,
-    message: "토큰이 존재하지 않습니다. ",
-  },
-  TOKEN_NOT_VERIFIED: {
-    isSuccess: false,
-    code: 2017,
-    message: "정상적인 토큰이 아닙니다.",
-  },
+
   DB_ERROR: { isSuccess: false, code: 4000, message: "데이터 베이스 에러" },
 };
