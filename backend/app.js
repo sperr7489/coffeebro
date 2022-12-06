@@ -70,7 +70,7 @@ http.listen(port, () => {
 
 io.on("connection", (socket) => {
   app.use("/", (req, res) => {
-    console.log(req);
+    // console.log(req);
   });
   console.log("test");
   socket.on("chat message", (msg) => {

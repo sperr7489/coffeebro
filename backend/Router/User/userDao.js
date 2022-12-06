@@ -202,6 +202,19 @@ exports.insertRequestDrink = async (
 //   );
 //   return insertRequestOptionRow;
 // };
+
+exports.getDeliveryInfos = async (connection, userIdx) => {
+  const getDeliveryInfosQuery = `
+  select serviceApplicationIdx,receiptTime,receiptPlace,cafeIdx,status from serviceApplication 
+  where userIdx = ?
+`;
+  const [getDeliveryInfosQueryRow] = await connection.query(
+    getDeliveryInfosQuery,
+    userIdx
+  );
+  return getDeliveryInfosQueryRow;
+};
+
 // 배달 신청의 정보가져오기
 exports.getDeliveryInfo = async (connection, serviceApplicationIdx) => {
   const getDeliveryInfoQuery = `

@@ -1,5 +1,6 @@
 const { basicResponse, resultResponse } = require("../../config/response");
 const userDao = require("./userDao");
+const cafeDao = require("../Cafe/cafeDao");
 const { pool } = require("../../config/database");
 const crypto = require("crypto");
 const baseResponseStatus = require("../../config/baseResponseStatus");
@@ -51,6 +52,23 @@ exports.getRefreshToken = async (accessToken) => {
   }
 };
 
+exports.getDeliveryInfos = async (userIdx) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const getDeliveryInfosResult = await userDao.getDeliveryInfos(
+      connection,
+      userIdx
+    );
+
+    return getDeliveryInfosResult;
+  } catch (error) {
+    console.log(error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
+
 // 배달 대행 서비스 신청한 사람의 정보 가져오기.
 exports.getDeliveryInfo = async (serviceApplicationIdx) => {
   const connection = await pool.getConnection(async (conn) => conn);
@@ -59,6 +77,22 @@ exports.getDeliveryInfo = async (serviceApplicationIdx) => {
       connection,
       serviceApplicationIdx
     );
+    console.log("getDeliveryInfoResult :", getDeliveryInfoResult);
+    await Promise.all(
+      getDeliveryInfoResult.map(async (v, i) => {
+        const optionIdxList = v.optionList.split(",");
+        console.log("optionIdxList :", optionIdxList);
+        const optionNames = await cafeDao.getOptionList(
+          connection,
+          optionIdxList
+        );
+        const optionNameList = optionNames.map((v) => v.optionName);
+        console.log("optionNameList : ", optionNameList);
+
+        v.optionList = optionNameList;
+      })
+    );
+
     return getDeliveryInfoResult;
   } catch (error) {
     console.log(error);

@@ -17,7 +17,13 @@ router.post("/login", userController.login);
 // 배달 서비스 신청 등록하기
 router.post("/delivery", verifyAccessToken, userController.delivery);
 
-// 배달 서비스 신청 정보 가져오기
+// 배달 서비스 신청 정보 모두 가져오기
+router.get(
+  "/delivery/infos",
+  verifyAccessToken,
+  userController.getDeliveryInfos
+);
+// 배달 서비스 신청 정보 한개 가져오기
 router.get(
   "/delivery/info/:serviceApplicationIdx",
   userController.getDeliveryInfo

@@ -109,6 +109,17 @@ exports.delivery = async (req, res) => {
   return res.send(deliveryResult);
 };
 
+// 배달 서비스 신청 정보 모두 가져오기
+exports.getDeliveryInfos = async (req, res) => {
+  const userIdx = req.userIdx;
+
+  const getDeliveryInfosResult = await userProvider.getDeliveryInfos(userIdx);
+
+  return res.send(
+    resultResponse(baseResponseStatus.SUCCESS, getDeliveryInfosResult)
+  );
+};
+
 // 배달 신청자의 신청 내용 가져오기
 exports.getDeliveryInfo = async (req, res) => {
   const { serviceApplicationIdx } = req.params;
