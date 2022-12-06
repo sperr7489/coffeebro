@@ -43,12 +43,13 @@ const Description = () => {
     }
 
     const okHandler = () => {
-        if(checkedItems.length === 3){
-            navigate("/Register")
+        if(checkedItems.includes("커피가게 아저씨 이용약관 동의")){
+            if(checkedItems.includes("개인정보 수집 및 이용 동의")){
+                navigate("/Register")
+            }
+            return;
         }
-        else{
-            return
-        }
+        return;
     }
 
 

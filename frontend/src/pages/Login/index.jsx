@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Header from '../../components/Header';
 import style from './index.module.css'
+import axios from 'axios'
 
 const LoginPage = () => {
   const navigate = useNavigate()
@@ -17,11 +18,13 @@ const LoginPage = () => {
   }
 
   const buttonHandler = () => {
-    let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}')
-    let url = "localhost:3000/user/login"
+    let regex = new RegExp('[a-z0-9]+@ajou.ac.kr');
     
+    console.log(email)
+    console.log(pwd)
+
     if(regex.test(email) === false){
-      alert("유효한 이메일 형식이 아닙니다.")
+      alert("아주대학교 이메일 계정으로 로그인 바랍니다.")
       return
     }
 
@@ -35,18 +38,15 @@ const LoginPage = () => {
       return
     }
 
-    axios.post(url,{
+    axios.post("http://localhost:3000/user/login",{
       "email" : email,
       "passwd" : pwd
     })
     .then(response => {
-      localStorage.clear()
-      localStorage.setItem("")
-      navigate("/")
+      console.log(response)
     })
     .catch(error => {
-      alert("등록된 계정이 아닙니다.")
-      return
+      console.log(error)
     })
   }
 

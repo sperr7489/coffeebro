@@ -24,17 +24,16 @@ const Register = () => {
     const [isPwdConfirm, setIsPwdConfirm] = useState(false)//가입하기 버튼 클릭할 때 검증
     const [isId, setIsId] = useState(false)//가입하기 버튼 클릭할 때 검증
 
-    const [pwdConfirmMsg, setPwdConfirmMsg] = useState("")
+    const [pwdConfirmMsg, setPwdConfirmMsg] = useState("")//비밀번호 재입력 메시지
+    const [pwdMsg, setPwdMsg] = useState("")//비밀번호 메시지
+    const [emailMsg, setEmailMsg] = useState("")//이메일 검증 메시지
+    const [codeMsg, setCodeMsg] = useState("")//인증번호 검증 메시지
 
     const [test, setTest] = useState(0)
 
     useEffect(() => {
         setConfirm("")
     }, [])
-
-    // useEffect(() => {
-    //     console.log(confirm)
-    // },[confirm])
 
     const nameHandler = (event) => {
         setName(event.target.value)
@@ -58,7 +57,7 @@ const Register = () => {
 
     const deptHandler = (event) => {
         setDept(event.target.value)
-        if(dept === 'N'){
+        if(dept === '선택안함'){
             setIsDept(false)
         }
         else{
@@ -67,12 +66,15 @@ const Register = () => {
     }
 
     const idHandler = (event) => {
-        setId(event.target.value)
-       
-        if(id.length < 8 || id.length > 8)
-            setIsId(false)
-        else
-            setIsId(true)
+        setId((prev) => {
+            prev = event.target.value
+            
+            setId(prev)
+            if(prev.length === 9)
+                setIsId(true)
+            else
+                setIsId(false)
+        })
     }
 
     const emailHandler = (event) => {
@@ -80,22 +82,27 @@ const Register = () => {
     }
 
     const emailButtonHandle = () => {
-        let url = "localhost:3000/user/email"
-        let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}')
+        let regex = new RegExp('[a-z0-9]+@ajou.ac.kr');
 
         if(regex.test(email) === false){
-            alert("정확한 이메일 형식을 입력해주세요")
+            alert("아주대학교 이메일 형식으로 입력해주세요")
             return
         }
         else{
-            axios.post(url, {
+            axios.post("http://localhost:3000/user/email", {
                 "email": email
             })
             .then(response => {
-                setEmailCode(response.result)
+                if(response.data.code === 2003){
+                    setEmailMsg(response.data.message)
+                }
+                else{
+                    setEmailCode(response.data.result)
+                    setEmailMsg("인증번호를 입력해주세요")
+                }
             })
             .catch(error => {
-                console.log("api error")
+                console.log(error)
             })
         }
     }
@@ -109,39 +116,76 @@ const Register = () => {
             alert("이메일 인증을 먼저 해주십시오")
             return
         }
-        if(emailCode === Number(typeCode))
+        if(emailCode === Number(typeCode)){
+            setCodeMsg("인증완료!")
             setIsEmailConfirm(true)
-        else
+        }
+        else{
+            setCodeMsg("발급된 인증번호와 다릅니다.")
             setIsEmailConfirm(false)
+        }
     }
 
     const pwdHandler = (event) => {
-        setPwd(event.target.value)
-        if(pwd.length < 2)
-            setIsPwd(false)
-        else
-            setIsPwd(true)
+        const reg = /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/;
+
+        setPwd((prev) => {
+            prev = event.target.value;
+
+            if(!reg.test(prev)){
+                setPwdMsg("8자 이상 영문자, 숫자, 특수문자를 사용하세요")
+                setIsPwd(false)
+            }
+            else{
+                setPwdMsg("훌룡한 비밀번호입니다")
+                setIsPwd(true)
+            }
+            return prev
+        })
     }
 
     const pwdConfirmHandler = (event) => {
-        console.log("in")
-        setConfirm(()=>{return event.target.value})
-        console.log(confirm)
+
+        setConfirm((prev) => {
+            prev = event.target.value;
+            console.log(prev)
+            if(prev.length < 2){
+                setConfirm("다시 한번 비밀번호를 입력하세요")
+                setIsPwdConfirm(false)
+            }
+            else{
+                console.log(pwd)
+                if(prev === pwd){
+                    console.log("in")
+                    setPwdConfirmMsg("설정하신 비밀번호와 일치합니다.");
+                    setIsPwdConfirm(true)
+                }
+                else{
+                    setPwdConfirmMsg("설정하신 비밀번호와 일치하지 않습니다");
+                    setIsPwdConfirm(false)
+                }
+            }
+            return prev;
+        })
     }
-    useEffect(()=>{
-        if(pwd !== confirm){
-            setPwdConfirmMsg("입력하신 비밀번호와 동일하게 입력해주십시오")
-            setIsPwdConfirm(false)
-        }
-        else{
-            setPwdConfirmMsg("입력하신 비밀번호와 동일합니다")
-            setIsPwdConfirm(true)
-        }
-    },[confirm])
 
     const finalButtonHandle = () => {
-        if(isName && isEmailConfirm && isPwd && isDept && isSex && isPwdConfirm && isId)
-            Navigate("/")
+        if(isName && isPwd && isDept && isSex && isPwdConfirm && isId){
+            axios.post('http://localhost:3000/user/signUp', {
+                "email": email,
+                "passwd": pwd,
+                "userName": name,
+                "department": dept,
+                "sex": sex,
+                "studentId": Number(id)
+            })
+            .then(response => {
+                window.location.href = '/'
+            })
+            .catch(error => {
+                console.log(error)
+            })
+        }
         else
             return
     }
@@ -183,14 +227,17 @@ const Register = () => {
                 <div className={style.inOutter}>
                     <input className={style.inner} type="text" onChange={emailHandler}/>
                     <input type="button" value="인증번호" onClick={emailButtonHandle}/><br />
+                    <span>{emailMsg}</span>
                 </div>
                 <div className={style.inOutter}>
                     <input className={style.inner} type="text" placeholder='인증번호를 입력하세요'onChange={emailConfirmHandler}/>
                     <input className={style.inButton} type="button" value="확인" onClick={confirmButtonHandle}/>
+                    <span>{codeMsg}</span>
                 </div>
                 <div className={style.info}>
                     <span className={style.label}>비밀번호</span><br />
                     <input type="password" onChange={pwdHandler} className={style.input}/><br />
+                    <span>{pwdMsg}</span>
                 </div>
                 <div className={style.info}>
                     <span className={style.label}>비밀번호 재확인</span><br />
