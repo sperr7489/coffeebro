@@ -239,7 +239,7 @@ exports.acception = async (
       // 채팅방을 개설해야한다.
       // userIdx : 배달 서비스 신청자
       // agentIdx : 배달 대행 신청자
-      await chatDao.createChatRoom(
+      const { insertId } = await chatDao.createChatRoom(
         connection,
         serviceApplicationIdx,
         userIdx,

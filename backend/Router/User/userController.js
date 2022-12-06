@@ -181,3 +181,5 @@ exports.acception = async (req, res) => {
 
   return res.send(acceptionResult);
 };
+
+exports.getApplyDeleveryInfo = async (req, res) => {};

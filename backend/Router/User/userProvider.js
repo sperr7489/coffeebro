@@ -78,22 +78,33 @@ exports.getDeliveryInfo = async (serviceApplicationIdx) => {
       serviceApplicationIdx
     );
     console.log("getDeliveryInfoResult :", getDeliveryInfoResult);
+
+    let drinkInfos = [];
     await Promise.all(
       getDeliveryInfoResult.map(async (v, i) => {
         const optionIdxList = v.optionList.split(",");
-        console.log("optionIdxList :", optionIdxList);
+        let drinkInfo = {};
+        drinkInfo["name"] = v.drinkName;
+        // console.log("optionIdxList :", optionIdxList);
         const optionNames = await cafeDao.getOptionList(
           connection,
           optionIdxList
         );
         const optionNameList = optionNames.map((v) => v.optionName);
-        console.log("optionNameList : ", optionNameList);
+        // console.log("optionNameList : ", optionNameList);
 
-        v.optionList = optionNameList;
+        drinkInfo["option"] = optionNameList;
+        drinkInfos.push(drinkInfo);
+
+        // v.optionList = optionNameList;
       })
     );
+    const result = { ...getDeliveryInfoResult[0], drinkInfos };
+    delete result.drink;
+    delete result.optionList;
+    delete result.drinkName;
 
-    return getDeliveryInfoResult;
+    return result;
   } catch (error) {
     console.log(error);
     return basicResponse(baseResponseStatus.DB_ERROR);

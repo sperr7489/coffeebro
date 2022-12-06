@@ -36,7 +36,7 @@ router.post(
   userController.deliveryApply
 );
 
-// 배달 대행 신청에 대해서 정보 가져오기
+// 유저에게 배달 대행 신청한 건들에 대한 정보 가져오기
 router.get("/apply/infos", verifyAccessToken, userController.getApplyInfos);
 
 // 배달 서비스 신청 수락/거절 하기 => 신청 등록자 입장에서
@@ -44,6 +44,13 @@ router.post(
   "/apply/acception/:serviceApplicationIdx",
   verifyAccessToken,
   userController.acception
+);
+
+// 유저가 대행하겠다고 신청한 서비스에 대한 정보들 가져오기
+router.get(
+  "/apply/delivery/infos",
+  verifyAccessToken,
+  userController.getApplyDeleveryInfo
 );
 
 module.exports = router;
