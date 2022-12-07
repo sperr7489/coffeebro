@@ -218,7 +218,7 @@ exports.getDeliveryInfos = async (connection, userIdx) => {
 // 배달 신청의 정보가져오기
 exports.getDeliveryInfo = async (connection, serviceApplicationIdx) => {
   const getDeliveryInfoQuery = `
-    select sa.serviceApplicationIdx,sa.userIdx,c.cafeIdx,c.cafeName,sa.receiptTime,sa.receiptPlace,sa.status,d.drinkName as drink,rd.optionList, d.drinkName from serviceApplication sa 
+    select sa.serviceApplicationIdx,sa.userIdx,c.cafeIdx,c.cafeName,sa.receiptTime,sa.receiptPlace,sa.status,rd.optionList, d.drinkName from serviceApplication sa 
     join requestDrinkList rd on rd.serviceApplicationIdx =sa.serviceApplicationIdx
     join drink d on d.drinkIdx =rd.drinkIdx 
     join cafe c on c.cafeIdx = d.cafeIdx
@@ -268,15 +268,15 @@ exports.existsDeliverApply = async (
 // 배달 대행을 하겠다고 신청한 내역 가져오기
 exports.getApplyInfos = async (connection, userIdx) => {
   const getAgentIdxsQuery = `
-  select sa.serviceApplicationIdx,da.deliveryAgentIdx,u.userName,u.nickname,u.department,u.studentId,u.sex,u.userImg,ifnull(u.deliveryAgentScore,0) as "배달 대행 평점", sa.receiptTime, c.cafeName, d.drinkName,ifnull(do.optionName,"옵션X"),(d.price + ifnull(do.price,0)) as price   from deliveryApplication da 
+  select sa.serviceApplicationIdx,da.deliveryAgentIdx,u.userName as "배달 대행자",u.department,u.studentId,u.sex,u.userImg
+  ,ifnull(u.deliveryAgentScore,0) as "배달 대행 평점", sa.receiptTime,c.cafeIdx ,c.cafeName, d.drinkName ,rd.optionList   
+  from deliveryApplication da 
   left join serviceApplication sa on da.serviceApplicationIdx = sa.serviceApplicationIdx
-  left join RequestDrinkList rdl on rdl.serviceApplicationIdx = sa.serviceApplicationIdx
-  left join  drink d on d.drinkIdx = rdl.drinkIdx
-  left join cafe c on c.cafeIdx = d.cafeIdx
-  left join requestOptionList rol on rol.serviceApplicationIdx=sa.serviceApplicationIdx
-  left join drinkOption do on do.optionIdx = rol.optionIdx
-  left join user u on u.userIdx = da.deliveryAgentIdx
-  where sa.userIdx = ?
+   left join RequestDrinkList rd on rd.serviceApplicationIdx = sa.serviceApplicationIdx
+  left join drink d on d.drinkIdx = rd.drinkIdx
+  left join cafe c on c.cafeIdx =d.cafeIdx
+  left join user u on u.userIdx  = da.deliveryAgentIdx
+  ;
   ;
   `;
   const [getAgentIdxsRow] = await connection.query(getAgentIdxsQuery, userIdx);
@@ -319,10 +319,7 @@ exports.getUserInfo = async (connection, userIdx) => {
     select userName, nickname, applicantScore, deliveryAgentScore, userImg from user 
     where userIdx = ?;
   `;
-  const [[getUserInfoRow]] = await connection.query(
-      getUserInfoQuery,
-      userIdx
-  );
+  const [[getUserInfoRow]] = await connection.query(getUserInfoQuery, userIdx);
   return getUserInfoRow;
 };
 
