@@ -268,7 +268,7 @@ exports.existsDeliverApply = async (
 // 배달 대행을 하겠다고 신청한 내역 가져오기
 exports.getApplyInfos = async (connection, userIdx) => {
   const getAgentIdxsQuery = `
-  select sa.serviceApplicationIdx,da.deliveryAgentIdx,u.userName as "배달 대행자",u.department,u.studentId,u.sex,u.userImg
+  select sa.serviceApplicationIdx,da.deliveryAgentIdx,u.userName as "배달 대행자",u.nickname,u.department,u.studentId,u.sex,u.userImg
   ,ifnull(u.deliveryAgentScore,0) as "배달 대행 평점", sa.receiptTime,c.cafeIdx ,c.cafeName, d.drinkName ,rd.optionList   
   from deliveryApplication da 
   left join serviceApplication sa on da.serviceApplicationIdx = sa.serviceApplicationIdx
