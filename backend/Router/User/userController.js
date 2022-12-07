@@ -194,3 +194,17 @@ exports.getApplyDeleveryInfos = async (req, res) => {
     resultResponse(baseResponseStatus.SUCCESS, getApplyDeleveryInfosResult)
   );
 };
+
+// 마이페이지 정보(유저 이름, 많이 신청한 카페 이름 top3, 신청자 평점, 대행자 평점
+exports.getMyPageInfo= async (req, res)=>{
+  const userIdx = req.userIdx;
+
+  const userInfo=await userProvider.getUserInfo(userIdx);
+  const mostVisitedCafeNames=await userProvider.getMostVisitedCafeNames(userIdx);
+
+  const myPageInfo={...userInfo,...mostVisitedCafeNames};
+
+  return res.send(
+      resultResponse(baseResponseStatus.SUCCESS, myPageInfo)
+  );
+};
