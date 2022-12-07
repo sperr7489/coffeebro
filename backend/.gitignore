@@ -8,7 +8,7 @@ index.js
 .env
 config/crawling.js
 config/easyelec.pem
-node_modules
+node_modulespu
 test
 *.pem
 ./public
