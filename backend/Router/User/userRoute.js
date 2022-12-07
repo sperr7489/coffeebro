@@ -58,6 +58,6 @@ router.get(
 );
 
 //마이페이지 정보(이름, 자주 신청하는 카페 3개, 신청자 평점, 배달자 평점) 가져오기
-router.get("/mypage",verifyAccessToken,userController.getMyPageInfo);
+// router.get("/mypage", verifyAccessToken, userController.getMyPageInfo);
 
 module.exports = router;

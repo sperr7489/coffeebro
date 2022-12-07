@@ -95,7 +95,6 @@ exports.getDeliveryInfo = async (serviceApplicationIdx) => {
 
         drinkInfo["option"] = optionNameList;
         drinkInfos.push(drinkInfo);
-
         // v.optionList = optionNameList;
       })
     );
@@ -117,7 +116,6 @@ exports.getDeliveryInfo = async (serviceApplicationIdx) => {
 
     const result = { ...getDeliveryInfoResult[0], resultArr };
 
-    delete result.drink;
     delete result.optionList;
     delete result.drinkName;
 
@@ -138,7 +136,47 @@ exports.getApplyInfos = async (userIdx) => {
       connection,
       userIdx
     );
-    return getApplyInfosResult;
+    let drinkInfos = [];
+    await Promise.all(
+      getApplyInfosResult.map(async (v, i) => {
+        const optionIdxList = v.optionList.split(",");
+        let drinkInfo = {};
+        drinkInfo["name"] = v.drinkName;
+        // console.log("optionIdxList :", optionIdxList);
+        const optionNames = await cafeDao.getOptionList(
+          connection,
+          optionIdxList
+        );
+        const optionNameList = optionNames.map((v) => v.optionName);
+        // console.log("optionNameList : ", optionNameList);
+
+        drinkInfo["option"] = optionNameList;
+        drinkInfos.push(drinkInfo);
+        // v.optionList = optionNameList;
+      })
+    );
+
+    var retMap = drinkInfos.reduce((prev, cur) => {
+      const str = JSON.stringify(cur);
+
+      prev[str] = (prev[str] || 0) + 1;
+      return prev;
+    }, {});
+
+    const toArr = Object.entries(retMap);
+
+    const resultArr = toArr.map((v, i) => {
+      const temp = JSON.parse(v[0]);
+      temp["num"] = v[1];
+      return temp;
+    });
+
+    const result = { ...getApplyInfosResult[0], resultArr };
+
+    delete result.optionList;
+    delete result.drinkName;
+
+    return result;
   } catch (error) {
     console.log(error);
     return basicResponse(baseResponseStatus.DB_ERROR);
