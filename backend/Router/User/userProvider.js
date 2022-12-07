@@ -3,6 +3,7 @@ const userDao = require("./userDao");
 const { pool } = require("../../config/database");
 const crypto = require("crypto");
 const baseResponseStatus = require("../../config/baseResponseStatus");
+const cafeDao = require("../Cafe/cafeDao");
 
 // user의 email의 존재 여부 체크
 exports.emailCheck = async (email) => {
@@ -84,6 +85,54 @@ exports.getApplyInfos = async (userIdx) => {
     connection.release();
   }
 };
+
+// user의 이름, 신청자 평점, 대행자 평점, 사진 가져오기
+exports.getUserInfo = async (userIdx) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const userInfoResult = await userDao.getUserInfo(
+        connection,
+        userIdx
+    );
+    return userInfoResult;
+  } catch (error) {
+    console.log(error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
+
+// user가 자주 신청한 카페의 이름 top3 받아오기
+exports.getMostVisitedCafeNames = async (userIdx) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const mostVisitedCafeIdxResult = await userDao.getMostVisitedCafeIdx(
+        connection,
+        userIdx
+    );
+
+    let mostVisitedCafeNames = {}
+    for (let i = 0; i < 3; i++) {
+      let mostVisitedCafeNameResult = null;
+      if (i < mostVisitedCafeIdxResult.length) {
+        mostVisitedCafeNameResult = await cafeDao.getCafeName(
+            connection,
+            mostVisitedCafeIdxResult[i].cafeIdx
+        )
+      }
+      mostVisitedCafeNames["mostVisitedCafeName" + (i + 1).toString()] = (mostVisitedCafeNameResult ? mostVisitedCafeNameResult.cafeName : "없음");
+    }
+
+    return mostVisitedCafeNames;
+  } catch (error) {
+    console.log(error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
+
 // 로그인 => 세션 방식
 // exports.logIn = async (email, passwd, session) => {
 //   const connection = await pool.getConnection(async (conn) => conn);

@@ -291,3 +291,34 @@ exports.updateStatusOnAccept = async (
 
   return updateStatusOnAcceptRow;
 };
+
+// for 마이페이지
+// user의 이름, 신청자 평점, 대행자 평점, 이미지 가져오기
+exports.getUserInfo = async (connection, userIdx) => {
+  const getUserInfoQuery = `
+    select userName, applicantScore, deliveryAgentScore, userImg from user 
+    where userIdx = ?;
+  `;
+  const [[getUserInfoRow]] = await connection.query(
+      getUserInfoQuery,
+      userIdx
+  );
+  return getUserInfoRow;
+};
+
+// user가 자주 신청한 cafeIdx top3
+exports.getMostVisitedCafeIdx = async (connection, userIdx) => {
+  const getMostVisitedCafeIdxQuery = `
+    SELECT cafeIdx, COUNT(*) AS count
+    FROM serviceApplication
+    WHERE userIdx = ?
+    GROUP BY cafeIdx
+    ORDER BY count DESC
+    LIMIT 3;
+  `;
+  const [getMostVisitedCafeIdxRow] = await connection.query(
+      getMostVisitedCafeIdxQuery,
+      userIdx
+  );
+  return getMostVisitedCafeIdxRow;
+};
