@@ -19,6 +19,7 @@ export default function MenuInfo(props) {
 		newList[idx] = newState;
 		setMenuInfoList(newList);
 	};
+	console.log(menuInfoList);
 
 	return (
 		<MenuInfoListWrapper>
@@ -31,8 +32,8 @@ export default function MenuInfo(props) {
 			<MenuInfoListContainer>
 				{menuInfoList.map((menu, idx) => (
 					<div>
-						<span>{menu.cafe}</span>
-						<span>{menu.menu}</span>
+						<span>{menu.cafe.cafeName}</span>
+						<span>{menu.menu.drinkName}</span>
 						<div>
 							<button type="button" onClick={() => handleMenuNum("minus", idx)}>
 								-
