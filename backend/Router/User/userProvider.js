@@ -4,7 +4,6 @@ const cafeDao = require("../Cafe/cafeDao");
 const { pool } = require("../../config/database");
 const crypto = require("crypto");
 const baseResponseStatus = require("../../config/baseResponseStatus");
-const cafeDao = require("../Cafe/cafeDao");
 
 // user의 email의 존재 여부 체크
 exports.emailCheck = async (email) => {
