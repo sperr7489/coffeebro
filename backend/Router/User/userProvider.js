@@ -99,7 +99,24 @@ exports.getDeliveryInfo = async (serviceApplicationIdx) => {
         // v.optionList = optionNameList;
       })
     );
-    const result = { ...getDeliveryInfoResult[0], drinkInfos };
+
+    var retMap = drinkInfos.reduce((prev, cur) => {
+      const str = JSON.stringify(cur);
+
+      prev[str] = (prev[str] || 0) + 1;
+      return prev;
+    }, {});
+
+    const toArr = Object.entries(retMap);
+
+    const resultArr = toArr.map((v, i) => {
+      const temp = JSON.parse(v[0]);
+      temp["num"] = v[1];
+      return temp;
+    });
+
+    const result = { ...getDeliveryInfoResult[0], resultArr };
+
     delete result.drink;
     delete result.optionList;
     delete result.drinkName;
@@ -151,10 +168,7 @@ exports.getApplyDeleveryInfos = async (userIdx) => {
 exports.getUserInfo = async (userIdx) => {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
-    const userInfoResult = await userDao.getUserInfo(
-        connection,
-        userIdx
-    );
+    const userInfoResult = await userDao.getUserInfo(connection, userIdx);
     return userInfoResult;
   } catch (error) {
     console.log(error);
@@ -169,20 +183,21 @@ exports.getMostVisitedCafeNames = async (userIdx) => {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     const mostVisitedCafeIdxResult = await userDao.getMostVisitedCafeIdx(
-        connection,
-        userIdx
+      connection,
+      userIdx
     );
 
-    let mostVisitedCafeNames = {}
+    let mostVisitedCafeNames = {};
     for (let i = 0; i < 3; i++) {
       let mostVisitedCafeNameResult = null;
       if (i < mostVisitedCafeIdxResult.length) {
         mostVisitedCafeNameResult = await cafeDao.getCafeName(
-            connection,
-            mostVisitedCafeIdxResult[i].cafeIdx
-        )
+          connection,
+          mostVisitedCafeIdxResult[i].cafeIdx
+        );
       }
-      mostVisitedCafeNames["mostVisitedCafeName" + (i + 1).toString()] = (mostVisitedCafeNameResult ? mostVisitedCafeNameResult.cafeName : "없음");
+      mostVisitedCafeNames["mostVisitedCafeName" + (i + 1).toString()] =
+        mostVisitedCafeNameResult ? mostVisitedCafeNameResult.cafeName : "없음";
     }
 
     return mostVisitedCafeNames;
