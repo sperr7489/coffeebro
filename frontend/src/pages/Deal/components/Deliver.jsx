@@ -11,11 +11,15 @@ const Deliver = () => {
     ]
 
     const detail = [
-        {menu: "coffee", map: "팔달관 303호"},
-        {menu: "coke", map: "팔달관 309호"},
-        {menu: "cake", map: "팔달관 203호"},
-        {menu: "tea", map: "팔달관 312호"}
+        {menu: [{name: '아메리카노', option: ['연하게', '얼음많이']}, {name: '버블티', option: ['펄 많이']}, {name: '허브티', option: ['허브 x']}], map: "팔달관 303호", price: '15,000'},
+        {menu: [{name: '아메리카노', option: ['연하게', '얼음많이']}, {name: '버블티', option: ['펄 많이']}, {name: '허브티', option: ['허브 x']}], map: "팔달관 303호", price: '23,000'},
+        {menu: [{name: '아메리카노', option: ['연하게', '얼음많이']}, {name: '버블티', option: ['펄 많이']}, {name: '허브티', option: ['허브 x']}], map: "팔달관 303호", price: '90,000'},
+        {menu: [{name: '아메리카노', option: ['연하게', '얼음많이']}, {name: '버블티', option: ['펄 많이']}, {name: '허브티', option: ['허브 x']}], map: "팔달관 303호", price: '46,000'}
     ]
+
+    // const onStateChange = () = > {
+
+    // }
 
     return (
         <div className={style.contentOutter}>
@@ -24,14 +28,30 @@ const Deliver = () => {
                     {dummy.map((data, index) => (
                         <li className={style.applyName} onClick={() => (setNum(index))}>
                             <span>{data.name}</span><br /><br />
-                            <span className={data.state === '수락' ? style.green : data.state === '대기' ? style.yellow : style.red}>{data.state}</span>
+                            <div className={data.state === '수락' ? style.green : data.state === '대기' ? style.yellow : style.red}>{data.state}</div>
                         </li>
                     ))}
                 </ul>
             </div>
             <div className={style.right}>
+                    <div className={style.title}>
+                        주문현황
+                    </div>
+                    <div className={style.deliverInner}>
+                        <div>
+                            <ul className={style.inMenu}>
+                                {detail[num].menu.map((data) => <li><div className={style.term}>{data.name} - {data.option.map(data => <span>{data} </span>)}</div></li>)}
+                            </ul>
+                        </div>
+                        <div className={style.term}>
+                            주문금액: {detail[num].price}
+                        </div>
+                        <div>
+                            배달 주소: {detail[num].map}
+                        </div>
+                    </div>
                     <div>
-                        {detail[num].menu}
+                        <input type="button" value="배달 완료"/>
                     </div>
             </div>
         </div>

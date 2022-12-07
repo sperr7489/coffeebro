@@ -182,6 +182,7 @@ exports.acception = async (req, res) => {
   return res.send(acceptionResult);
 };
 
+
 /** 유저가 대행하겠다고 신청한 서비스에 대한 정보들 가져오기 */
 exports.getApplyDeleveryInfos = async (req, res) => {
   const userIdx = req.userIdx; // 자신이 대행자인경우
@@ -192,5 +193,19 @@ exports.getApplyDeleveryInfos = async (req, res) => {
 
   return res.send(
     resultResponse(baseResponseStatus.SUCCESS, getApplyDeleveryInfosResult)
+  );
+};
+
+// 마이페이지 정보(유저 이름, 많이 신청한 카페 이름 top3, 신청자 평점, 대행자 평점
+exports.getMyPageInfo= async (req, res)=>{
+  const userIdx = req.userIdx;
+
+  const userInfo=await userProvider.getUserInfo(userIdx);
+  const mostVisitedCafeNames=await userProvider.getMostVisitedCafeNames(userIdx);
+
+  const myPageInfo={...userInfo,...mostVisitedCafeNames};
+
+  return res.send(
+      resultResponse(baseResponseStatus.SUCCESS, myPageInfo)
   );
 };
