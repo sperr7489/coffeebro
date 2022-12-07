@@ -102,3 +102,14 @@ exports.getCafeOption = async (connection, cafeIdx) => {
   );
   return getCafeOptionRow;
 };
+
+// 카페의 옵션 리스트의 이름 가져오기
+exports.getOptionList = async (connection, optionIdxList) => {
+  const getOptionListQuery = `
+  SELECT * FROM coffeebro.drinkOption where optionIdx in ?;
+  `;
+  const [getOptionListRow] = await connection.query(getOptionListQuery, [
+    [optionIdxList],
+  ]);
+  return getOptionListRow;
+};
