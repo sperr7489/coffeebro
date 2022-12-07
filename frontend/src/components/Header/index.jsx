@@ -2,6 +2,7 @@ import { HeaderContainer, RightChildContainer } from "./index.style";
 import { icAlarm, icUser, icMenu } from "@/assets/icons";
 import Alarm from "./components/alarm";
 import { useNavigate } from "react-router-dom";
+import { useState } from "react";
 
 export default function Header() {
 	const navigate = useNavigate();
