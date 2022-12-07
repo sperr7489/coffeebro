@@ -7,6 +7,9 @@ export const InfoImageConatiner = styled.div`
 `;
 
 export const DropZoneContainer = styled.div`
+	display: flex;
+	align-items: center;
+	justify-content: center;
 	width: 100%;
 	height: 300px;
 	background: url("../../../assets/images/img_add.svg");
@@ -14,6 +17,10 @@ export const DropZoneContainer = styled.div`
 	img {
 		width: 100%;
 		height: 300px;
+	}
+	#basic-image {
+		width: 50%;
+		height: 150px;
 	}
 `;
 
