@@ -100,14 +100,6 @@ exports.getDeliveryInfo = async (serviceApplicationIdx) => {
       })
     );
 
-    console.log("drinkInfos :", drinkInfos);
-
-    if (JSON.stringify(drinkInfos[2]) == JSON.stringify(drinkInfos[3])) {
-      console.log("일치한다.");
-    } else {
-      console.log("불일치한다.");
-    }
-
     var retMap = drinkInfos.reduce((prev, cur) => {
       const str = JSON.stringify(cur);
 
@@ -176,10 +168,7 @@ exports.getApplyDeleveryInfos = async (userIdx) => {
 exports.getUserInfo = async (userIdx) => {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
-    const userInfoResult = await userDao.getUserInfo(
-        connection,
-        userIdx
-    );
+    const userInfoResult = await userDao.getUserInfo(connection, userIdx);
     return userInfoResult;
   } catch (error) {
     console.log(error);
@@ -194,20 +183,21 @@ exports.getMostVisitedCafeNames = async (userIdx) => {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     const mostVisitedCafeIdxResult = await userDao.getMostVisitedCafeIdx(
-        connection,
-        userIdx
+      connection,
+      userIdx
     );
 
-    let mostVisitedCafeNames = {}
+    let mostVisitedCafeNames = {};
     for (let i = 0; i < 3; i++) {
       let mostVisitedCafeNameResult = null;
       if (i < mostVisitedCafeIdxResult.length) {
         mostVisitedCafeNameResult = await cafeDao.getCafeName(
-            connection,
-            mostVisitedCafeIdxResult[i].cafeIdx
-        )
+          connection,
+          mostVisitedCafeIdxResult[i].cafeIdx
+        );
       }
-      mostVisitedCafeNames["mostVisitedCafeName" + (i + 1).toString()] = (mostVisitedCafeNameResult ? mostVisitedCafeNameResult.cafeName : "없음");
+      mostVisitedCafeNames["mostVisitedCafeName" + (i + 1).toString()] =
+        mostVisitedCafeNameResult ? mostVisitedCafeNameResult.cafeName : "없음";
     }
 
     return mostVisitedCafeNames;
