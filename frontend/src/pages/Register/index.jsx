@@ -7,6 +7,7 @@ import style from './index.module.css'
 
 const Register = () => {
     const [name, setName] = useState("")
+    // const [nick, setNick] = useState("")
     const [email, setEmail] = useState("")
     const [emailCode, setEmailCode] = useState()
     const [typeCode, setTypeCode] = useState("")
