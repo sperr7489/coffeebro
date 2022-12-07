@@ -76,9 +76,26 @@ exports.login = async (req, res) => {
 // 배달 대행 서비스 신청
 exports.delivery = async (req, res) => {
   const userIdx = req.userIdx; // 배달 대행 서비스를 신청한 사람의 userIdx
-  const { cafeIdx, receiptTime, receiptPlace, drinkIdx, optionIdx } = req.body;
 
-  if (!cafeIdx || !receiptTime || !receiptPlace || !drinkIdx)
+  //drinkInfos는 drinkIdx와 optionIdx를 말한다.
+  const { cafeIdx, receiptTime, receiptPlace, drinkInfos } = req.body;
+
+  /**
+   * drinkInfos의 예
+   * [
+   *  {
+   *    drinkIdx :1,
+   *    optionList : [1,2,3]
+   *  }
+   *  {
+   *    drinkIdx :2,
+   *    optionList : [1,2,3]
+   *  }
+   * ]
+   *
+   */
+
+  if (!cafeIdx || !receiptTime || !receiptPlace || !drinkInfos)
     return res.send(basicResponse(baseResponseStatus.PARAMS_NOT_EXACT));
 
   const deliveryResult = await userService.delivery(
@@ -86,11 +103,21 @@ exports.delivery = async (req, res) => {
     cafeIdx,
     receiptTime,
     receiptPlace,
-    drinkIdx,
-    optionIdx
+    drinkInfos
   );
 
   return res.send(deliveryResult);
+};
+
+// 배달 서비스 신청 정보 모두 가져오기
+exports.getDeliveryInfos = async (req, res) => {
+  const userIdx = req.userIdx;
+
+  const getDeliveryInfosResult = await userProvider.getDeliveryInfos(userIdx);
+
+  return res.send(
+    resultResponse(baseResponseStatus.SUCCESS, getDeliveryInfosResult)
+  );
 };
 
 // 배달 신청자의 신청 내용 가져오기
@@ -115,7 +142,7 @@ exports.deliveryApply = async (req, res) => {
   const getDeliveryInfoResult = await userProvider.getDeliveryInfo(
     serviceApplicationIdx
   );
-  const { userIdx: receiverIdx } = getDeliveryInfoResult[0];
+  const { userIdx: receiverIdx } = getDeliveryInfoResult;
 
   if (userIdx == receiverIdx) {
     return res.send(basicResponse(baseResponseStatus.IMPOSSIBLE_SAME_USER));
@@ -153,4 +180,17 @@ exports.acception = async (req, res) => {
   );
 
   return res.send(acceptionResult);
+};
+
+/** 유저가 대행하겠다고 신청한 서비스에 대한 정보들 가져오기 */
+exports.getApplyDeleveryInfos = async (req, res) => {
+  const userIdx = req.userIdx; // 자신이 대행자인경우
+
+  const getApplyDeleveryInfosResult = await userProvider.getApplyDeleveryInfos(
+    userIdx
+  );
+
+  return res.send(
+    resultResponse(baseResponseStatus.SUCCESS, getApplyDeleveryInfosResult)
+  );
 };

@@ -1,5 +1,6 @@
-const { basicResponse, resultResponse } = require("../../config/response");
 const userDao = require("./userDao");
+const { basicResponse, resultResponse } = require("../../config/response");
+const cafeDao = require("../Cafe/cafeDao");
 const { pool } = require("../../config/database");
 const crypto = require("crypto");
 const baseResponseStatus = require("../../config/baseResponseStatus");
@@ -51,6 +52,23 @@ exports.getRefreshToken = async (accessToken) => {
   }
 };
 
+exports.getDeliveryInfos = async (userIdx) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const getDeliveryInfosResult = await userDao.getDeliveryInfos(
+      connection,
+      userIdx
+    );
+
+    return getDeliveryInfosResult;
+  } catch (error) {
+    console.log(error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
+
 // 배달 대행 서비스 신청한 사람의 정보 가져오기.
 exports.getDeliveryInfo = async (serviceApplicationIdx) => {
   const connection = await pool.getConnection(async (conn) => conn);
@@ -59,7 +77,34 @@ exports.getDeliveryInfo = async (serviceApplicationIdx) => {
       connection,
       serviceApplicationIdx
     );
-    return getDeliveryInfoResult;
+    console.log("getDeliveryInfoResult :", getDeliveryInfoResult);
+
+    let drinkInfos = [];
+    await Promise.all(
+      getDeliveryInfoResult.map(async (v, i) => {
+        const optionIdxList = v.optionList.split(",");
+        let drinkInfo = {};
+        drinkInfo["name"] = v.drinkName;
+        // console.log("optionIdxList :", optionIdxList);
+        const optionNames = await cafeDao.getOptionList(
+          connection,
+          optionIdxList
+        );
+        const optionNameList = optionNames.map((v) => v.optionName);
+        // console.log("optionNameList : ", optionNameList);
+
+        drinkInfo["option"] = optionNameList;
+        drinkInfos.push(drinkInfo);
+
+        // v.optionList = optionNameList;
+      })
+    );
+    const result = { ...getDeliveryInfoResult[0], drinkInfos };
+    delete result.drink;
+    delete result.optionList;
+    delete result.drinkName;
+
+    return result;
   } catch (error) {
     console.log(error);
     return basicResponse(baseResponseStatus.DB_ERROR);
@@ -84,44 +129,20 @@ exports.getApplyInfos = async (userIdx) => {
     connection.release();
   }
 };
-// 로그인 => 세션 방식
-// exports.logIn = async (email, passwd, session) => {
-//   const connection = await pool.getConnection(async (conn) => conn);
-//   try {
-//     const hashedPassword = await crypto
-//       .createHash("sha512")
-//       .update(passwd)
-//       .digest("base64");
 
-//     const signInCheckPasswd = await userDao.CheckPasswd(connection, email);
-//     const { userIdx, userName } = await userDao.getUserShortInfo(
-//       connection,
-//       email
-//     );
-//     // 로그인이 성공한 경우
-//     if (hashedPassword == signInCheckPasswd.passwd) {
-//       session.userIdx = userIdx;
-//       session.email = email;
-//       session.userName = userName;
-//       session.save((err) => {
-//         console.log("정상적으로 로그인되지 않았습니다. ");
-//         return basicResponse(baseResponseStatus.DB_ERROR);
-//       });
-
-//       return resultResponse(
-//         baseResponseStatus.LOGIN_SUCCESS,
-//         userIdx,
-//         userName
-
-//       );
-//     } else {
-//       return basicResponse(baseResponseStatus.PASSWD_NOT_EXACT);
-//     }
-//   } catch (error) {
-//     await connection.rollback();
-//     console.log(error);
-//     return basicResponse(baseResponseStatus.DB_ERROR);
-//   } finally {
-//     connection.release();
-//   }
-// };
+/** 유저가 대행하겠다고 신청한 서비스에 대한 정보들 가져오기 */
+exports.getApplyDeleveryInfos = async (userIdx) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const getApplyInfosResult = await userDao.getApplyInfos(
+      connection,
+      userIdx
+    );
+    return getApplyInfosResult;
+  } catch (error) {
+    console.log(error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};

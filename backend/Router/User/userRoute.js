@@ -17,7 +17,13 @@ router.post("/login", userController.login);
 // 배달 서비스 신청 등록하기
 router.post("/delivery", verifyAccessToken, userController.delivery);
 
-// 배달 서비스 신청 정보 가져오기
+// 배달 서비스 신청 정보 모두 가져오기
+router.get(
+  "/delivery/infos",
+  verifyAccessToken,
+  userController.getDeliveryInfos
+);
+// 배달 서비스 신청 정보 한개 가져오기
 router.get(
   "/delivery/info/:serviceApplicationIdx",
   userController.getDeliveryInfo
@@ -30,7 +36,7 @@ router.post(
   userController.deliveryApply
 );
 
-// 배달 대행 신청에 대해서 정보 가져오기
+// 유저에게 배달 대행 신청한 건들에 대한 정보 가져오기
 router.get("/apply/infos", verifyAccessToken, userController.getApplyInfos);
 
 // 배달 서비스 신청 수락/거절 하기 => 신청 등록자 입장에서
@@ -38,6 +44,17 @@ router.post(
   "/apply/acception/:serviceApplicationIdx",
   verifyAccessToken,
   userController.acception
+);
+
+// 유저가 대행하겠다고 신청한 서비스에 대한 모든 정보들 가져오기
+
+/**
+ * @todo 해당 로그인 한 유저가 본인이 배달을 대신 해주겠다고 한 것에 대해서 반환값이 어떻게 나올지부터 판단하자.
+ */
+router.get(
+  "/apply/delivery/infos",
+  verifyAccessToken,
+  userController.getApplyDeleveryInfos
 );
 
 module.exports = router;

@@ -20,15 +20,12 @@ exports.insertCafeDrink = async (req, res) => {
     }
 
     let cafeIdx = await cafeProvider.cafeNameIdx(cafeName);
-    console.log("cafeIdx : ", cafeIdx);
     if (!cafeIdx) {
       const { insertId } = await cafeService.insertCafe(cafeName, cafeImg);
-      console.log("insertId : ", insertId);
       cafeIdx = insertId;
     } else {
       cafeIdx = cafeIdx.cafeIdx;
     }
-    console.log("cafeIdx2 : ", cafeIdx);
 
     const result = await cafeService.insertDrink(
       cafeIdx,
@@ -37,7 +34,6 @@ exports.insertCafeDrink = async (req, res) => {
       drinkImage
     );
 
-    console.log(result);
     return res.send(result);
   } catch (error) {
     console.error("insertCafeDrink Controller Error");

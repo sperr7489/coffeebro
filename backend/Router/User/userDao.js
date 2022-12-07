@@ -167,41 +167,61 @@ exports.insertServiceApplication = async (
 };
 
 // 배달 신청한 음료를 넣기
-exports.insertRequestDrink = async (connection, insertId, drinkIdx) => {
+exports.insertRequestDrink = async (
+  connection,
+  insertId,
+  drinkIdx,
+  optionList
+) => {
   const insertRequestDrinkQuery = `
   insert into requestDrinkList
   (serviceApplicationIdx,
-    drinkIdx)  
-    value(?,?);
+    drinkIdx,optionList)  
+    value(?,?,?);
   `;
 
   const [insertRequestDrinkRow] = await connection.query(
     insertRequestDrinkQuery,
-    [insertId, drinkIdx]
+    [insertId, drinkIdx, optionList]
   );
   return insertRequestDrinkRow;
 };
 
-// 배달 신청한 옵션 넣기
-exports.insertRequestOption = async (connection, insertId, optionIdx) => {
-  const insertRequestOptionQuery = `
-  insert into requestOptionList
-  (serviceApplicationIdx,
-    optionIdx)  
-    value(?,?);
-  `;
+// // 배달 신청한 옵션 넣기
+// exports.insertRequestOption = async (connection, insertId, optionIdx) => {
+//   const insertRequestOptionQuery = `
+//   insert into requestOptionList
+//   (serviceApplicationIdx,
+//     optionIdx)
+//     value(?,?);
+//   `;
 
-  const [insertRequestOptionRow] = await connection.query(
-    insertRequestOptionQuery,
-    [insertId, optionIdx]
+//   const [insertRequestOptionRow] = await connection.query(
+//     insertRequestOptionQuery,
+//     [insertId, optionIdx]
+//   );
+//   return insertRequestOptionRow;
+// };
+
+exports.getDeliveryInfos = async (connection, userIdx) => {
+  const getDeliveryInfosQuery = `
+  select serviceApplicationIdx,receiptTime,receiptPlace,cafeIdx,status from serviceApplication 
+  where userIdx = ?
+`;
+  const [getDeliveryInfosQueryRow] = await connection.query(
+    getDeliveryInfosQuery,
+    userIdx
   );
-  return insertRequestOptionRow;
+  return getDeliveryInfosQueryRow;
 };
+
 // 배달 신청의 정보가져오기
 exports.getDeliveryInfo = async (connection, serviceApplicationIdx) => {
   const getDeliveryInfoQuery = `
-    select * from serviceApplication sa 
+    select sa.serviceApplicationIdx,sa.userIdx,c.cafeIdx,c.cafeName,sa.receiptTime,sa.receiptPlace,sa.status,d.drinkName as drink,rd.optionList, d.drinkName from serviceApplication sa 
     join requestDrinkList rd on rd.serviceApplicationIdx =sa.serviceApplicationIdx
+    join drink d on d.drinkIdx =rd.drinkIdx 
+    join cafe c on c.cafeIdx = d.cafeIdx
     where sa.serviceApplicationIdx = ?
   `;
   const [getDeliveryInfoQueryRow] = await connection.query(
