@@ -99,7 +99,32 @@ exports.getDeliveryInfo = async (serviceApplicationIdx) => {
         // v.optionList = optionNameList;
       })
     );
-    const result = { ...getDeliveryInfoResult[0], drinkInfos };
+
+    console.log("drinkInfos :", drinkInfos);
+
+    if (JSON.stringify(drinkInfos[2]) == JSON.stringify(drinkInfos[3])) {
+      console.log("일치한다.");
+    } else {
+      console.log("불일치한다.");
+    }
+
+    var retMap = drinkInfos.reduce((prev, cur) => {
+      const str = JSON.stringify(cur);
+
+      prev[str] = (prev[str] || 0) + 1;
+      return prev;
+    }, {});
+
+    const toArr = Object.entries(retMap);
+
+    const resultArr = toArr.map((v, i) => {
+      const temp = JSON.parse(v[0]);
+      temp["num"] = v[1];
+      return temp;
+    });
+
+    const result = { ...getDeliveryInfoResult[0], resultArr };
+
     delete result.drink;
     delete result.optionList;
     delete result.drinkName;

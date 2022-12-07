@@ -36,7 +36,7 @@ router.post(
   userController.deliveryApply
 );
 
-// 유저에게 배달 대행 신청한 건들에 대한 정보 가져오기
+// 유저에게 배달 대행 신청 온 건들에 대한 정보 가져오기
 router.get("/apply/infos", verifyAccessToken, userController.getApplyInfos);
 
 // 배달 서비스 신청 수락/거절 하기 => 신청 등록자 입장에서
