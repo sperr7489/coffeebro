@@ -46,11 +46,15 @@ router.post(
   userController.acception
 );
 
-// 유저가 대행하겠다고 신청한 서비스에 대한 정보들 가져오기
+// 유저가 대행하겠다고 신청한 서비스에 대한 모든 정보들 가져오기
+
+/**
+ * @todo 해당 로그인 한 유저가 본인이 배달을 대신 해주겠다고 한 것에 대해서 반환값이 어떻게 나올지부터 판단하자.
+ */
 router.get(
   "/apply/delivery/infos",
   verifyAccessToken,
-  userController.getApplyDeleveryInfo
+  userController.getApplyDeleveryInfos
 );
 
 module.exports = router;

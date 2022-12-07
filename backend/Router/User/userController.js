@@ -142,7 +142,7 @@ exports.deliveryApply = async (req, res) => {
   const getDeliveryInfoResult = await userProvider.getDeliveryInfo(
     serviceApplicationIdx
   );
-  const { userIdx: receiverIdx } = getDeliveryInfoResult[0];
+  const { userIdx: receiverIdx } = getDeliveryInfoResult;
 
   if (userIdx == receiverIdx) {
     return res.send(basicResponse(baseResponseStatus.IMPOSSIBLE_SAME_USER));
@@ -182,4 +182,15 @@ exports.acception = async (req, res) => {
   return res.send(acceptionResult);
 };
 
-exports.getApplyDeleveryInfo = async (req, res) => {};
+/** 유저가 대행하겠다고 신청한 서비스에 대한 정보들 가져오기 */
+exports.getApplyDeleveryInfos = async (req, res) => {
+  const userIdx = req.userIdx; // 자신이 대행자인경우
+
+  const getApplyDeleveryInfosResult = await userProvider.getApplyDeleveryInfos(
+    userIdx
+  );
+
+  return res.send(
+    resultResponse(baseResponseStatus.SUCCESS, getApplyDeleveryInfosResult)
+  );
+};

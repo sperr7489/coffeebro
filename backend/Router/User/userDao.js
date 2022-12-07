@@ -218,9 +218,10 @@ exports.getDeliveryInfos = async (connection, userIdx) => {
 // 배달 신청의 정보가져오기
 exports.getDeliveryInfo = async (connection, serviceApplicationIdx) => {
   const getDeliveryInfoQuery = `
-    select sa.serviceApplicationIdx,sa.receiptTime,sa.receiptPlace,sa.status,d.drinkName as drink,rd.optionList, d.drinkName from serviceApplication sa 
+    select sa.serviceApplicationIdx,sa.userIdx,c.cafeIdx,c.cafeName,sa.receiptTime,sa.receiptPlace,sa.status,d.drinkName as drink,rd.optionList, d.drinkName from serviceApplication sa 
     join requestDrinkList rd on rd.serviceApplicationIdx =sa.serviceApplicationIdx
     join drink d on d.drinkIdx =rd.drinkIdx 
+    join cafe c on c.cafeIdx = d.cafeIdx
     where sa.serviceApplicationIdx = ?
   `;
   const [getDeliveryInfoQueryRow] = await connection.query(
