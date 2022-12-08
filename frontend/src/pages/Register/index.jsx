@@ -25,10 +25,7 @@ const Register = () => {
   const [isPwdConfirm, setIsPwdConfirm] = useState(false); //가입하기 버튼 클릭할 때 검증
   const [isId, setIsId] = useState(false); //가입하기 버튼 클릭할 때 검증
 
-  const [pwdConfirmMsg, setPwdConfirmMsg] = useState(''); //비밀번호 재입력 메시지
-  const [pwdMsg, setPwdMsg] = useState(''); //비밀번호 메시지
-  const [emailMsg, setEmailMsg] = useState(''); //이메일 검증 메시지
-  const [codeMsg, setCodeMsg] = useState(''); //인증번호 검증 메시지
+  const [pwdConfirmMsg, setPwdConfirmMsg] = useState("")
 
   const [test, setTest] = useState(0);
 
@@ -56,7 +53,7 @@ const Register = () => {
 
   const deptHandler = (event) => {
     setDept(event.target.value);
-    if (dept === '선택안함') {
+    if (dept === 'N') {
       setIsDept(false);
     } else {
       setIsDept(true);
@@ -64,13 +61,12 @@ const Register = () => {
   };
 
   const idHandler = (event) => {
-    setId((prev) => {
-      prev = event.target.value;
-
-      setId(prev);
-      if (prev.length === 9) setIsId(true);
-      else setIsId(false);
-    });
+    setId(event.target.value)
+           
+            if(id.length < 8 || id.length > 8)
+                setIsId(false)
+            else
+                setIsId(true)
   };
 
   const emailHandler = (event) => {
@@ -78,10 +74,11 @@ const Register = () => {
   };
 
   const emailButtonHandle = () => {
-    let regex = new RegExp('[a-z0-9]+@ajou.ac.kr');
+    let url = "localhost:3000/user/email"
+    let regex = new RegExp('[a-z0-9]+@[a-z]+\.[a-z]{2,3}')
 
     if (regex.test(email) === false) {
-      alert('아주대학교 이메일 형식으로 입력해주세요');
+      alert("정확한 이메일 형식을 입력해주세요")
       return;
     } else {
       axios
@@ -112,10 +109,8 @@ const Register = () => {
       return;
     }
     if (emailCode === Number(typeCode)) {
-      setCodeMsg('인증완료!');
       setIsEmailConfirm(true);
     } else {
-      setCodeMsg('발급된 인증번호와 다릅니다.');
       setIsEmailConfirm(false);
     }
   };
@@ -181,7 +176,6 @@ const Register = () => {
 
   return (
     <div>
-      <Header />
       <div>
         <h1>회원가입</h1>
       </div>
@@ -222,7 +216,6 @@ const Register = () => {
           <input className={style.inner} type="text" onChange={emailHandler} />
           <input type="button" value="인증번호" onClick={emailButtonHandle} />
           <br />
-          <span>{emailMsg}</span>
         </div>
         <div className={style.inOutter}>
           <input
@@ -237,14 +230,12 @@ const Register = () => {
             value="확인"
             onClick={confirmButtonHandle}
           />
-          <span>{codeMsg}</span>
         </div>
         <div className={style.info}>
           <span className={style.label}>비밀번호</span>
           <br />
           <input type="password" onChange={pwdHandler} className={style.input} />
           <br />
-          <span>{pwdMsg}</span>
         </div>
         <div className={style.info}>
           <span className={style.label}>비밀번호 재확인</span>
