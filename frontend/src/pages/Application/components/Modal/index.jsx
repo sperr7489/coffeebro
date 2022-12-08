@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useState } from 'react';
 import Button from '../../../../components/Button';
 import MenuInfo from '../MenuInfo';
+import axios from 'axios';
 import {
   ApplicationModalContainer,
   ButtonWrapper,
@@ -9,58 +10,6 @@ import {
   RequestContainer,
   RequestListContainer,
 } from './index.style';
-
-const dummyCafeList = [
-  {
-    cafeIdx: 1,
-    cafeName: '기창존맛커피',
-    cafeImg: null,
-  },
-  {
-    cafeIdx: 2,
-    cafeName: '태홍노맛커피',
-    cafeImg: null,
-  },
-  {
-    cafeIdx: 3,
-    cafeName: '재연비싸커피',
-    cafeImg: null,
-  },
-  {
-    cafeIdx: 4,
-    cafeName: '영민다방커피',
-    cafeImg: null,
-  },
-];
-const dummyMenuList = [
-  {
-    cafeIdx: 1,
-    cafeName: '기창존맛커피',
-    drinkIdx: 1,
-    drinkName: '아메리카노',
-    drinkPrice: 2000,
-    drinkImage:
-      'https://littledeep.com/wp-content/uploads/2019/04/littledeep_illustration_coffee_png1.png',
-  },
-  {
-    cafeIdx: 1,
-    cafeName: '기창존맛커피',
-    drinkIdx: 2,
-    drinkName: '카페라떼',
-    drinkPrice: 2500,
-    drinkImage:
-      'https://littledeep.com/wp-content/uploads/2019/04/littledeep_illustration_coffee_png1.png',
-  },
-  {
-    cafeIdx: 1,
-    cafeName: '기창존맛커피',
-    drinkIdx: 3,
-    drinkName: '카라멜마끼야또',
-    drinkPrice: 6500,
-    drinkImage:
-      'https://littledeep.com/wp-content/uploads/2019/04/littledeep_illustration_coffee_png1.png',
-  },
-];
 
 const dummyRequestList = ['연하게', '샷추가', '시럽추가', '짜게', '맛있게'];
 export default function ApplicationModal(props) {
@@ -71,6 +20,9 @@ export default function ApplicationModal(props) {
   const [menuInfoList, setMenuInfoList] = useState(menuList);
   const [animationName, setAnimationName] = useState('slide-in');
   const [isRequestOpen, setIsRequestOpen] = useState(false);
+  const [cafeList, setCafeList] = useState([]);
+  const [cafeMenuList, setCafeMenuList] = useState([]);
+  const [optionList, setOptionList] = useState([]);
 
   const handleItemClick = (item) => {
     setMenuInfo((prev) => {
@@ -78,6 +30,12 @@ export default function ApplicationModal(props) {
       newState[modalIdx === 0 ? 'cafe' : 'menu'] = item;
       return newState;
     });
+    if (modalIdx === 0) {
+      axios.get(`http://localhost:3001/cafe/${item.cafeIdx}/menu`).then((res) => {
+        setCafeMenuList(res.data.result.drinkMenu);
+        setOptionList(res.data.result.drinkOption);
+      });
+    }
     if (modalIdx === 1) {
       setIsRequestOpen(true);
       return;
@@ -108,14 +66,23 @@ export default function ApplicationModal(props) {
     setIsRequestOpen(false);
     setRequestList([]);
     if (modalIdx === 2) {
-      setMenuInfoList((prev) => [
-        ...prev,
-        { ...menuInfo, num: 1, request: requestList.join(', ') },
-      ]);
+      const request = [];
+      for (const item in requestList) {
+        request.push(requestList[item].optionName);
+      }
+      setMenuInfoList((prev) => [...prev, { ...menuInfo, num: 1, request: request }]);
       return;
     }
   }, [modalIdx]);
 
+  useEffect(() => {
+    async function getData() {
+      axios.get(`http://localhost:3001/cafe`).then((res) => {
+        setCafeList(res.data.result);
+      });
+    }
+    getData();
+  }, []);
   return (
     <ModalBackground>
       <ApplicationModalContainer ref={refs}>
@@ -124,7 +91,7 @@ export default function ApplicationModal(props) {
           <MenuInfo menuInfoList={menuInfoList} setMenuInfoList={setMenuInfoList} />
         ) : (
           <ItemListConatiner onScroll={removeRequestModal}>
-            {(modalIdx === 0 ? dummyCafeList : dummyMenuList).map((item, idx) => (
+            {(modalIdx === 0 ? cafeList : cafeMenuList).map((item, idx) => (
               <div onClick={() => handleItemClick(item)} key={`${item.cafeName} ${idx}`}>
                 <img src={item.imaPath} />
                 <span>{item[modalIdx === 0 ? 'cafeName' : 'drinkName']}</span>
@@ -136,15 +103,15 @@ export default function ApplicationModal(props) {
           <RequestListContainer className={animationName}>
             <button>aa</button>
             <div>
-              {dummyRequestList.map((request, idx) => (
+              {optionList.map((request, idx) => (
                 <RequestContainer
-                  key={`${request} ${idx}`}
+                  key={`${request.optionName} ${idx}`}
                   onClick={() => {
                     handleRequestClick(request);
                   }}
                   isSelected={requestList.includes(request)}
                 >
-                  <span>{request}</span>
+                  <span>{request.optionName}</span>
                 </RequestContainer>
               ))}
             </div>

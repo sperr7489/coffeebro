@@ -1,15 +1,16 @@
 import { forwardRef, useEffect, useRef, useState } from 'react';
 import Button from '../../components/Button';
-import Header from '../../components/Header';
 import ApplicationModal from './components/Modal';
-import { cafeList, hourList, minuteList } from '../../utils/constants';
+import { hourList, minuteList } from '../../utils/constants';
 import { CafeSelect, Container, MainForm, TimeContainer } from './index.style';
 import MenuInfo from './components/MenuInfo';
+import axios from 'axios';
 
 export default function ApplicationPage() {
   const [isAm, setisAm] = useState(true);
   const [menuList, setMenuList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [cafeList, setCafeList] = useState([]);
   const modalRef = useRef();
   const clickEvent = (e) => {
     console.log(modalRef.current);
@@ -20,39 +21,59 @@ export default function ApplicationPage() {
   const toggleIsAm = () => {
     setisAm((prev) => !prev);
   };
+  useEffect(() => {
+    async function getData() {
+      axios.get(`http://localhost:3001/cafe`).then((res) => {
+        setCafeList(res.data.result);
+      });
+    }
+    getData();
+  }, []);
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(e.target);
+    const drinkInfos = [];
+    for (const idx in menuList) {
+      for (let i = 0; i < menuList[idx].num; i++) {
+        drinkInfos.push({
+          drinkIdx: menuList[idx].menu.drinkIdx,
+          optionList: menuList[idx].request,
+        });
+      }
+    }
+    const date = new Date();
+
+    axios.post(`http://localhost:3001/user/delivery`, {
+      cafeIdx: e.target.cafe.value,
+      receiptTime: `${date.getFullYear()}/${date.getMonth()}/${date.getDate()} ${
+        isAm ? Number(e.target.hour.value) : Number(e.target.hour.value) + 12
+      }:${e.target.minute.value}`,
+      receiptPlace: e.target.location.value,
+      drinkInfos: drinkInfos,
+    });
   };
-  useEffect(() => {
-    // console.log(isModalOpen);
-    // window.addEventListener("click", clickEvent);
-    // return () => {
-    // 	window.removeEventListener("click", clickEvent);
-    // };
-  }, [isModalOpen]);
+
   return (
     <Container>
       <MainForm onSubmit={handleSubmit}>
         <label htmlFor="cafe">카페</label>
         <CafeSelect name="cafe">
-          {cafeList.map((cafeName) => (
-            <option key={cafeName} value={cafeName}>
-              {cafeName}
+          {cafeList.map((cafe, idx) => (
+            <option key={`${cafe.cafeName} ${idx}`} value={cafe.cafeIdx}>
+              {cafe.cafeName}
             </option>
           ))}
         </CafeSelect>
         <TimeContainer>
           <div>
-            <label htmlFor="cafe">희망 시간 대</label>
+            <label>희망 시간 대</label>
             <button type="button" onClick={toggleIsAm}>
               {isAm ? '오전' : '오후'}
             </button>
           </div>
           <div>
             <select name="hour" id="hour">
-              {hourList.map((hour) => (
-                <option key={hour} value={hour}>
+              {hourList.map((hour, idx) => (
+                <option key={`${hour} ${idx}`} value={hour}>
                   {hour}
                 </option>
               ))}
@@ -61,8 +82,8 @@ export default function ApplicationPage() {
           </div>
           <div>
             <select name="minute" id="minute">
-              {minuteList.map((minute) => (
-                <option key={minute} value={minute}>
+              {minuteList.map((minute, idx) => (
+                <option key={`${minute} ${idx}`} value={minute}>
                   {minute}
                 </option>
               ))}
@@ -84,9 +105,6 @@ export default function ApplicationPage() {
           }}
         />
         <MenuInfo menuInfoList={menuList} setMenuInfoList={setMenuList} />
-        {/* {menuList.map((menu) => (
-					<div>{menu.cafe}</div>
-				))} */}
         <Button handleClick={() => {}} content="신청하기" />
       </MainForm>
       {isModalOpen && (
