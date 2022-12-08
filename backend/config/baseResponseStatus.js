@@ -165,6 +165,11 @@ module.exports = {
     message: "이미 신청한 신청 내역입니다. ",
   },
 
+  EMAIL_TRANSPORT_ERROR: {
+    isSuccess: false,
+    code: 2014,
+    message: "이메일이 정상적으로 전송되지 않았습니다.  ",
+  },
   NICKNAME_EXISTS: {
     isSuccess: false,
     code: 2015,
