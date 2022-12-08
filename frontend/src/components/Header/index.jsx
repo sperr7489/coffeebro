@@ -1,15 +1,16 @@
 import { HeaderContainer, RightChildContainer } from './index.style';
 import { icAlarm, icUser, icMenu } from '@/assets/icons';
 import Alarm from './components/alarm';
+import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 
 export default function Header() {
-  const [show, setShow] = useState(false)
+  const navigate = useNavigate();
+  const [show, setShow] = useState(false);
 
   const buttonClick = () => {
-    setShow(!show)
-  }
-
+    setShow(!show);
+  };
   return (
     <HeaderContainer>
       <img src={icMenu} />
@@ -19,7 +20,7 @@ export default function Header() {
           <img src={icAlarm} />
           {show ? <Alarm /> : <></>}
         </button>
-        <button>
+        <button onClick={() => navigate('/mypage')}>
           <img src={icUser} />
         </button>
       </RightChildContainer>

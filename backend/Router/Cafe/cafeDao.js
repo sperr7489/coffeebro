@@ -113,3 +113,18 @@ exports.getOptionList = async (connection, optionIdxList) => {
   ]);
   return getOptionListRow;
 };
+
+// 카페 이름 가져오기
+exports.getCafeName= async (connection, cafeIdx) => {
+  const getCafeNameQuery = `
+    SELECT cafeName FROM cafe
+    where cafeIdx = ?
+    ; 
+    `;
+  const [[getCafeNameRow]] = await connection.query(
+      getCafeNameQuery,
+      cafeIdx
+  );
+  return getCafeNameRow;
+};
+

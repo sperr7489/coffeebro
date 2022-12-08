@@ -20,13 +20,14 @@ export const InfoContainer = styled.div`
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  width: 250px;
+  overflow: auto;
+  width: 450px;
 `;
 export const ContentContainer = styled.div`
   align-self: center;
   display: flex;
   justify-content: space-between;
-  width: 500px;
+  width: 700px;
   height: 250px;
   img {
     width: 200px;
@@ -49,4 +50,25 @@ export const CancleBtn = styled.button`
   border: 1px solid red;
   width: 40px;
   height: 40px;
+`;
+
+export const MenuInfoContainer = styled.div`
+  border: 1px solid black;
+  width: 400px;
+  & > div {
+    display: flex;
+    justify-content: space-around;
+    span {
+      width: 180px;
+    }
+    .option {
+      width: 250px;
+    }
+  }
+  & > div:first-child {
+    margin-bottom: 10px;
+    span {
+      font-size: 18px;
+    }
+  }
 `;

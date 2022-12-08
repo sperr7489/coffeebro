@@ -1,35 +1,37 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
-import Header from '../../components/Header';
 import ApplicantCard from './components/ApplicantCard';
 import MainModal from './components/Modal';
 import { Container, MainContentContainer } from './index.style';
 
 const dummyData = [
   {
-    imgPath: '',
-    cafeName: '굳커피',
-    arriveLocation: '팔달관 305호',
-    arriveAt: '11시30분',
-    menu: '아이스아메리카노',
-    grade: '4.5/5',
-  },
-  {
-    imgPath: '',
-    cafeName: '굳커피',
-    arriveLocation: '팔달관 305호',
-    arriveAt: '11시30분',
-    menu: '아이스아메리카노',
-    grade: '4.5/5',
-  },
-  {
-    imgPath: '',
-    cafeName: '굳커피',
-    arriveLocation: '팔달관 305호',
-    arriveAt: '11시30분',
-    menu: '아이스아메리카노',
-    grade: '4.5/5',
+    serviceApplicationIdx: 6,
+    userIdx: 35,
+    cafeIdx: 1,
+    cafeName: '기창존맛커피',
+    receiptTime: '2022-07-02T19:14:45.000Z',
+    receiptPlace: '율곡관',
+    status: 0,
+    drinkInfos: [
+      {
+        name: '아메리카노',
+        option: ['연하게', '샷추가', '사이즈업'],
+      },
+      {
+        name: '카페라떼',
+        option: ['연하게', '샷추가'],
+      },
+      {
+        name: '카페라떼',
+        option: ['연하게'],
+      },
+      {
+        name: '카페라떼',
+        option: ['연하게'],
+      },
+    ],
   },
 ];
 export default function MainPage() {
@@ -50,7 +52,6 @@ export default function MainPage() {
   }, []);
   return (
     <Container>
-      <Header />
       <MainContentContainer>
         {applicants.map((applicant, idx) => (
           <ApplicantCard
