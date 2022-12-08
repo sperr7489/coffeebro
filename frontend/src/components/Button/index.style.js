@@ -7,4 +7,5 @@ export const ButtonContainer = styled.button`
   background-color: #2eb233;
   border-radius: 10px;
   border: none;
+  cursor: pointer;
 `;
