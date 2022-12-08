@@ -1,25 +1,25 @@
-.outter{
-    margin: 20% 40%
+.outter {
+  margin: 20% 40%;
 }
 
-.label{
-    font-size: 130%;
+.label {
+  font-size: 130%;
 }
 
-.input{
-    width: 80%;
-    padding: 3% 10%
+.input {
+  width: 80%;
+  padding: 3% 10%;
 }
 
-.term{
-    margin: 5% 0%
+.term {
+  margin: 5% 0%;
 }
 
-.final{
-    display: flex;
-    justify-content: space-evenly;
+.final {
+  display: flex;
+  justify-content: space-evenly;
 }
 
-.button{
-    padding: 5% 5%;
+.button {
+  padding: 5% 5%;
 }

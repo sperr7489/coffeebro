@@ -12,8 +12,8 @@ exports.emailCheck = async (connection, email) => {
 // DB에 유저 등록
 exports.insertUser = async (connection, insertUserParams) => {
   const insertUserQuery = `
-       INSERT INTO user (email, passwd, userName, department, sex, studentId)
-          VALUES (?,?,?,?,?,?);    
+       INSERT INTO user (email, passwd, userName, department, sex, studentId, nickname)
+          VALUES (?,?,?,?,?,?,?);    
       `;
   const [insertUserRow] = await connection.query(
     insertUserQuery,
@@ -50,10 +50,10 @@ exports.CheckPasswd = async (connection, email) => {
   return signInCheckPasswdRow;
 };
 
-// 유저의 인덱스와 이름 가져오기.
+// 유저의 인덱스와 이름과 닉네임 가져오기.
 exports.getUserShortInfo = async (connection, email) => {
   const getUserShortInfoQuery = `
-    select userIdx, userName from user 
+    select userIdx, userName, nickname from user 
     where email = ?;
   `;
   const [[getUserShortInfoRow]] = await connection.query(
@@ -268,11 +268,11 @@ exports.existsDeliverApply = async (
 // 배달 대행을 하겠다고 신청한 내역 가져오기
 exports.getApplyInfos = async (connection, userIdx) => {
   const getAgentIdxsQuery = `
-  select sa.serviceApplicationIdx,da.deliveryAgentIdx,u.userName as "배달 대행자",u.department,u.studentId,u.sex,u.userImg
+  select sa.serviceApplicationIdx,da.deliveryAgentIdx,u.userName as "배달 대행자",u.nickname,u.department,u.studentId,u.sex,u.userImg
   ,ifnull(u.deliveryAgentScore,0) as "배달 대행 평점", sa.receiptTime,c.cafeIdx ,c.cafeName, d.drinkName ,rd.optionList   
   from deliveryApplication da 
   left join serviceApplication sa on da.serviceApplicationIdx = sa.serviceApplicationIdx
-  left join RequestDrinkList rd on rd.serviceApplicationIdx = sa.serviceApplicationIdx
+   left join RequestDrinkList rd on rd.serviceApplicationIdx = sa.serviceApplicationIdx
   left join drink d on d.drinkIdx = rd.drinkIdx
   left join cafe c on c.cafeIdx =d.cafeIdx
   left join user u on u.userIdx  = da.deliveryAgentIdx
@@ -313,10 +313,10 @@ exports.updateStatusOnAccept = async (
 };
 
 // for 마이페이지
-// user의 이름, 신청자 평점, 대행자 평점, 이미지 가져오기
+// 유저의 이름, 닉네임, 신청자 평점, 대행자 평점, 사진 가져오기
 exports.getUserInfo = async (connection, userIdx) => {
   const getUserInfoQuery = `
-    select userName, applicantScore, deliveryAgentScore, userImg from user 
+    select userName, nickname, applicantScore, deliveryAgentScore, userImg from user 
     where userIdx = ?;
   `;
   const [[getUserInfoRow]] = await connection.query(getUserInfoQuery, userIdx);
@@ -334,8 +334,19 @@ exports.getMostVisitedCafeIdx = async (connection, userIdx) => {
     LIMIT 3;
   `;
   const [getMostVisitedCafeIdxRow] = await connection.query(
-    getMostVisitedCafeIdxQuery,
-    userIdx
+      getMostVisitedCafeIdxQuery,
+      userIdx
   );
   return getMostVisitedCafeIdxRow;
+};
+
+// 닉네임 존재 여부
+exports.nicknameCheck = async (connection, nickname) => {
+  const nicknameCheckQuery = `
+      select exists (
+      select * from user where nickname = ?
+      ) as exist
+  `;
+  const [[nicknameCheckRow]] = await connection.query(nicknameCheckQuery, nickname);
+  return nicknameCheckRow.exist;
 };
