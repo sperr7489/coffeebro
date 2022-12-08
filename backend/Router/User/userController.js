@@ -119,6 +119,27 @@ exports.delivery = async (req, res) => {
   return res.send(deliveryResult);
 };
 
+// 모든 배달 서비스 신청 내역에 대해서 가져오기
+exports.getDeliveryInfosAll = async (req, res) => {
+  const getServiceApplicationIdxList =
+    await userProvider.getServiceApplicationIdxList();
+  const result = [];
+  await Promise.all(
+    getServiceApplicationIdxList.map(async (v) => {
+      const { serviceApplicationIdx } = v;
+      const getDeliveryInfo = await userProvider.getDeliveryInfo(
+        serviceApplicationIdx
+      );
+      const { userIdx } = getDeliveryInfo;
+      const userInfo = await userProvider.getUserInfo(userIdx);
+      delete userInfo.deliveryAgentScore;
+      getDeliveryInfo["userInfo"] = userInfo;
+      result.push(getDeliveryInfo);
+    })
+  );
+
+  return res.send(resultResponse(baseResponseStatus.SUCCESS, result));
+};
 // 한 유저의 배달 서비스 신청 정보 모두 가져오기
 exports.getDeliveryInfos = async (req, res) => {
   const userIdx = req.userIdx;

@@ -52,6 +52,21 @@ exports.getRefreshToken = async (accessToken) => {
   }
 };
 
+exports.getServiceApplicationIdxList = async () => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const getServiceApplicationIdxListResult =
+      await userDao.getServiceApplicationIdxList(connection);
+
+    return getServiceApplicationIdxListResult;
+  } catch (error) {
+    console.log(error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
+
 // 자신이 신청한 모든 정보 가져오기
 exports.getDeliveryInfos = async (userIdx) => {
   const connection = await pool.getConnection(async (conn) => conn);
@@ -78,7 +93,6 @@ exports.getDeliveryInfo = async (serviceApplicationIdx) => {
       connection,
       serviceApplicationIdx
     );
-    console.log("getDeliveryInfoResult :", getDeliveryInfoResult);
 
     let drinkInfos = [];
     await Promise.all(
@@ -115,7 +129,7 @@ exports.getDeliveryInfo = async (serviceApplicationIdx) => {
       return temp;
     });
 
-    const result = { ...getDeliveryInfoResult[0], resultArr };
+    const result = { ...getDeliveryInfoResult[0], deliveryInfo: resultArr };
 
     delete result.optionList;
     delete result.drinkName;

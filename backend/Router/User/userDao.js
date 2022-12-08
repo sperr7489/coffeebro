@@ -203,17 +203,28 @@ exports.insertRequestDrink = async (
 //   return insertRequestOptionRow;
 // };
 
+// 모든 ServiceApplicationIdx 가져오기
+exports.getServiceApplicationIdxList = async (connection) => {
+  const getServiceApplicationIdxListQuery = `
+    select * from serviceApplication;
+  `;
+  const [getServiceApplicationIdxListRow] = await connection.query(
+    getServiceApplicationIdxListQuery
+  );
+  return getServiceApplicationIdxListRow;
+};
+
 // 자신이 신청한 모든 정보 가져오기
 exports.getDeliveryInfos = async (connection, userIdx) => {
   const getDeliveryInfosQuery = `
   select serviceApplicationIdx,receiptTime,receiptPlace,cafeIdx,status from serviceApplication 
   where userIdx = ?
 `;
-  const [getDeliveryInfosQueryRow] = await connection.query(
+  const [getDeliveryInfosRow] = await connection.query(
     getDeliveryInfosQuery,
     userIdx
   );
-  return getDeliveryInfosQueryRow;
+  return getDeliveryInfosRow;
 };
 
 // 배달 신청의 정보가져오기
