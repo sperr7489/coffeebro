@@ -99,19 +99,33 @@ exports.getDeliveryInfo = async (serviceApplicationIdx) => {
       getDeliveryInfoResult.map(async (v, i) => {
         const optionIdxList = v.optionList.split(",");
         let drinkInfo = {};
-        drinkInfo["name"] = v.drinkName;
         // console.log("optionIdxList :", optionIdxList);
-        const optionNames = await cafeDao.getOptionList(
+        const optionInfo = await cafeDao.getOptionList(
           connection,
           optionIdxList
         );
-        const optionNameList = optionNames.map((v) => v.optionName);
+        const optionNameList = optionInfo.map((v) => v.optionName);
         // console.log("optionNameList : ", optionNameList);
 
+        const optionPrice = optionInfo.reduce(
+          (prev, cur) => prev + cur.optionPrice,
+          0
+        );
+        drinkInfo["drinkName"] = v.drinkName;
+        drinkInfo["price"] = v.price;
         drinkInfo["option"] = optionNameList;
+        drinkInfo["optionPrice"] = optionPrice;
+        drinkInfo["coffeePrice"] = optionPrice + v.price;
+        console.log("price :", v.price);
+        console.log("drinkInfo : ", drinkInfo);
         drinkInfos.push(drinkInfo);
         // v.optionList = optionNameList;
       })
+    );
+
+    getDeliveryInfoResult[0]["price"] = drinkInfos.reduce(
+      (prev, cur) => prev + cur.coffeePrice,
+      0
     );
 
     var retMap = drinkInfos.reduce((prev, cur) => {
@@ -162,7 +176,7 @@ exports.getApplyInfos = async (userIdx) => {
           serviceIdx
         );
         // 하나의 배달 신청에 대한 정보에 대해서 같은 것들을 묶기 위한 변수
-        let drinkInfosA = [];
+        // let drinkInfosA = [];
 
         let { price } = deliveryInfo;
         await Promise.all(
@@ -170,7 +184,7 @@ exports.getApplyInfos = async (userIdx) => {
           deliveryInfo.map(async (t, i) => {
             v["cafeName"] = t.cafeName;
             const optionIdxList = t.optionList.split(",");
-            let drinkInfo = {};
+            // let drinkInfo = {};
             // console.log("optionIdxList :", optionIdxList);
             const optionInfo = await cafeDao.getOptionList(
               connection,
@@ -183,9 +197,9 @@ exports.getApplyInfos = async (userIdx) => {
               0
             );
 
-            drinkInfo["name"] = t.drinkName;
-            drinkInfo["option"] = optionNameList;
-            drinkInfosA.push(drinkInfo);
+            // drinkInfo["name"] = t.drinkName;
+            // drinkInfo["option"] = optionNameList;
+            // drinkInfosA.push(drinkInfo);
 
             t["optionList"] = optionNameList;
             t["optionPrice"] = optionPrice;
@@ -288,7 +302,9 @@ exports.getMostVisitedCafeNames = async (userIdx) => {
           mostVisitedCafeIdxResult[i].cafeIdx
         );
       }
-      mostVisitedCafeNames.push(mostVisitedCafeNameResult ? mostVisitedCafeNameResult.cafeName : "없음");
+      mostVisitedCafeNames.push(
+        mostVisitedCafeNameResult ? mostVisitedCafeNameResult.cafeName : "없음"
+      );
     }
 
     return mostVisitedCafeNames;
