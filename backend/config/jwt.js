@@ -44,7 +44,8 @@ exports.verifyAccessToken = async (req, res, next) => {
   } catch (error) {
     //accessToken이 만료된 경우
     if (error.name === "TokenExpiredError") {
-      const { refreshToken } = await userProvider.getRefreshToken(accessToken);
+      const refreshToken = await userProvider.getRefreshToken(accessToken);
+      console.log(refreshToken);
       try {
         const { id } = jwt.verify(refreshToken, REFRESH_TOKEN_SECRET);
         if (id) {
