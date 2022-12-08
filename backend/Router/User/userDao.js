@@ -203,16 +203,28 @@ exports.insertRequestDrink = async (
 //   return insertRequestOptionRow;
 // };
 
+// 모든 ServiceApplicationIdx 가져오기
+exports.getServiceApplicationIdxList = async (connection) => {
+  const getServiceApplicationIdxListQuery = `
+    select * from serviceApplication;
+  `;
+  const [getServiceApplicationIdxListRow] = await connection.query(
+    getServiceApplicationIdxListQuery
+  );
+  return getServiceApplicationIdxListRow;
+};
+
+// 자신이 신청한 모든 정보 가져오기
 exports.getDeliveryInfos = async (connection, userIdx) => {
   const getDeliveryInfosQuery = `
   select serviceApplicationIdx,receiptTime,receiptPlace,cafeIdx,status from serviceApplication 
   where userIdx = ?
 `;
-  const [getDeliveryInfosQueryRow] = await connection.query(
+  const [getDeliveryInfosRow] = await connection.query(
     getDeliveryInfosQuery,
     userIdx
   );
-  return getDeliveryInfosQueryRow;
+  return getDeliveryInfosRow;
 };
 
 // 배달 신청의 정보가져오기
@@ -229,6 +241,21 @@ exports.getDeliveryInfo = async (connection, serviceApplicationIdx) => {
     serviceApplicationIdx
   );
   return getDeliveryInfoQueryRow;
+};
+
+// 주문 요청한 건에 대한 하나의 정보 가져오기
+exports.getOneDeliveryInfo = async (connection, serviceApplicationIdx) => {
+  const getOneDeliveryInfoQuery = `
+    select * from requestDrinkList rd
+    join drink d on d.drinkIdx =rd.drinkIdx 
+    join cafe c on c.cafeIdx = d.cafeIdx
+    where rd.serviceApplicationIdx = ?   
+  `;
+  const [getOneDeliveryInfoRow] = await connection.query(
+    getOneDeliveryInfoQuery,
+    serviceApplicationIdx
+  );
+  return getOneDeliveryInfoRow;
 };
 
 exports.insertDeliveryApply = async (
@@ -255,7 +282,7 @@ exports.existsDeliverApply = async (
 ) => {
   const existsDeliverApplyQuery = `
   select exists (
-    select * from deliveryApplication where  serviceApplicationIdx= ? and deliveryAgentIdx = ?
+    select * from deliveryApplication where  serviceApplicationIdx= ? and deliveryAgentIdx = ? ans status = 0
     ) as exist
   `;
   const [existsDeliverApplyRow] = await connection.query(
@@ -272,12 +299,13 @@ exports.getApplyInfos = async (connection, userIdx) => {
   ,ifnull(u.deliveryAgentScore,0) as "배달 대행 평점", sa.receiptTime,c.cafeIdx ,c.cafeName, d.drinkName ,rd.optionList   
   from deliveryApplication da 
   left join serviceApplication sa on da.serviceApplicationIdx = sa.serviceApplicationIdx
-   left join RequestDrinkList rd on rd.serviceApplicationIdx = sa.serviceApplicationIdx
+  left join RequestDrinkList rd on rd.serviceApplicationIdx = sa.serviceApplicationIdx
   left join drink d on d.drinkIdx = rd.drinkIdx
   left join cafe c on c.cafeIdx =d.cafeIdx
   left join user u on u.userIdx  = da.deliveryAgentIdx
+  where sa.userIdx = ?
   ;
-  ;
+  
   `;
   const [getAgentIdxsRow] = await connection.query(getAgentIdxsQuery, userIdx);
   return getAgentIdxsRow;
@@ -334,8 +362,8 @@ exports.getMostVisitedCafeIdx = async (connection, userIdx) => {
     LIMIT 3;
   `;
   const [getMostVisitedCafeIdxRow] = await connection.query(
-      getMostVisitedCafeIdxQuery,
-      userIdx
+    getMostVisitedCafeIdxQuery,
+    userIdx
   );
   return getMostVisitedCafeIdxRow;
 };
@@ -347,6 +375,40 @@ exports.nicknameCheck = async (connection, nickname) => {
       select * from user where nickname = ?
       ) as exist
   `;
-  const [[nicknameCheckRow]] = await connection.query(nicknameCheckQuery, nickname);
+  const [[nicknameCheckRow]] = await connection.query(
+    nicknameCheckQuery,
+    nickname
+  );
   return nicknameCheckRow.exist;
+};
+
+// 이미 신청한 내역인지 확인
+exports.checkAlreadyApply = async (
+  connection,
+  serviceApplicationIdx,
+  userIdx
+) => {
+  const checkAlreadyApplyQuery = `
+  select exists ( select * from deliveryApplication where serviceApplicationIdx = ? and deliveryAgentIdx = ?) as exist
+  `;
+  const [[checkAlreadyApply]] = await connection.query(checkAlreadyApplyQuery, [
+    serviceApplicationIdx,
+    userIdx,
+  ]);
+  return checkAlreadyApply;
+};
+
+// 배달 신청자들에 대한 정보 가져오기
+exports.getDeliveryAgents = async (connection, serviceApplicationIdx) => {
+  const getDeliverAgentsQuery = `
+  select da.deliveryAgentIdx,u.userName,u.department,u.sex,u.studentId,u.deliveryAgentScore,u.userImg,u.nickName,da.deliveryTime,da.status from deliveryApplication da
+  left join user u on da.deliveryAgentIdx = u.userIdx
+  where da.serviceApplicationIdx= ?
+
+  `;
+  const [getDeliverAgents] = await connection.query(
+    getDeliverAgentsQuery,
+    serviceApplicationIdx
+  );
+  return getDeliverAgents;
 };

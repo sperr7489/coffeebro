@@ -106,7 +106,7 @@ exports.getCafeOption = async (connection, cafeIdx) => {
 // 카페의 옵션 리스트의 이름 가져오기
 exports.getOptionList = async (connection, optionIdxList) => {
   const getOptionListQuery = `
-  SELECT * FROM drinkOption where optionIdx in ?;
+  SELECT optionName,price as optionPrice FROM drinkOption where optionIdx in ?;
   `;
   const [getOptionListRow] = await connection.query(getOptionListQuery, [
     [optionIdxList],
@@ -115,16 +115,12 @@ exports.getOptionList = async (connection, optionIdxList) => {
 };
 
 // 카페 이름 가져오기
-exports.getCafeName= async (connection, cafeIdx) => {
+exports.getCafeName = async (connection, cafeIdx) => {
   const getCafeNameQuery = `
     SELECT cafeName FROM cafe
     where cafeIdx = ?
     ; 
     `;
-  const [[getCafeNameRow]] = await connection.query(
-      getCafeNameQuery,
-      cafeIdx
-  );
+  const [[getCafeNameRow]] = await connection.query(getCafeNameQuery, cafeIdx);
   return getCafeNameRow;
 };
-
