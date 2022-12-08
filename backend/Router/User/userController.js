@@ -203,7 +203,8 @@ exports.getMyPageInfo = async (req, res) => {
     const userInfo = await userProvider.getUserInfo(userIdx);
     const mostVisitedCafeNames = await userProvider.getMostVisitedCafeNames(userIdx);
 
-    const myPageInfo = {...userInfo, ...mostVisitedCafeNames};
+    let myPageInfo = {...userInfo};
+    myPageInfo.mostVisitedCafeNames=mostVisitedCafeNames;
 
     return res.send(
         resultResponse(baseResponseStatus.SUCCESS, myPageInfo)
