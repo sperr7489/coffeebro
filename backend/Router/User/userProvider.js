@@ -1,5 +1,6 @@
-const { basicResponse, resultResponse } = require("../../config/response");
 const userDao = require("./userDao");
+const { basicResponse, resultResponse } = require("../../config/response");
+const cafeDao = require("../Cafe/cafeDao");
 const { pool } = require("../../config/database");
 const crypto = require("crypto");
 const baseResponseStatus = require("../../config/baseResponseStatus");
@@ -51,6 +52,23 @@ exports.getRefreshToken = async (accessToken) => {
   }
 };
 
+exports.getDeliveryInfos = async (userIdx) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const getDeliveryInfosResult = await userDao.getDeliveryInfos(
+      connection,
+      userIdx
+    );
+
+    return getDeliveryInfosResult;
+  } catch (error) {
+    console.log(error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
+
 // 배달 대행 서비스 신청한 사람의 정보 가져오기.
 exports.getDeliveryInfo = async (serviceApplicationIdx) => {
   const connection = await pool.getConnection(async (conn) => conn);
@@ -59,7 +77,49 @@ exports.getDeliveryInfo = async (serviceApplicationIdx) => {
       connection,
       serviceApplicationIdx
     );
-    return getDeliveryInfoResult;
+    console.log("getDeliveryInfoResult :", getDeliveryInfoResult);
+
+    let drinkInfos = [];
+    await Promise.all(
+      getDeliveryInfoResult.map(async (v, i) => {
+        const optionIdxList = v.optionList.split(",");
+        let drinkInfo = {};
+        drinkInfo["name"] = v.drinkName;
+        // console.log("optionIdxList :", optionIdxList);
+        const optionNames = await cafeDao.getOptionList(
+          connection,
+          optionIdxList
+        );
+        const optionNameList = optionNames.map((v) => v.optionName);
+        // console.log("optionNameList : ", optionNameList);
+
+        drinkInfo["option"] = optionNameList;
+        drinkInfos.push(drinkInfo);
+        // v.optionList = optionNameList;
+      })
+    );
+
+    var retMap = drinkInfos.reduce((prev, cur) => {
+      const str = JSON.stringify(cur);
+
+      prev[str] = (prev[str] || 0) + 1;
+      return prev;
+    }, {});
+
+    const toArr = Object.entries(retMap);
+
+    const resultArr = toArr.map((v, i) => {
+      const temp = JSON.parse(v[0]);
+      temp["num"] = v[1];
+      return temp;
+    });
+
+    const result = { ...getDeliveryInfoResult[0], resultArr };
+
+    delete result.optionList;
+    delete result.drinkName;
+
+    return result;
   } catch (error) {
     console.log(error);
     return basicResponse(baseResponseStatus.DB_ERROR);
@@ -76,6 +136,63 @@ exports.getApplyInfos = async (userIdx) => {
       connection,
       userIdx
     );
+    let drinkInfos = [];
+    await Promise.all(
+      getApplyInfosResult.map(async (v, i) => {
+        const optionIdxList = v.optionList.split(",");
+        let drinkInfo = {};
+        drinkInfo["name"] = v.drinkName;
+        // console.log("optionIdxList :", optionIdxList);
+        const optionNames = await cafeDao.getOptionList(
+          connection,
+          optionIdxList
+        );
+        const optionNameList = optionNames.map((v) => v.optionName);
+        // console.log("optionNameList : ", optionNameList);
+
+        drinkInfo["option"] = optionNameList;
+        drinkInfos.push(drinkInfo);
+        // v.optionList = optionNameList;
+      })
+    );
+
+    var retMap = drinkInfos.reduce((prev, cur) => {
+      const str = JSON.stringify(cur);
+
+      prev[str] = (prev[str] || 0) + 1;
+      return prev;
+    }, {});
+
+    const toArr = Object.entries(retMap);
+
+    const resultArr = toArr.map((v, i) => {
+      const temp = JSON.parse(v[0]);
+      temp["num"] = v[1];
+      return temp;
+    });
+
+    const result = { ...getApplyInfosResult[0], resultArr };
+
+    delete result.optionList;
+    delete result.drinkName;
+
+    return result;
+  } catch (error) {
+    console.log(error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
+
+/** 유저가 대행하겠다고 신청한 서비스에 대한 정보들 가져오기 */
+exports.getApplyDeleveryInfos = async (userIdx) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const getApplyInfosResult = await userDao.getApplyInfos(
+      connection,
+      userIdx
+    );
     return getApplyInfosResult;
   } catch (error) {
     console.log(error);
@@ -84,44 +201,48 @@ exports.getApplyInfos = async (userIdx) => {
     connection.release();
   }
 };
-// 로그인 => 세션 방식
-// exports.logIn = async (email, passwd, session) => {
-//   const connection = await pool.getConnection(async (conn) => conn);
-//   try {
-//     const hashedPassword = await crypto
-//       .createHash("sha512")
-//       .update(passwd)
-//       .digest("base64");
 
-//     const signInCheckPasswd = await userDao.CheckPasswd(connection, email);
-//     const { userIdx, userName } = await userDao.getUserShortInfo(
-//       connection,
-//       email
-//     );
-//     // 로그인이 성공한 경우
-//     if (hashedPassword == signInCheckPasswd.passwd) {
-//       session.userIdx = userIdx;
-//       session.email = email;
-//       session.userName = userName;
-//       session.save((err) => {
-//         console.log("정상적으로 로그인되지 않았습니다. ");
-//         return basicResponse(baseResponseStatus.DB_ERROR);
-//       });
+// user의 이름, 신청자 평점, 대행자 평점, 사진 가져오기
+exports.getUserInfo = async (userIdx) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const userInfoResult = await userDao.getUserInfo(connection, userIdx);
+    return userInfoResult;
+  } catch (error) {
+    console.log(error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
 
-//       return resultResponse(
-//         baseResponseStatus.LOGIN_SUCCESS,
-//         userIdx,
-//         userName
+// user가 자주 신청한 카페의 이름 top3 받아오기
+exports.getMostVisitedCafeNames = async (userIdx) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const mostVisitedCafeIdxResult = await userDao.getMostVisitedCafeIdx(
+      connection,
+      userIdx
+    );
 
-//       );
-//     } else {
-//       return basicResponse(baseResponseStatus.PASSWD_NOT_EXACT);
-//     }
-//   } catch (error) {
-//     await connection.rollback();
-//     console.log(error);
-//     return basicResponse(baseResponseStatus.DB_ERROR);
-//   } finally {
-//     connection.release();
-//   }
-// };
+    let mostVisitedCafeNames = {};
+    for (let i = 0; i < 3; i++) {
+      let mostVisitedCafeNameResult = null;
+      if (i < mostVisitedCafeIdxResult.length) {
+        mostVisitedCafeNameResult = await cafeDao.getCafeName(
+          connection,
+          mostVisitedCafeIdxResult[i].cafeIdx
+        );
+      }
+      mostVisitedCafeNames["mostVisitedCafeName" + (i + 1).toString()] =
+        mostVisitedCafeNameResult ? mostVisitedCafeNameResult.cafeName : "없음";
+    }
+
+    return mostVisitedCafeNames;
+  } catch (error) {
+    console.log(error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
