@@ -68,7 +68,6 @@ const Description = () => {
 
   return (
     <div>
-      <Header />
       <div className={style.outter}>
         <div className={style.all}>
           <input

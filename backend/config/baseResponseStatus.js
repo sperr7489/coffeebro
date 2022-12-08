@@ -165,5 +165,22 @@ module.exports = {
     message: "이미 신청한 신청 내역입니다. ",
   },
 
+  EMAIL_TRANSPORT_ERROR: {
+    isSuccess: false,
+    code: 2014,
+    message: "이메일이 정상적으로 전송되지 않았습니다.  ",
+  },
+  NICKNAME_EXISTS: {
+    isSuccess: false,
+    code: 2015,
+    message: "이미 존재하는 닉네임입니다. ",
+  },
+
+  NICKNAME_INVALID: {
+    isSuccess: false,
+    code: 2016,
+    message: "닉네임은 2자 이상 8자 이하, 영어 또는 숫자 또는 한글로 구성되어야 합니다. ",
+  },
+
   DB_ERROR: { isSuccess: false, code: 4000, message: "데이터 베이스 에러" },
 };

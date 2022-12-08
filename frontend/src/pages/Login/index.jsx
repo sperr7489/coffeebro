@@ -60,7 +60,6 @@ const LoginPage = () => {
 
   return (
     <div>
-      <Header />
       <div className={style.outter}>
         <div className={style.term}>
           <span className={style.label}>아이디</span>

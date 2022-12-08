@@ -202,7 +202,7 @@ exports.getApplyDeleveryInfos = async (userIdx) => {
   }
 };
 
-// user의 이름, 신청자 평점, 대행자 평점, 사진 가져오기
+// 유저의 이름, 닉네임, 신청자 평점, 대행자 평점, 사진 가져오기
 exports.getUserInfo = async (userIdx) => {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
@@ -239,6 +239,20 @@ exports.getMostVisitedCafeNames = async (userIdx) => {
     }
 
     return mostVisitedCafeNames;
+  } catch (error) {
+    console.log(error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
+
+// user의 닉네임의 존재 여부 체크
+exports.nicknameCheck = async (nickname) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const nicknameCheckResult = await userDao.nicknameCheck(connection, nickname);
+    return nicknameCheckResult;
   } catch (error) {
     console.log(error);
     return basicResponse(baseResponseStatus.DB_ERROR);

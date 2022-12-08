@@ -13,7 +13,8 @@ exports.createUser = async (
   userName,
   department,
   sex,
-  studentId
+  studentId,
+  nickname
 ) => {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
@@ -32,6 +33,7 @@ exports.createUser = async (
       department,
       sex,
       studentId,
+      nickname,
     ];
 
     const signUpResult = await userDao.insertUser(connection, insertUserParams);
@@ -61,7 +63,7 @@ exports.logIn = async (email, passwd) => {
       .digest("base64");
 
     const signInCheckPasswd = await userDao.CheckPasswd(connection, email);
-    const { userIdx, userName } = await userDao.getUserShortInfo(
+    const { userIdx, userName, nickname } = await userDao.getUserShortInfo(
       connection,
       email
     );
@@ -97,6 +99,7 @@ exports.logIn = async (email, passwd) => {
       return resultResponse(baseResponseStatus.LOGIN_SUCCESS, {
         userIdx,
         userName,
+        nickname,
         accessToken,
       });
     } else return basicResponse(baseResponseStatus.PASSWD_NOT_EXACT);

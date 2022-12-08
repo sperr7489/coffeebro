@@ -8,4 +8,9 @@ module.exports = {
       /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/;
     return reg.test(passwd);
   },
+  nickname: function (nickname) {
+    const reg =
+        /^(?=.*[a-z0-9가-힣])[a-z0-9가-힣]{2,8}$/;
+    return reg.test(nickname);
+  },
 };

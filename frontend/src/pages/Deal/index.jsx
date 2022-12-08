@@ -31,8 +31,6 @@ const Deal = () => {
 
   return (
     <div>
-      {console.log(place)}
-      <Header />
       <div>
         <div className={style.menu}>
           <ul className={style.inMenu}>

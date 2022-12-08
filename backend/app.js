@@ -34,8 +34,8 @@ app.use("/chat", chatRouter);
 
 // app.use("/chat", chatRouter);
 
-const port = 3000;
+const port = 3001;
 
 http.listen(port, () => {
-  console.log(`${port} 포트에서 시작`);
+	console.log(`${port} 포트에서 시작`);
 });

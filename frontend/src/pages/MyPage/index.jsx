@@ -9,6 +9,7 @@ export default function MyPage() {
   const [file, setFile] = useState();
   const [nickname, setNickname] = useState('닉네임');
   const [isChecked, setIsChecked] = useState(false);
+  const [userInfo, setUserInfo] = useState({});
 
   const handleNicknameChange = (e) => {
     setIsChecked(false);
@@ -21,6 +22,7 @@ export default function MyPage() {
       return;
     }
   };
+
   const handleCheckClick = () => {
     axios
       .post(`http://localhost:3001/user/nicknameCheck`, {
@@ -35,6 +37,22 @@ export default function MyPage() {
         alert('사용중인 닉네임입니다.');
       });
   };
+
+  useEffect(() => {
+    async function getData() {
+      axios
+        .get(`http://localhost:3001/user/mypage`, {
+          headers: {
+            accessToken:
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsImlhdCI6MTY3MDE2OTQ1OSwiZXhwIjoxNjcwMjU1ODU5fQ.AgN9VdmVPda0LjbmaWUmHszwp-_GGaU0s_mlHNxwIK8',
+          },
+        })
+        .then((res) => {
+          console.log(res);
+        });
+    }
+    getData();
+  }, []);
 
   return (
     <MypageContainer>
