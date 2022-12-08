@@ -1,4 +1,5 @@
 import Button from '../../../../components/Button';
+import userImage from '../../../../assets/images/img_user.png';
 import {
   CancleBtn,
   ContentContainer,
@@ -25,7 +26,7 @@ export default function MainModal(props) {
     <MainModalContainer>
       <CancleBtn onClick={closeModal}>x</CancleBtn>
       <ContentContainer>
-        <img src={imgPath} />
+        <img src={!!imgPath ? imgPath : userImage} />
         <InfoContainer>
           <span>카페 : {cafeName}</span>
           <span>메뉴 </span>

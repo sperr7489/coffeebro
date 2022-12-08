@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../../components/Button';
 import ApplicantCard from './components/ApplicantCard';
 import MainModal from './components/Modal';
+import axios from 'axios';
 import { Container, MainContentContainer } from './index.style';
 
 const dummyData = [
@@ -48,6 +49,35 @@ export default function MainPage() {
     setIsOpen(false);
   };
   useEffect(() => {
+    async function getData() {
+      // axios;
+      // .post(`http://localhost:3001/user/signUp`, {
+      //   email: 'xoghd5885@ajou.ac.kr',
+      //   passwd: 'asd123123!@',
+      //   userName: '민태홍',
+      //   department: '소프트웨어학과',
+      //   sex: 'M',
+      //   studentId: '201720793',
+      // })
+      // .then((res) => console.log(res));
+
+      // axios
+      //   .post(`http://localhost:3001/user/login`, {
+      //     email: 'xoghd5885@ajou.ac.kr',
+      //     passwd: 'asd123123!@',
+      //   })
+      //   .then((res) => console.log(res));
+
+      axios
+        .get(`http://localhost:3001/user/delivery/infos`, {
+          headers: {
+            accessToken:
+              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzAsImlhdCI6MTY3MDQ3MDgxNiwiZXhwIjoxNjcwNTU3MjE2fQ.TjGVQRmLaA88RtnWBDFDUq6iizrKEWl4G_tgEOX7sFQ',
+          },
+        })
+        .then((res) => console.log(res));
+    }
+    getData();
     setApplicants(dummyData);
   }, []);
   return (
