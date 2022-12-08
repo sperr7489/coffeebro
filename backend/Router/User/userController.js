@@ -235,8 +235,8 @@ exports.getMyPageInfo = async (req, res) => {
     userIdx
   );
 
-    let myPageInfo = {...userInfo};
-    myPageInfo.mostVisitedCafeNames=mostVisitedCafeNames;
+  let myPageInfo = { ...userInfo };
+  myPageInfo.mostVisitedCafeNames = mostVisitedCafeNames;
 
   return res.send(resultResponse(baseResponseStatus.SUCCESS, myPageInfo));
 };
