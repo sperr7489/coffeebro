@@ -4,7 +4,7 @@ export const MypageContainer = styled.div`
   width: 90%;
   margin-left: 5%;
   display: flex;
-  button {
+  & > button:last-child {
     position: fixed;
     margin-left: calc(50% - 100px);
     bottom: 100px;
