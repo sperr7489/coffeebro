@@ -225,7 +225,7 @@ exports.getMostVisitedCafeNames = async (userIdx) => {
       userIdx
     );
 
-    let mostVisitedCafeNames = {};
+    let mostVisitedCafeNames = [];
     for (let i = 0; i < 3; i++) {
       let mostVisitedCafeNameResult = null;
       if (i < mostVisitedCafeIdxResult.length) {
@@ -234,8 +234,7 @@ exports.getMostVisitedCafeNames = async (userIdx) => {
           mostVisitedCafeIdxResult[i].cafeIdx
         );
       }
-      mostVisitedCafeNames["mostVisitedCafeName" + (i + 1).toString()] =
-        mostVisitedCafeNameResult ? mostVisitedCafeNameResult.cafeName : "없음";
+      mostVisitedCafeNames.push(mostVisitedCafeNameResult ? mostVisitedCafeNameResult.cafeName : "없음");
     }
 
     return mostVisitedCafeNames;
