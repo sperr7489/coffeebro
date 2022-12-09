@@ -67,4 +67,7 @@ router.get("/mypage", verifyAccessToken, userController.getMyPageInfo);
 //닉네임 존재 여부 확인
 router.post("/nicknameCheck", userController.nicknameCheck);
 
+// 마이페이지 정보(사진, 닉네임) 수정
+router.put("/",verifyAccessToken,userController.updateUserInfo);
+
 module.exports = router;

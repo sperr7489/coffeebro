@@ -257,3 +257,16 @@ exports.nicknameCheck = async (req, res) => {
 
   return res.send(basicResponse(baseResponseStatus.NICKNAME_CONFIRM_SUCCESS));
 };
+
+// 마이페이지 정보(사진, 닉네임) 수정
+exports.updateUserInfo = async (req, res) => {
+  const userIdx = req.userIdx;
+  const {nickname,userImg} = req.body;
+
+  if (!nickname || !userImg)
+    return res.send(basicResponse(baseResponseStatus.PARAMS_NOT_EXACT));
+
+  await userService.changeUserInfo(userIdx,nickname,userImg);
+
+  return res.send(basicResponse(baseResponseStatus.USER_INFO_UPDATE_SUCCESS));
+}
