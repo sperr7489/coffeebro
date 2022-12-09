@@ -50,11 +50,12 @@
 }
 
 .applyName {
-  padding: 30px 70px;
+  padding: 17% 0%;
   border: 2px solid black;
   margin-right: 40px;
   margin-bottom: 20px;
   text-align: center;
+  background-color: rgb(207, 228, 207);
 }
 
 .green {
@@ -98,32 +99,29 @@
   font-size: 2em;
 }
 
-.container {
-  width: 600px;
-  height: 600px;
-  z-index: 999;
-  position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  background-color: antiquewhite;
-}
-.close {
-  /* float: right; */
-  margin-left: 578px;
-  background-color: red;
-}
-
 .closeOut {
   background-color: rgb(237, 231, 231);
 }
 
-.deliverInner {
-  background-color: lightgreen;
-  padding-bottom: 80px;
-  font-size: 30px;
-}
 
 .term {
   margin: 30px 0;
+}
+
+.detail{
+  padding: 2% 10%;
+  margin-top: 4%;
+}
+
+.innerDeliver{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  border: 1px solid black;
+  border-radius: 2em;
+  padding: 5% 0%;
+  font-size: 30px;
+  overflow-y: auto;
+  background-color: lightgreen;
+  margin: 0% 5%;
 }
