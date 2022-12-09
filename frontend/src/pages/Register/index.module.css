@@ -1,5 +1,7 @@
 .outter {
   margin: 0% 35%;
+  border: 2px solid black;
+  padding: 0% 1%
 }
 
 .label {
@@ -37,4 +39,14 @@
 
 .inButton {
   padding: 0% 4%;
+}
+
+.center{
+  margin: 0% 45% 
+}
+
+.inputBox{
+  padding: 2% 10%;
+  font-size: large;
+  text-align: center;
 }

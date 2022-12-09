@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useState, useLayoutEffect } from 'react';
 import style from '../index.module.css';
 import ApplyModal from './ApplyModal';
 
@@ -27,9 +27,9 @@ const Apply = () => {
   useLayoutEffect(() => {
       let user;
       const earlyGet = () => {
-      axios.get("http://localhost:3000/user/delivery/infos",{
+      axios.get("http://localhost:3000/user/apply/infos",{
       headers:{
-        accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzUsImlhdCI6MTY3MDM5MDIzNSwiZXhwIjoxNjcwNDc2NjM1fQ.-yksi8cvHPr0rX2DoJEpj3lvmptwWocHv0FdNhAf0Gg"
+        accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzUsImlhdCI6MTY3MDU0OTAxMywiZXhwIjoxNjcwNjM1NDEzfQ.AVUFQCmAPJiewOGM_s6V4s3NtrjH5dZ_PWqZWuzV2MA"
       }
       })
       .then(response => {
@@ -57,8 +57,18 @@ const Apply = () => {
   return (
     <div className={style.contentOutter}>
       <div className={style.left}>
-        <ul className={style.inMenu}>
+        {/* <ul className={style.inMenu}>
         {list.map((data, index) => (
+            cafe.filter(name => name.cafeIdx === data.cafeIdx).map(fin => (
+              <li className={style.applyName} onClick={() => (setNum(index))}>
+                <span>{fin.cafeName}</span>
+                <input type='button' value="자세히" onClick={() => showDetail(index)}/>
+              </li>
+            ))
+          ))}
+        </ul> */}
+        <ul className={style.inMenu}>
+          {list.map((data, index) => (
             cafe.filter(name => name.cafeIdx === data.cafeIdx).map(fin => (
               <li className={style.applyName} onClick={() => (setNum(index))}>
                 <span>{fin.cafeName}</span>
@@ -72,7 +82,7 @@ const Apply = () => {
       <div className={style.right}>
         <div className={style.title}>배달 신청자 목록</div>
         <div>
-          <ul className={style.inMenu}>
+          {/* <ul className={style.inMenu}>
             {detail.map((data) => (
               <li>
                 <div className={style.deliverName}>
@@ -81,7 +91,7 @@ const Apply = () => {
                 </div>
               </li>
             ))}
-          </ul>
+          </ul> */}
         </div>
       </div>
     </div>
