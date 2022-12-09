@@ -9,8 +9,8 @@ const { verifyAccessToken } = require("../../config/jwt");
 router.post("/signUp", userController.signUp);
 
 // 이메일 인증 코드 보내기
-router.post("/email", email.emailValidation);
 
+router.post("/email", email.emailValidation);
 // 로그인
 router.post("/login", userController.login);
 
@@ -55,10 +55,11 @@ router.post(
 /**
  * @todo 해당 로그인 한 유저가 본인이 배달을 대신 해주겠다고 한 것에 대해서 반환값이 어떻게 나올지부터 판단하자.
  */
+// 유저 본인이 지원한 배달 대행 내역들 확인
 router.get(
   "/apply/delivery/infos",
   verifyAccessToken,
-  userController.getApplyDeleveryInfos
+  userController.getApplyDeliveryInfos
 );
 
 //마이페이지 정보(이름, 자주 신청하는 카페 3개, 신청자 평점, 배달자 평점) 가져오기
