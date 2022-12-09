@@ -203,6 +203,24 @@ exports.insertRequestDrink = async (
 //   return insertRequestOptionRow;
 // };
 
+// 배달 대행 중에서 해당 유저가 배달 대행을 하겠다고 지원한 신청 내역들 가져오기
+/***
+ * @todo : 배달  대행 지원 내역 가져오기 API 짜기
+ *
+ */
+exports.getServiceApplicationIdx = async (connection, userIdx) => {
+  const getServiceApplicationIdxQuery = `
+  select * from deliveryApplication 
+  where deliveryAgentIdx = ?
+  `;
+
+  const [getServiceApplicationIdxRow] = await connection.query(
+    getServiceApplicationIdxQuery,
+    userIdx
+  );
+  return getServiceApplicationIdxRow;
+};
+
 // 모든 ServiceApplicationIdx 가져오기
 exports.getServiceApplicationIdxList = async (connection) => {
   const getServiceApplicationIdxListQuery = `
@@ -212,6 +230,22 @@ exports.getServiceApplicationIdxList = async (connection) => {
     getServiceApplicationIdxListQuery
   );
   return getServiceApplicationIdxListRow;
+};
+
+// 배달 서비스를 신청한 사람의 정보 가져오기
+exports.getApplicantInfo = async (connection, serviceApplicationIdx) => {
+  const getApplicantInfoQuery = `
+  select u.userIdx,u.userName,u.nickname,u.department,u.sex,u.studentId,u.applicantScore,u.userImg from serviceApplication sa 
+  left join user u on u.userIdx = sa.userIdx
+  where sa.serviceApplicationIdx = ?
+  ;
+  `;
+
+  const [getApplicantInfoRow] = await connection.query(
+    getApplicantInfoQuery,
+    serviceApplicationIdx
+  );
+  return getApplicantInfoRow;
 };
 
 // 자신이 신청한 모든 정보 가져오기

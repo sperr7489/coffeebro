@@ -213,16 +213,16 @@ exports.acception = async (req, res) => {
   return res.send(acceptionResult);
 };
 
-/** 유저가 대행하겠다고 신청한 서비스에 대한 정보들 가져오기 */
-exports.getApplyDeleveryInfos = async (req, res) => {
+// 유저 본인이 지원한 배달 대행 내역들 확인
+exports.getApplyDeliveryInfos = async (req, res) => {
   const userIdx = req.userIdx; // 자신이 대행자인경우
 
-  const getApplyDeleveryInfosResult = await userProvider.getApplyDeleveryInfos(
+  const getApplyDeliveryInfosResult = await userProvider.getApplyDeliveryInfos(
     userIdx
   );
 
   return res.send(
-    resultResponse(baseResponseStatus.SUCCESS, getApplyDeleveryInfosResult)
+    resultResponse(baseResponseStatus.SUCCESS, getApplyDeliveryInfosResult)
   );
 };
 
