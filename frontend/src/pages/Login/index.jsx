@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 import Header from '../../components/Header';
 import style from './index.module.css';
 import axios from 'axios';
 
 const LoginPage = () => {
   const navigate = useNavigate();
+  const [cookies, setCookie] = useCookies(['id'])
   const [email, setEmail] = useState('');
   const [pwd, setPwd] = useState('');
 
@@ -42,6 +44,8 @@ const LoginPage = () => {
       })
       .then((response) => {
         if (response.data.code === 1112) {
+          setCookie('id', response.data.result.accessToken)
+          console.log(response)
           navigate('/');
         } else if (response.data.code === 2008) {
           alert('회원가입 때 등록한 비밀번호를 입력해주세요');

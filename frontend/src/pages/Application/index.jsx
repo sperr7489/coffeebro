@@ -5,6 +5,7 @@ import ApplicationModal from './components/Modal';
 import { cafeList, hourList, minuteList } from '../../utils/constants';
 import { CafeSelect, Container, MainForm, TimeContainer } from './index.style';
 import MenuInfo from './components/MenuInfo';
+import LoginCheck from '../Login/components/LoginCheck';
 
 export default function ApplicationPage() {
   const [isAm, setisAm] = useState(true);
@@ -33,6 +34,7 @@ export default function ApplicationPage() {
   }, [isModalOpen]);
   return (
     <Container>
+      <LoginCheck />
       <MainForm onSubmit={handleSubmit}>
         <label htmlFor="cafe">카페</label>
         <CafeSelect name="cafe">
