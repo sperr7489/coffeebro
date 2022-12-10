@@ -14,7 +14,8 @@ exports.createUser = async (
   department,
   sex,
   studentId,
-  nickname
+  nickname,
+  userImg
 ) => {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
