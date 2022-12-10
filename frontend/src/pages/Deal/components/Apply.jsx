@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import style from '../index.module.css';
 import ApplyModal from './ApplyModal';
 
@@ -35,7 +35,7 @@ const Apply = ({cookies}) => {
       })
   }
 
-  useLayoutEffect(() => {
+  useEffect(() => {
       let user;
       const earlyGet = () => {
       axios.get("http://localhost:3000/user/apply/infos",{
@@ -68,6 +68,7 @@ const Apply = ({cookies}) => {
   return (
     <div className={style.contentOutter}>
       <div className={style.left}>
+        {list.length === 0 ? <span className={style.noOrder}>주문 내역이 없습니다!</span> :
         <ul className={style.inMenu}>
           {list.map((data, index) => (
             cafe.filter(name => name.cafeIdx === data.cafeIdx).map(fin => (
@@ -78,14 +79,17 @@ const Apply = ({cookies}) => {
             ))
           ))}
         </ul>
+        } 
         {open && <ApplyModal setOpen={setOpen} list={list} modalIdx={modalIdx}/>}
       </div>
       <div className={style.right}>
         <div className={style.title}>배달 신청자 목록</div>
+        {list.length === 0 ? <span className={style.innerNoOrder}>배달 지원자가 없습니다!</span> : 
         <div>
           {
             list.map((data, index) => (
-              (index === num ? data.deliveryAgent.map(deliver => (
+              (index === num && data.deliveryAgent.length === 0 ? <span className={style.innerNoOrder}>배달 지원자가 없습니다!</span> : 
+              (index === num? data.deliveryAgent.map(deliver => (
               <div className={style.innerDeliver}>
                 <div>
                   이름: {deliver.userName}
@@ -108,8 +112,11 @@ const Apply = ({cookies}) => {
               </div>
               )
               ) : <></>)
+              )
             ))}
         </div>
+        }
+        {/* {list.map((data,index) => {data.deliveryAgent.length === 0 ? console.log(index) : console.log("have", index)})} */}
       </div>
     </div>
   );

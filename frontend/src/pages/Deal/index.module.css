@@ -125,3 +125,16 @@
   background-color: lightgreen;
   margin: 0% 5%;
 }
+
+.noOrder{
+  font-size: 25px;
+  background-color: lightgreen;
+  padding: 17% 0%;
+  border: 2px solid black;
+  margin-left: 40px;
+}
+
+.innerNoOrder{
+  background-color: lightgreen;
+  font-size: 50px;
+}
