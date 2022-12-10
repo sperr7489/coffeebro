@@ -3,6 +3,9 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const cors = require("cors");
+const connect = require("./schemas/index");
+// 소켓 프로그래밍 js 파일
+const webSocket = require("./config/socket");
 
 require("dotenv").config({ path: path.join(__dirname, "/config/.env") });
 
@@ -12,15 +15,8 @@ const cafeRouter = require("./Router/cafe/cafeRoute");
 const chatRouter = require("./Router/Chat/chatRoute");
 
 var app = express();
-const http = require("http").createServer(app);
-// const redisAdapter = require("socket.io-redis");
 
-// io.adapter(redisAdapter({ host: "localhost", port: 6379 }));
-
-// const io = require("socket.io")(3000);
-// const io = require("socket.io")(http, { cors: { origin: "*" } });
-
-require("./config/socket")(http);
+connect();
 
 app.use(logger("dev"));
 app.use(express.json());
@@ -36,6 +32,7 @@ app.use("/chat", chatRouter);
 
 const port = 3000;
 
-http.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`${port} 포트에서 시작`);
 });
+webSocket(server, app);

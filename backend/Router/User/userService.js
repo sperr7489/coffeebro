@@ -238,21 +238,28 @@ exports.acception = async (
       agentIdx
     );
 
-    if (acceptFlag) {
+    if (parseInt(acceptFlag) == 1) {
       // 채팅방을 개설해야한다.
       // userIdx : 배달 서비스 신청자
       // agentIdx : 배달 대행 신청자
-      const { insertId } = await chatDao.createChatRoom(
+      // const [{ insertId: chatRoomId }] = await chatDao.createChatRoom(
+      //   connection,
+      //   serviceApplicationIdx
+      // );
+      const { insertId: chatRoomIdx } = await chatDao.createChatRoom(
         connection,
         serviceApplicationIdx,
         userIdx,
         agentIdx
       );
+
+      console.log("chatRoomIdx : ", chatRoomIdx);
+      return chatRoomIdx;
     }
 
     await connection.commit();
 
-    return basicResponse(baseResponseStatus.SUCCESS);
+    return -1; // -1 을 반환했다는 것은 거절했다는 뜻.
   } catch (error) {
     await connection.rollback();
     console.log(error);

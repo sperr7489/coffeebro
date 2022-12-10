@@ -316,7 +316,7 @@ exports.existsDeliverApply = async (
 ) => {
   const existsDeliverApplyQuery = `
   select exists (
-    select * from deliveryApplication where  serviceApplicationIdx= ? and deliveryAgentIdx = ? ans status = 0
+    select * from deliveryApplication where  serviceApplicationIdx= ? and deliveryAgentIdx = ? and status = 0
     ) as exist
   `;
   const [existsDeliverApplyRow] = await connection.query(
@@ -352,10 +352,16 @@ exports.updateStatusOnAccept = async (
   acceptFlag,
   agentIdx
 ) => {
+  // 서비스 신청을 거절하면 serviceApplication 쪽의 status=0
+  // 서비스 신청을 수락하면 둘 다 1로 바뀜.
   const updateStatusOnAcceptQuery = [
     `update deliveryApplication set status = ${acceptFlag} where serviceApplicationIdx = ${serviceApplicationIdx} and deliveryAgentIdx = ${agentIdx};`,
-    `update serviceApplication set status =${acceptFlag} where serviceApplicationIdx = ${serviceApplicationIdx}  ;`,
+    `update serviceApplication set status =${
+      acceptFlag == 1 ? acceptFlag : 0
+    } where serviceApplicationIdx = ${serviceApplicationIdx}  ;`,
   ];
+
+  // 수락되었으면 다른 신청자들은 전부 거절로 할 수 있도록 한다.
   if (acceptFlag == 1) {
     const updateOtherStatusQuery = `
     update deliveryApplication set status = -1 where serviceApplicationIdx = ${serviceApplicationIdx} and deliveryAgentIdx != ${agentIdx};
