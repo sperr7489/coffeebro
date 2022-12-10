@@ -9,7 +9,7 @@ const { upload } = require("../../config/multer");
 // 회원가입 => multer을 이용하여 이미지 업로드 추가
 router.post(
   "/signUp",
-  upload.array("image", 6), //6개까지의 게시물을 등록한다.
+  upload.single("userImg"), //6개까지의 게시물을 등록한다.
   userController.signUp
 );
 
