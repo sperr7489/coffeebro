@@ -1,105 +1,76 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios'
 import style from '../index.module.css';
 
 const Deliver = ({cookies}) => {
   const [num, setNum] = useState(0);
-  const dummy = [
-    { name: '홍길동', state: '수락' },
-    { name: '신짱구', state: '대기' },
-    { name: '김철수', state: '배달 완료' },
-    { name: '김유리', state: '배달 완료' },
-  ];
+  const [list, setList] = useState([]);
 
-  const detail = [
-    {
-      menu: [
-        { name: '아메리카노', option: ['연하게', '얼음많이'] },
-        { name: '버블티', option: ['펄 많이'] },
-        { name: '허브티', option: ['허브 x'] },
-      ],
-      map: '팔달관 303호',
-      price: '15,000',
-    },
-    {
-      menu: [
-        { name: '아메리카노', option: ['연하게', '얼음많이'] },
-        { name: '버블티', option: ['펄 많이'] },
-        { name: '허브티', option: ['허브 x'] },
-      ],
-      map: '팔달관 303호',
-      price: '23,000',
-    },
-    {
-      menu: [
-        { name: '아메리카노', option: ['연하게', '얼음많이'] },
-        { name: '버블티', option: ['펄 많이'] },
-        { name: '허브티', option: ['허브 x'] },
-      ],
-      map: '팔달관 303호',
-      price: '90,000',
-    },
-    {
-      menu: [
-        { name: '아메리카노', option: ['연하게', '얼음많이'] },
-        { name: '버블티', option: ['펄 많이'] },
-        { name: '허브티', option: ['허브 x'] },
-      ],
-      map: '팔달관 303호',
-      price: '46,000',
-    },
-  ];
+  useEffect(() => {
+    const getDeliverList = () => {
+      axios.get('http://localhost:3000/user/apply/delivery/infos',{
+        headers:{
+          accessToken: cookies
+        }
+      })
+      .then(response => {
+        setList(response.data.result)
+      })
+      .catch(error => {
+        console.log(error)
+      })
+    }
 
-  // const onStateChange = () = > {
-
-  // }
+    getDeliverList()
+  }, [])
 
   return (
     <div className={style.contentOutter}>
+      {console.log(list)}
       <div className={style.left}>
+        {list.length === 0 ? <span className={style.nodeliver}>배달 대행 신청 내역이 없습니다!</span> :
         <ul className={style.inMenu}>
-          {dummy.map((data, index) => (
+          {list.map((data, index) => 
             <li className={style.applyName} onClick={() => setNum(index)}>
-              <span>{data.name}</span>
-              <br />
-              <br />
-              <div
-                className={
-                  data.state === '수락'
-                    ? style.green
-                    : data.state === '대기'
-                    ? style.yellow
-                    : style.red
-                }
-              >
-                {data.state}
+              <span>{data.applicantInfo[0].userName}</span><br /><br />
+              <div className={data.status === 1 ? style.green : data.status === 0 ? style.yellow : style.red}>
+                {data.status === 1 ? "수락" : data.status === 0 ? "대기" : "거절" }
               </div>
             </li>
-          ))}
+          )}
         </ul>
+    }
       </div>
       <div className={style.right}>
         <div className={style.title}>주문현황</div>
-        <div className={style.deliverInner}>
-          <div>
-            <ul className={style.inMenu}>
-              {detail[num].menu.map((data) => (
-                <li>
-                  <div className={style.term}>
-                    {data.name} -{' '}
-                    {data.option.map((data) => (
-                      <span>{data} </span>
-                    ))}
-                  </div>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className={style.term}>주문금액: {detail[num].price}</div>
-          <div>배달 주소: {detail[num].map}</div>
-        </div>
+        {list.length === 0 ? <span className={style.innerNoOrder}>배달 대행 신청 내역이 없습니다!</span> :
         <div>
-          <input type="button" value="배달 완료" />
+          <div>
+            {list.length === 0 ? "" : <img src={list[num].cafeImg}/>}
+          </div>
+          <div>
+            {list.length === 0 ? "" : 
+              list[num].deliveryInfo.map(data => 
+                <div className={style.complicatedInner}>
+                  <div>
+                    <img className={style.menuImg} src={data.drinkImage}/>
+                  </div>
+                  <div>
+                    {list.length === 0 ? "" : <span>주문 카페 - {list[num].cafeName}</span>}<br />
+                    <span>주문 음료 : {data.drinkName}</span><br />
+                    <span>음료 가격 :{data.price}</span><br />
+                    <span>옵션 추가 비용 :{data.optionPrice}</span><br />
+                    <span>총 주문 개수 : {data.count}</span>
+                    <ul>
+                    {data.optionList.map(opt => <li>{opt}</li>)}
+                    </ul>
+                  </div>
+                </div>)
+            }
+          </div>
+          {list.length === 0 ? "" : list[num].status === 0 ? <input className={style.deliverButton} type="button" value="배달완료"/> : ""}
         </div>
+        }
       </div>
     </div>
   );
