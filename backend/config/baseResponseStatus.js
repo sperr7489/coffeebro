@@ -1,6 +1,7 @@
 module.exports = {
   //성공
   SUCCESS: { isSuccess: true, code: 1000, message: "성공" }, //조회
+
   SIGN_UP_SUCCESS: {
     isSuccess: true,
     code: 1100,
@@ -179,7 +180,8 @@ module.exports = {
   NICKNAME_INVALID: {
     isSuccess: false,
     code: 2016,
-    message: "닉네임은 2자 이상 8자 이하, 영어 또는 숫자 또는 한글로 구성되어야 합니다. ",
+    message:
+      "닉네임은 2자 이상 8자 이하, 영어 또는 숫자 또는 한글로 구성되어야 합니다. ",
   },
 
   DB_ERROR: { isSuccess: false, code: 4000, message: "데이터 베이스 에러" },

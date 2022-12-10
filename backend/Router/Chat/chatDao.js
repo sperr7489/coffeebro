@@ -19,7 +19,7 @@ exports.createChatRoom = async (
 // 한 유저의 채팅방들 가져오기
 exports.getChatRoom = async (connection, userIdx) => {
   const getChatRoomQuery = `
-    select * from chatRoom where applicantIdx = ? or agentIdx = ?
+    select * from chatRoom where applicantIdx = ? or agentIdx = ? and status = 0
   `;
   const [getChatRoomRow] = await connection.query(getChatRoomQuery, [
     userIdx,

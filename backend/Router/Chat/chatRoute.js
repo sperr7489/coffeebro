@@ -5,9 +5,11 @@ const { verifyAccessToken } = require("../../config/jwt");
 const chatController = require("./chatController");
 
 // 유저의 채팅 룸 가져오기
-router.get("/room", verifyAccessToken, chatController.getChatRoom);
+router.get("/rooms", verifyAccessToken, chatController.getChatRoom);
 
-// 유저가 채팅방에 들어가기
+// 유저의 특정 채팅룸 가져오기
 router.get("/:chatRoomIdx", verifyAccessToken, chatController.inTheChat);
 
+// 채팅 하기
+router.post("/:chatRoomIdx/chat", verifyAccessToken, chatController.chatting);
 module.exports = router;
