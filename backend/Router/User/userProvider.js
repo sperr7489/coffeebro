@@ -350,3 +350,4 @@ exports.checkAlreadyApply = async (serviceApplicationIdx, userIdx) => {
     connection.release();
   }
 };
+

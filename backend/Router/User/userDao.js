@@ -414,16 +414,101 @@ exports.getDeliveryAgents = async (connection, serviceApplicationIdx) => {
 };
 
 // 유저의 정보(닉네임과 사진) 수정
-exports.changeUserInfo = async (connection, userIdx, nickname, userImg) => {
-  const changeUserInfoQuery = `
+exports.updateUserInfo = async (connection, userIdx, nickname, userImg) => {
+  const updateUserInfoQuery = `
   UPDATE User
   SET nickname = ?, userImg = ?
   WHERE userIdx = ?
   `;
-  const [changeUserInfoRow] = await connection.query(
-      changeUserInfoQuery,
+  const [updateUserInfoRow] = await connection.query(
+      updateUserInfoQuery,
       [nickname, userImg, userIdx]
   );
   console.log(userIdx,nickname,userImg)
-  return changeUserInfoRow;
+  return updateUserInfoRow;
+};
+
+// 배달 대행 신청의 상태 완료로 바꾸기
+exports.updateDeliveryApplicationStatus = async (connection, deliveryApplicationIdx) => {
+  const updateDeliveryApplicationStatusQuery = `
+  UPDATE deliveryApplication
+  SET status = 1
+  WHERE deliveryApplicationIdx = ?;
+  `;
+  const [updateDeliveryApplicationStatusRow] = await connection.query(
+      updateDeliveryApplicationStatusQuery,
+      [deliveryApplicationIdx, deliveryApplicationIdx]
+  );
+  return updateDeliveryApplicationStatusRow;
+};
+
+// 서비스 신청의 상태 완료로 바꾸기
+exports.updateServiceApplicationStatus = async (connection, deliveryApplicationIdx) => {
+  const updateServiceApplicationStatusQuery = `
+  UPDATE serviceApplication
+  SET status = 2
+  WHERE serviceApplicationIdx = (SELECT serviceApplicationIdx
+                                FROM deliveryApplication
+                                WHERE deliveryApplicationIdx = ?);
+  `;
+  const [updateServiceApplicationStatusRow] = await connection.query(
+      updateServiceApplicationStatusQuery,
+      [deliveryApplicationIdx, deliveryApplicationIdx]
+  );
+  return updateServiceApplicationStatusRow;
+};
+
+// 배달 대행 서비스의 상태 받아오기
+exports.getDeliveryApplicationStatus = async (connection, deliveryApplicationIdx) => {
+  const getDeliveryApplicationStatusQuery = `
+  select status from deliveryApplication
+  where deliveryApplicationIdx = ?
+  `;
+  const [[getDeliveryApplicationStatusRow]] = await connection.query(
+      getDeliveryApplicationStatusQuery,
+      deliveryApplicationIdx
+  );
+  return getDeliveryApplicationStatusRow;
+};
+
+// 배달 대행 신청의 대행자 userIdx 조회
+exports.getDeliveryApplicationUser = async (connection, deliveryApplicationIdx) => {
+  const getDeliveryApplicationUserQuery = `
+  select deliveryAgentIdx from deliveryApplication
+  where deliveryApplicationIdx = ?
+  `;
+  const [[getDeliveryApplicationUserRow]] = await connection.query(
+      getDeliveryApplicationUserQuery,
+      deliveryApplicationIdx
+  );
+  return getDeliveryApplicationUserRow;
+};
+
+// 배달 대행 신청의 대상(서비스 신청자) userIdx 조회
+exports.getServiceApplicationUser = async (connection, deliveryApplicationIdx) => {
+  const getServiceApplicationUserQuery = `
+  SELECT userIdx
+  FROM serviceApplication
+  WHERE serviceApplicationIdx = (SELECT serviceApplicationIdx
+                                 FROM deliveryApplication
+                                 WHERE deliveryApplicationIdx = ?);
+  `;
+  const [[getServiceApplicationUserRow]] = await connection.query(
+      getServiceApplicationUserQuery,
+      deliveryApplicationIdx
+  );
+  return getServiceApplicationUserRow;
+};
+
+// 유저한테 알림 생성
+exports.insertNotification = async (connection, userIdx, message) => {
+  const insertNotificationQuery = `
+  insert into notification(userIdx, message)
+  values(?, ?);
+  `;
+  const [insertNotificationRow] = await connection.query(
+      insertNotificationQuery,
+      [userIdx, message]
+  );
+  return insertNotificationRow;
 };

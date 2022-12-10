@@ -266,7 +266,17 @@ exports.updateUserInfo = async (req, res) => {
   if (!nickname || !userImg)
     return res.send(basicResponse(baseResponseStatus.PARAMS_NOT_EXACT));
 
-  await userService.changeUserInfo(userIdx,nickname,userImg);
+  const updateUserInfoResult = await userService.updateUserInfo(userIdx,nickname,userImg);
 
-  return res.send(basicResponse(baseResponseStatus.USER_INFO_UPDATE_SUCCESS));
+  return res.send(updateUserInfoResult);
+}
+
+// 배달 대행 완료 및 알림 생성
+exports.completeDelivery = async (req, res) =>{
+  const userIdx = req.userIdx;
+  const {deliveryApplicationIdx}= req.params;
+
+  const completeDeliveryResult = await userService.updateServiceApplicationStatus(userIdx,deliveryApplicationIdx);
+
+  return res.send(completeDeliveryResult);
 }

@@ -182,5 +182,16 @@ module.exports = {
     message: "닉네임은 2자 이상 8자 이하, 영어 또는 숫자 또는 한글로 구성되어야 합니다. ",
   },
 
+  NOT_MY_DELIVERY_APPLICATION:{
+    isSuccess: false,
+    code: 2017,
+    message: "자신이 신청한 배달 대행이 아닙니다.",
+  },
+  ALREADY_COMPLETED_DELIVERY:{
+    isSuccess: false,
+    code: 2018,
+    message: "이미 완료된 배달 입니다.",
+  },
+
   DB_ERROR: { isSuccess: false, code: 4000, message: "데이터 베이스 에러" },
 };
