@@ -452,3 +452,16 @@ exports.getDeliveryAgents = async (connection, serviceApplicationIdx) => {
   );
   return getDeliverAgents;
 };
+
+// 배달 대행자에 대한 평점 넣기
+exports.updateAgentScore = async (connection, userIdx) => {
+  const updateAgentScoreQuery = `
+    update user set deliveryAgentScore = deliveryAgentScore + 5
+    where userIdx = ?;
+    `;
+  const [updateAgentScoreRow] = await connection.query(
+    updateAgentScoreQuery,
+    userIdx
+  );
+  return updateAgentScoreRow;
+};

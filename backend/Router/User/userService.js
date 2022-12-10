@@ -268,3 +268,17 @@ exports.acception = async (
     connection.release();
   }
 };
+
+// 배달 대행자에 대한 평점 넣기
+exports.updateAgentScore = async (agentIdx) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    await userDao.updateAgentScore(connection, userIdx);
+  } catch (error) {
+    await connection.rollback();
+
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};

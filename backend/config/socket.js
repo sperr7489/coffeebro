@@ -68,36 +68,7 @@ module.exports = (server, app) => {
       console.log("chat 네임스페이스 접속 해제");
       socket.leave();
 
-      const currentRoom = socket.adapter.rooms[chatRoomIdx];
-      const userCount = currentRoom ? currentRoom.length : 0;
-
-      if (userCount === 0) {
-        //접속자가 0명이면 방 삭제
-
-        //
-        const signedCookie = req.signedCookies["connect.sid"];
-        const connectSID = cookie.sign(signedCookie, process.env.COOKIE_SECRET);
-
-        // 소켓 통신과 http 통신은 별도라고 생각하자. 백엔드에서도 스스로에게 http 요청을 보낼 수 있는 것이다.
-        axios
-          .delete(`http://localhost:8005/room/${chatRoomIdx}`, {
-            headers: {
-              // 서버에서 서버로 요청할 때는 요청 헤더에 직접 쿠키를 담아줘야 한다.
-              Cookie: `connect.sid = s%3A${connectSID}`,
-            },
-          })
-          .then(() => {
-            console.log("방 제거 요청 성공");
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      } else {
-        socket.to(chatRoomIdx).emit("exit", {
-          user: "system",
-          chat: `${req.session.color}님이 퇴장하셨습니다. `,
-        });
-      }
+      // const currentRoom = socket.adapter.rooms[chatRoomIdx];
     });
   });
 
@@ -117,45 +88,10 @@ module.exports = (server, app) => {
     socket.on("disconnect", () => {
       // 연결 종료 시
       console.log("클라이언트 접속 해제", ip, socket.id);
-      clearInterval(socket.interval);
     });
     socket.on("error", (error) => {
       // 에러 시
       console.error(error);
     });
-    socket.on("reply", (data) => {
-      // 클라이언트로부터 메시지
-      console.log(data);
-    });
   });
-  // wss.on("connection", (ws, req) => {
-  //   // 웹소켓 연결 시
-  //   // 클라이언트의 ip를 알아내는 유명한 방법 중 하나.
-  //   const ip = req.headers["x-forwarded-for"] || req.connection.remoteAddress;
-  //   console.log(req);
-
-  //   ws.on("message", (message) => {
-  //     console.log(message.toString());
-  //   });
-
-  //   console.log(ip);
-  //   ws.on("disconnect", () => {
-  //     // 연결 종료 시
-  //     console.log("클라이언트 접속 해제", ip, ws.id);
-  //     clearInterval(ws.interval);
-  //   });
-  //   ws.on("error", (error) => {
-  //     // 에러 시
-  //     console.error(error);
-  //   });
-  //   ws.on("reply", (data) => {
-  //     // 클라이언트로부터 메시지
-  //     console.log(data);
-  //   });
-  //   ws.interval = setInterval(() => {
-  //     // 3초마다 클라이언트로 메시지 전송
-  //     if (ws.readyState === ws.OPEN)
-  //       ws.send("서버에서 클라이언트로 요청 계속 보냄!");
-  //   }, 3000);
-  // });
 };

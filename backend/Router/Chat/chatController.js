@@ -2,6 +2,7 @@ const baseResponseStatus = require("../../config/baseResponseStatus");
 const { basicResponse, resultResponse } = require("../../config/response");
 const chatProvider = require("./chatProvider");
 const chatService = require("../Chat/chatService");
+const userService = require("../user/userService");
 const userProvider = require("../User/userProvider");
 const regex = require("../../config/regex");
 const response = require("../../config/response");
@@ -92,4 +93,47 @@ exports.chatting = async (req, res) => {
   io.of("/chat").to(chatRoomIdx).emit("chat", chat);
 
   res.send(basicResponse(baseResponseStatus.SUCCESS));
+};
+
+// 배달 완료 보내기
+exports.completeDelivery = async (req, res) => {
+  const userIdx = req.userIdx;
+  const { chatRoomIdx } = req.params;
+  const { applicantIdx, agentIdx } = await chatProvider.getChatRoomInfo(
+    chatRoomIdx
+  );
+  if (userIdx != agentIdx) {
+    return res.send(basicResponse(baseResponseStatus.USER_NOT_AGENT));
+  }
+  // 배달 완료가 눌리게 되면
+
+  const io = req.app.get("io");
+  io.of("/chat").to(chatRoomIdx).emit("complete", {
+    user: "system",
+    message: "배달 대행자가 배달 대행을 완료 했습니다. 평점을 남겨주세요",
+  });
+  return res.send(basicResponse(baseResponseStatus.PLEASE_CHECK_SERVERCODE));
+};
+
+// 평점을 메기고 chatting방의 status가 1로 바뀐다. => 거래가 완료되었다는 뜻.
+exports.scoreAgent = async (req, res) => {
+  const userIdx = req.userIdx;
+  const { chatRoomIdx } = req.params;
+  const { applicantIdx, agentIdx } = await chatProvider.getChatRoomInfo(
+    chatRoomIdx
+  );
+  const { score } = req.body;
+
+  if (userIdx != applicantIdx) {
+    return res.send(basicResponse(baseResponseStatus.USER_NOT_APPLICANT));
+  }
+  // 배달 대행자에 대한 평점 넣기
+  if (score) {
+    // 점수로 들어온게 있다면!
+    await userService.updateAgentScore(agentIdx);
+  }
+  // 채팅룸의 status를 바꾼다.
+  await chatService.updateChatRoomStatus(chatRoomIdx);
+
+  return res.send(basicResponse(baseResponseStatus.SUCCESS));
 };

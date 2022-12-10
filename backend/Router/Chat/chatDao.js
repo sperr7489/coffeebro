@@ -41,3 +41,15 @@ exports.getChatRoomInfo = async (connection, chatRoomIdx) => {
   );
   return getChatRoomInfoRow;
 };
+
+// 채팅룸의 status를 바꾼다.
+exports.updateChatRoomStatus = async (connection, chatRoomIdx) => {
+  const updateChatRoomStatusQuery = `
+  update chatRoom set status = 1 where chatRoomIdx = ?
+`;
+  const [updateChatRoomStatusRow] = await connection.query(
+    updateChatRoomStatusQuery,
+    chatRoomIdx
+  );
+  return updateChatRoomStatusRow;
+};
