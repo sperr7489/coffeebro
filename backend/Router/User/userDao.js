@@ -316,7 +316,7 @@ exports.existsDeliverApply = async (
 ) => {
   const existsDeliverApplyQuery = `
   select exists (
-    select * from deliveryApplication where  serviceApplicationIdx= ? and deliveryAgentIdx = ? ans status = 0
+    select * from deliveryApplication where  serviceApplicationIdx= ? and deliveryAgentIdx = ? and status = 0
     ) as exist
   `;
   const [existsDeliverApplyRow] = await connection.query(
