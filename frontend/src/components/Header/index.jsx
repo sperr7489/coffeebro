@@ -5,6 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import { useState } from 'react';
 import { Cookies, useCookies } from 'react-cookie';
 import Menu from './components/Menu';
+import logo from '../../assets/images/img_logo.svg';
+import logoText from '../../assets/images/img_logo_text.svg';
 
 export default function Header() {
   const navigate = useNavigate();
@@ -23,18 +25,21 @@ export default function Header() {
   const logout = () => {
     removeCookies('id');
     navigate('/');
+    location.reload();
   };
 
   return (
     <HeaderContainer>
       <img src={icMenu} onClick={menuClick} />
-      <h2
+      <div
+        id="logo"
         onClick={() => {
           navigate('/');
         }}
       >
-        커피가게아저씨
-      </h2>
+        <img src={logo} />
+        <img src={logoText} />
+      </div>
       {showMenu ? <Menu closeModal={() => setShowMenu(false)} /> : <></>}
       {cookies.id === undefined ? (
         <input

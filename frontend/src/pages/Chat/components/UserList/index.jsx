@@ -1,26 +1,24 @@
 import { UserListContainer, UserInfoContainer } from './index.style';
 
-const dummyUserData = [
-  {
-    userName: '아이언맨',
-    message: '안녕하세요플레ddddddd안녕하세요플레ddddddd안녕하세요플레ddddddd안녕하세요플레ddddddd',
-  },
-  { userName: '아이언맨', message: '안녕하세요플레' },
-  { userName: '아이언맨', message: '안녕하세요플레' },
-  { userName: '아이언맨', message: '안녕하세요플레' },
-  { userName: '아이언맨', message: '안녕하세요플레' },
-  { userName: '아이언맨', message: '안녕하세요플레' },
-];
-export default function UserList() {
+export default function UserList(props) {
+  const { chatRoomInfo, setChatRoomIdx, chatRoomIdx } = props;
+  const handleChatRoomClick = (idx) => {
+    setChatRoomIdx(idx);
+    window.history.pushState('', '', `/chat/${idx}`);
+  };
   return (
     <UserListContainer>
-      {dummyUserData.map((user, idx) => (
-        <UserInfoContainer key={`${user.userName} ${idx}`}>
+      {chatRoomInfo.map((info, idx) => (
+        <UserInfoContainer
+          key={`${info.otherInfo.userName} ${idx}`}
+          isSelected={info.chatRoomIdx === chatRoomIdx}
+          onClick={() => handleChatRoomClick(info.chatRoomIdx)}
+        >
           <div>
             <div></div>
-            <span>{user.userName}</span>
+            <span>{info.otherInfo.userName}</span>
           </div>
-          <span>{user.message}</span>
+          <span>{info.lastChatOfOther[-1]}</span>
         </UserInfoContainer>
       ))}
     </UserListContainer>

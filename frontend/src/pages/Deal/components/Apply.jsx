@@ -20,7 +20,9 @@ const Apply = ({ cookies }) => {
 
   const registButton = (deliveryAgentIdx, serviceApplicationIdx) => {
     authApi
-      .post(`/user/apply/acception/${serviceApplicationIdx}?acceptFlag=1&deliveryAgentIdx=${deliveryAgentIdx}`,)
+      .post(
+        `/user/apply/acception/${serviceApplicationIdx}?acceptFlag=1&deliveryAgentIdx=${deliveryAgentIdx}`,
+      )
       .then((response) => {
         console.log(response);
       })
@@ -33,84 +35,89 @@ const Apply = ({ cookies }) => {
     let user;
 
     const earlyGet = () => {
-      authApi.get('/user/apply/infos')
-      .then((response) => {
-        setList(response.data.result)
-      })
-      .catch((error) => {
-        console.log(error)
-      })
-    }
+      authApi
+        .get('/user/apply/infos')
+        .then((response) => {
+          setList(response.data.result);
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    };
 
     const cafeList = () => {
-      api.get('/cafe')
-      .then((response) => {
-        setCafe(response.data.result);
-      })
-      .then((error) => {
-        console.log(error)
-      })
-    }
+      api
+        .get('/cafe')
+        .then((response) => {
+          setCafe(response.data.result);
+        })
+        .then((error) => {
+          console.log(error);
+        });
+    };
 
     earlyGet();
     cafeList();
-  }, [])
-  {console.log(list)}
+  }, []);
 
   return (
     <div className={style.contentOutter}>
       <div className={style.left}>
-        {list.length === 0 ? <span className={style.noOrder}>주문 내역이 없습니다!</span> :
-        <ul className={style.inMenu}>
-          {list.map((data, index) =>
-            cafe
-              .filter((name) => name.cafeIdx === data.cafeIdx)
-              .map((fin) => (
-                <li className={style.applyName} onClick={() => setNum(index)}>
-                  <div>{fin.cafeName}</div>
-                  <input
-                    className={style.detail}
-                    type="button"
-                    value="자세히"
-                    onClick={() => showDetail(index)}
-                  />
-                </li>
-              )),
-          )}
-        </ul>
-        }
+        {list.length === 0 ? (
+          <span className={style.noOrder}>주문 내역이 없습니다!</span>
+        ) : (
+          <ul className={style.inMenu}>
+            {list.map((data, index) =>
+              cafe
+                .filter((name) => name.cafeIdx === data.cafeIdx)
+                .map((fin) => (
+                  <li className={style.applyName} onClick={() => setNum(index)}>
+                    <div>{fin.cafeName}</div>
+                    <input
+                      className={style.detail}
+                      type="button"
+                      value="자세히"
+                      onClick={() => showDetail(index)}
+                    />
+                  </li>
+                )),
+            )}
+          </ul>
+        )}
         {open && <ApplyModal setOpen={setOpen} list={list} modalIdx={modalIdx} />}
       </div>
       <div className={style.right}>
         <div className={style.title}>배달 신청자 목록</div>
-        {list.length === 0 ? <span className={style.innerNoOrder}>배달 지원자가 없습니다!</span> : 
-        <div>
-          {list.map((data, index) =>
-            index === num ? (
-              data.deliveryAgent.map((deliver) => (
-                <div className={style.innerDeliver}>
-                  <div>이름: {deliver.userName}</div>
-                  <div>학과: {deliver.department}</div>
-                  <div>성별: {deliver.sex === 'M' ? '남자' : '여자'}</div>
-                  <div>학번: {deliver.studentId}</div>
-                  <div>평점: {deliver.deliveryAgentScore}</div>
-                  <div>
-                    <input
-                      type="button"
-                      value="수락하기"
-                      onClick={() => {
-                        registButton(deliver.deliveryAgentIdx, data.serviceApplicationIdx);
-                      }}
-                    />
+        {list.length === 0 ? (
+          <span className={style.innerNoOrder}>배달 지원자가 없습니다!</span>
+        ) : (
+          <div>
+            {list.map((data, index) =>
+              index === num ? (
+                data.deliveryAgent.map((deliver) => (
+                  <div className={style.innerDeliver}>
+                    <div>이름: {deliver.userName}</div>
+                    <div>학과: {deliver.department}</div>
+                    <div>성별: {deliver.sex === 'M' ? '남자' : '여자'}</div>
+                    <div>학번: {deliver.studentId}</div>
+                    <div>평점: {deliver.deliveryAgentScore}</div>
+                    <div>
+                      <input
+                        type="button"
+                        value="신청하기"
+                        onClick={() => {
+                          registButton(deliver.deliveryAgentIdx, data.serviceApplicationIdx);
+                        }}
+                      />
+                    </div>
                   </div>
-                </div>
-              ))
-            ) : (
-              <></>
-            ),
-          )}
-        </div>
-        }
+                ))
+              ) : (
+                <></>
+              ),
+            )}
+          </div>
+        )}
       </div>
     </div>
   );

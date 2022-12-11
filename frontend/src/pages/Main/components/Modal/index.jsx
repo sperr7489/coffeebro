@@ -21,7 +21,13 @@ export default function MainModal(props) {
     closeModal,
   } = props;
   const handleApplyClick = () => {
-    authApi.post(`/user/delivery/${serviceApplicationIdx}`).then((res) => console.log(res));
+    authApi.post(`/user/delivery/${serviceApplicationIdx}`).then((res) => {
+      if (!res.data.isSuccess) {
+        return;
+      }
+      alert('신청이 완료되었습니다.');
+      closeModal();
+    });
   };
   return (
     <MainModalContainer>
