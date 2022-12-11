@@ -9,7 +9,7 @@ import { api, authApi } from '../../../axios.config';
 export default function MyPage() {
   const [image, setImage] = useState();
   const [file, setFile] = useState();
-  const [nickname, setNickname] = useState('닉네임');
+  const [nickname, setNickname] = useState('');
   const [isChecked, setIsChecked] = useState(false);
   const [userInfo, setUserInfo] = useState({});
 

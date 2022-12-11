@@ -48,6 +48,7 @@ const LoginPage = () => {
           setCookie('id', response.data.result.accessToken);
           console.log(response);
           navigate('/');
+          location.reload();
         } else if (response.data.code === 2008) {
           alert('회원가입 때 등록한 비밀번호를 입력해주세요');
         } else {
