@@ -5,6 +5,7 @@ export const HeaderContainer = styled.div`
   margin-top: 20px;
   margin-bottom: 50px;
   display: flex;
+  position: relative;
   justify-content: space-between;
   margin-left: 5%;
   img {
@@ -16,8 +17,10 @@ export const HeaderContainer = styled.div`
   }
 `;
 
+
 export const RightChildContainer = styled.div`
   width: 100px;
   display: flex;
+  position: relative;
   justify-content: space-between;
 `;

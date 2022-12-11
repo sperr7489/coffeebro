@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import style from '../index.module.css';
 
-const Deliver = () => {
+const Deliver = ({cookies}) => {
   const [num, setNum] = useState(0);
   const dummy = [
     { name: '홍길동', state: '수락' },

@@ -170,19 +170,21 @@ exports.getApplyInfos = async (userIdx) => {
     await Promise.all(
       // 하나의 서비스 신청 정보에 대해서 판단하기 위한 로직
       getDeliveryInfos.map(async (v, i) => {
+        console.log(v);
         const serviceIdx = v.serviceApplicationIdx;
         const deliveryInfo = await userDao.getOneDeliveryInfo(
           connection,
           serviceIdx
         );
-        // 하나의 배달 신청에 대한 정보에 대해서 같은 것들을 묶기 위한 변수
-        // let drinkInfosA = [];
 
-        let { price } = deliveryInfo;
         await Promise.all(
           // 옵션에 대한 처리를 해주기 위함.
           deliveryInfo.map(async (t, i) => {
             v["cafeName"] = t.cafeName;
+            v["cafeImg"] = t.cafeImg;
+
+            delete t.cafeImg;
+
             const optionIdxList = t.optionList.split(",");
             // let drinkInfo = {};
             // console.log("optionIdxList :", optionIdxList);
@@ -240,10 +242,10 @@ exports.getApplyInfos = async (userIdx) => {
           connection,
           serviceIdx
         );
-        console.log("getDeliverAgents :", getDeliveryAgents);
         v["deliveryAgent"] = getDeliveryAgents;
       })
     );
+
     return getDeliveryInfos;
   } catch (error) {
     console.log(error);
@@ -254,14 +256,96 @@ exports.getApplyInfos = async (userIdx) => {
 };
 
 /** 유저가 대행하겠다고 신청한 서비스에 대한 정보들 가져오기 */
-exports.getApplyDeleveryInfos = async (userIdx) => {
+exports.getApplyDeliveryInfos = async (userIdx) => {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
-    const getApplyInfosResult = await userDao.getApplyInfos(
+    // 먼저 자신이 배달하겠다고 한 서비스의 serviceApplicationIdx를 가져온다.
+    const getServiceApplicationIdxList = await userDao.getServiceApplicationIdx(
       connection,
       userIdx
     );
-    return getApplyInfosResult;
+    await Promise.all(
+      getServiceApplicationIdxList.map(async (v) => {
+        const { serviceApplicationIdx: serviceIdx } = v;
+
+        // 신청한 사람의 정보와 신청한 배달 상세 정보 가져오기
+        const applicantInfo = await userDao.getApplicantInfo(
+          connection,
+          serviceIdx
+        );
+        v["applicantInfo"] = applicantInfo;
+
+        // 해당 serviceApplicationIdx에 따른 주문 정보 확인하기
+        const deliveryInfo = await userDao.getOneDeliveryInfo(
+          connection,
+          serviceIdx
+        );
+        await Promise.all(
+          // 옵션에 대한 처리를 해주기 위함.
+          deliveryInfo.map(async (t, i) => {
+            v["cafeName"] = t.cafeName;
+            v["cafeImg"] = t.cafeImg;
+
+            delete t.cafeImg;
+            const optionIdxList = t.optionList.split(",");
+            // let drinkInfo = {};
+            // console.log("optionIdxList :", optionIdxList);
+            const optionInfo = await cafeDao.getOptionList(
+              connection,
+              optionIdxList
+            );
+
+            const optionNameList = optionInfo.map((t) => t.optionName);
+            const optionPrice = optionInfo.reduce(
+              (prev, cur) => prev + cur.optionPrice,
+              0
+            );
+
+            // drinkInfo["name"] = t.drinkName;
+            // drinkInfo["option"] = optionNameList;
+            // drinkInfosA.push(drinkInfo);
+
+            t["optionList"] = optionNameList;
+            t["optionPrice"] = optionPrice;
+            t["coffeePrice"] = optionPrice + t.price;
+
+            delete t.serviceApplicationIdx;
+            delete t.drinkIdx;
+            delete t.cafeIdx;
+            delete t.cafeName;
+          })
+        );
+
+        v["price"] = deliveryInfo.reduce(
+          (prev, cur) => prev + cur.coffeePrice,
+          0
+        );
+        // 하나의 주문에서 동일한 주문끼리는
+        var retMap = deliveryInfo.reduce((prev, cur) => {
+          const str = JSON.stringify(cur);
+
+          prev[str] = (prev[str] || 0) + 1;
+          return prev;
+        }, {});
+
+        const toArr = Object.entries(retMap);
+
+        const resultArr = toArr.map((v, i) => {
+          const temp = JSON.parse(v[0]);
+          temp["count"] = v[1];
+          return temp;
+        });
+
+        const oneDelivery = resultArr;
+        v["deliveryInfo"] = oneDelivery;
+      })
+    );
+
+    console.log(
+      "getServiceApplicationIdxList : ",
+      getServiceApplicationIdxList
+    );
+    return getServiceApplicationIdxList;
   } catch (error) {
     console.log(error);
     return basicResponse(baseResponseStatus.DB_ERROR);

@@ -55,20 +55,33 @@ export const CancleBtn = styled.button`
 export const MenuInfoContainer = styled.div`
   border: 1px solid black;
   width: 400px;
+
   & > div {
     display: flex;
     justify-content: space-around;
+    text-align: center;
+
+    border-bottom: 1px solid black;
     span {
       width: 180px;
+      border-right: 1px solid black;
+    }
+    span:last-child {
+      border-right: none;
     }
     .option {
       width: 250px;
     }
   }
   & > div:first-child {
-    margin-bottom: 10px;
+    /* margin-bottom: 10px; */
+    height: 30px;
     span {
+      line-height: 30px;
       font-size: 18px;
     }
+  }
+  & > div:last-child {
+    border-bottom: none;
   }
 `;

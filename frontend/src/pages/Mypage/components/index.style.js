@@ -1,5 +1,4 @@
 import styled from 'styled-components';
-
 export const InfoImageConatiner = styled.div`
   width: 300px;
   height: 300px;
@@ -12,7 +11,6 @@ export const DropZoneContainer = styled.div`
   justify-content: center;
   width: 100%;
   height: 300px;
-  background: url('../../../assets/images/img_add.svg');
   cursor: pointer;
   img {
     width: 100%;
