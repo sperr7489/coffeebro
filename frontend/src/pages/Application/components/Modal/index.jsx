@@ -1,6 +1,7 @@
 import { forwardRef, useEffect, useState } from 'react';
 import Button from '../../../../components/Button';
 import MenuInfo from '../MenuInfo';
+import axios from 'axios';
 import {
   ApplicationModalContainer,
   ButtonWrapper,
@@ -9,81 +10,40 @@ import {
   RequestContainer,
   RequestListContainer,
 } from './index.style';
+import { api } from '../../../../../axios.config';
 
-const dummyCafeList = [
-  {
-    cafeIdx: 1,
-    cafeName: '기창존맛커피',
-    cafeImg: null,
-  },
-  {
-    cafeIdx: 2,
-    cafeName: '태홍노맛커피',
-    cafeImg: null,
-  },
-  {
-    cafeIdx: 3,
-    cafeName: '재연비싸커피',
-    cafeImg: null,
-  },
-  {
-    cafeIdx: 4,
-    cafeName: '영민다방커피',
-    cafeImg: null,
-  },
-];
-const dummyMenuList = [
-  {
-    cafeIdx: 1,
-    cafeName: '기창존맛커피',
-    drinkIdx: 1,
-    drinkName: '아메리카노',
-    drinkPrice: 2000,
-    drinkImage:
-      'https://littledeep.com/wp-content/uploads/2019/04/littledeep_illustration_coffee_png1.png',
-  },
-  {
-    cafeIdx: 1,
-    cafeName: '기창존맛커피',
-    drinkIdx: 2,
-    drinkName: '카페라떼',
-    drinkPrice: 2500,
-    drinkImage:
-      'https://littledeep.com/wp-content/uploads/2019/04/littledeep_illustration_coffee_png1.png',
-  },
-  {
-    cafeIdx: 1,
-    cafeName: '기창존맛커피',
-    drinkIdx: 3,
-    drinkName: '카라멜마끼야또',
-    drinkPrice: 6500,
-    drinkImage:
-      'https://littledeep.com/wp-content/uploads/2019/04/littledeep_illustration_coffee_png1.png',
-  },
-];
-
-const dummyRequestList = ['연하게', '샷추가', '시럽추가', '짜게', '맛있게'];
 export default function ApplicationModal(props) {
-  const { menuList, setMenuList, refs, setIsModalOpen } = props;
+  const { menuList, setMenuList, refs, setIsModalOpen, cafeIdx } = props;
   const [modalIdx, setModalIdx] = useState(0);
-  const [menuInfo, setMenuInfo] = useState({ cafe: {}, menu: {} });
+  const [menuInfo, setMenuInfo] = useState();
   const [requestList, setRequestList] = useState([]);
   const [menuInfoList, setMenuInfoList] = useState(menuList);
   const [animationName, setAnimationName] = useState('slide-in');
   const [isRequestOpen, setIsRequestOpen] = useState(false);
+  const [cafeMenuList, setCafeMenuList] = useState([]);
+  const [optionList, setOptionList] = useState([]);
 
   const handleItemClick = (item) => {
     setMenuInfo((prev) => {
       const newState = { ...prev };
-      newState[modalIdx === 0 ? 'cafe' : 'menu'] = item;
+      newState['menu'] = item;
       return newState;
     });
-    if (modalIdx === 1) {
+    if (modalIdx === 0) {
       setIsRequestOpen(true);
       return;
     }
     setModalIdx((prev) => prev + 1);
   };
+  useEffect(() => {
+    async function getData() {
+      api.get(`/cafe/${cafeIdx}/menu`).then((res) => {
+        setCafeMenuList(res.data.result.drinkMenu);
+        setOptionList(res.data.result.drinkOption);
+      });
+    }
+    getData();
+  }, [cafeIdx]);
 
   const removeRequestModal = () => {
     if (!isRequestOpen) {
@@ -107,11 +67,12 @@ export default function ApplicationModal(props) {
   useEffect(() => {
     setIsRequestOpen(false);
     setRequestList([]);
-    if (modalIdx === 2) {
-      setMenuInfoList((prev) => [
-        ...prev,
-        { ...menuInfo, num: 1, request: requestList.join(', ') },
-      ]);
+    if (modalIdx === 1) {
+      const request = [];
+      for (const item in requestList) {
+        request.push(requestList[item].optionName);
+      }
+      setMenuInfoList((prev) => [...prev, { ...menuInfo, num: 1, request: request }]);
       return;
     }
   }, [modalIdx]);
@@ -120,14 +81,14 @@ export default function ApplicationModal(props) {
     <ModalBackground>
       <ApplicationModalContainer ref={refs}>
         <button onClick={() => setIsModalOpen(false)}>x</button>
-        {modalIdx === 2 ? (
+        {modalIdx === 1 ? (
           <MenuInfo menuInfoList={menuInfoList} setMenuInfoList={setMenuInfoList} />
         ) : (
           <ItemListConatiner onScroll={removeRequestModal}>
-            {(modalIdx === 0 ? dummyCafeList : dummyMenuList).map((item, idx) => (
+            {cafeMenuList.map((item, idx) => (
               <div onClick={() => handleItemClick(item)} key={`${item.cafeName} ${idx}`}>
                 <img src={item.imaPath} />
-                <span>{item[modalIdx === 0 ? 'cafeName' : 'drinkName']}</span>
+                <span>{item['drinkName']}</span>
               </div>
             ))}
           </ItemListConatiner>
@@ -136,22 +97,22 @@ export default function ApplicationModal(props) {
           <RequestListContainer className={animationName}>
             <button>aa</button>
             <div>
-              {dummyRequestList.map((request, idx) => (
+              {optionList.map((request, idx) => (
                 <RequestContainer
-                  key={`${request} ${idx}`}
+                  key={`${request.optionName} ${idx}`}
                   onClick={() => {
                     handleRequestClick(request);
                   }}
                   isSelected={requestList.includes(request)}
                 >
-                  <span>{request}</span>
+                  <span>{request.optionName}</span>
                 </RequestContainer>
               ))}
             </div>
           </RequestListContainer>
         )}
         <ButtonWrapper>
-          {modalIdx === 2 ? (
+          {modalIdx === 1 ? (
             <button onClick={() => setModalIdx(0)}>메뉴 추가하기</button>
           ) : (
             <button onClick={() => setModalIdx((prev) => (prev === 0 ? prev : prev - 1))}>

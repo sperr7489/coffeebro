@@ -16,8 +16,8 @@ exports.insertUser = async (connection, insertUserParams) => {
           VALUES (?,?,?,?,?,?,?);    
       `;
   const [insertUserRow] = await connection.query(
-    insertUserQuery,
-    insertUserParams
+      insertUserQuery,
+      insertUserParams
   );
   return insertUserRow;
 };
@@ -44,8 +44,8 @@ exports.CheckPasswd = async (connection, email) => {
         where email = ?;
     `;
   const [[signInCheckPasswdRow]] = await connection.query(
-    signInCheckPasswdQuery,
-    email
+      signInCheckPasswdQuery,
+      email
   );
   return signInCheckPasswdRow;
 };
@@ -57,25 +57,25 @@ exports.getUserShortInfo = async (connection, email) => {
     where email = ?;
   `;
   const [[getUserShortInfoRow]] = await connection.query(
-    getUserShortInfoQuery,
-    email
+      getUserShortInfoQuery,
+      email
   );
   return getUserShortInfoRow;
 };
 
 // Refresh 토큰 추가하기
 exports.insertRefreshToken = async (
-  connection,
-  userIdx,
-  refreshToken,
-  accessToken
+    connection,
+    userIdx,
+    refreshToken,
+    accessToken
 ) => {
   const insertRefreshTokenQuery = `
     insert into token(userIdx,refreshToken,accessToken) value(?,?,?);
   `;
   const [insertRefreshTokenRow] = await connection.query(
-    insertRefreshTokenQuery,
-    [userIdx, refreshToken, accessToken]
+      insertRefreshTokenQuery,
+      [userIdx, refreshToken, accessToken]
   );
 
   return insertRefreshTokenRow;
@@ -83,10 +83,10 @@ exports.insertRefreshToken = async (
 
 // 토큰 업데이트 하기
 exports.updateToken = async (
-  connection,
-  userIdx,
-  refreshToken,
-  accessToken
+    connection,
+    userIdx,
+    refreshToken,
+    accessToken
 ) => {
   const updateTokenQuery = `
   update token set refreshToken= ?, accessToken = ? 
@@ -108,8 +108,8 @@ exports.refreshTokenExist = async (connection, userIdx) => {
     ) as exist
 `;
   const [[refreshTokenExistRow]] = await connection.query(
-    refreshTokenExistQuery,
-    userIdx
+      refreshTokenExistQuery,
+      userIdx
   );
   return refreshTokenExistRow;
 };
@@ -121,8 +121,8 @@ exports.getRefreshToken = async (connection, accessToken) => {
     where accessToken = ?
   `;
   const [[getRefreshTokenRow]] = await connection.query(
-    getRefreshTokenQuery,
-    accessToken
+      getRefreshTokenQuery,
+      accessToken
   );
   return getRefreshTokenRow;
 };
@@ -141,11 +141,11 @@ exports.updateAccessToken = async (connection, id, accessToken) => {
 
 // 배달 대행 서비스 신청자 기입하기
 exports.insertServiceApplication = async (
-  connection,
-  applicantIdx,
-  cafeIdx,
-  receiptTime,
-  receiptPlace
+    connection,
+    applicantIdx,
+    cafeIdx,
+    receiptTime,
+    receiptPlace
 ) => {
   const insertServiceApplicationQuery = `
   insert into serviceApplication (
@@ -158,8 +158,8 @@ exports.insertServiceApplication = async (
   `;
 
   const [insertServiceApplicationRow] = await connection.query(
-    insertServiceApplicationQuery,
-    [applicantIdx, cafeIdx, receiptTime, receiptPlace]
+      insertServiceApplicationQuery,
+      [applicantIdx, cafeIdx, receiptTime, receiptPlace]
   );
 
   console.log("test : 더!");
@@ -168,10 +168,10 @@ exports.insertServiceApplication = async (
 
 // 배달 신청한 음료를 넣기
 exports.insertRequestDrink = async (
-  connection,
-  insertId,
-  drinkIdx,
-  optionList
+    connection,
+    insertId,
+    drinkIdx,
+    optionList
 ) => {
   const insertRequestDrinkQuery = `
   insert into requestDrinkList
@@ -181,8 +181,8 @@ exports.insertRequestDrink = async (
   `;
 
   const [insertRequestDrinkRow] = await connection.query(
-    insertRequestDrinkQuery,
-    [insertId, drinkIdx, optionList]
+      insertRequestDrinkQuery,
+      [insertId, drinkIdx, optionList]
   );
   return insertRequestDrinkRow;
 };
@@ -203,49 +203,15 @@ exports.insertRequestDrink = async (
 //   return insertRequestOptionRow;
 // };
 
-// 배달 대행 중에서 해당 유저가 배달 대행을 하겠다고 지원한 신청 내역들 가져오기
-/***
- * @todo : 배달  대행 지원 내역 가져오기 API 짜기
- *
- */
-exports.getServiceApplicationIdx = async (connection, userIdx) => {
-  const getServiceApplicationIdxQuery = `
-  select * from deliveryApplication 
-  where deliveryAgentIdx = ?
-  `;
-
-  const [getServiceApplicationIdxRow] = await connection.query(
-    getServiceApplicationIdxQuery,
-    userIdx
-  );
-  return getServiceApplicationIdxRow;
-};
-
 // 모든 ServiceApplicationIdx 가져오기
 exports.getServiceApplicationIdxList = async (connection) => {
   const getServiceApplicationIdxListQuery = `
     select * from serviceApplication;
   `;
   const [getServiceApplicationIdxListRow] = await connection.query(
-    getServiceApplicationIdxListQuery
+      getServiceApplicationIdxListQuery
   );
   return getServiceApplicationIdxListRow;
-};
-
-// 배달 서비스를 신청한 사람의 정보 가져오기
-exports.getApplicantInfo = async (connection, serviceApplicationIdx) => {
-  const getApplicantInfoQuery = `
-  select u.userIdx,u.userName,u.nickname,u.department,u.sex,u.studentId,u.applicantScore,u.userImg from serviceApplication sa 
-  left join user u on u.userIdx = sa.userIdx
-  where sa.serviceApplicationIdx = ?
-  ;
-  `;
-
-  const [getApplicantInfoRow] = await connection.query(
-    getApplicantInfoQuery,
-    serviceApplicationIdx
-  );
-  return getApplicantInfoRow;
 };
 
 // 자신이 신청한 모든 정보 가져오기
@@ -255,8 +221,8 @@ exports.getDeliveryInfos = async (connection, userIdx) => {
   where userIdx = ?
 `;
   const [getDeliveryInfosRow] = await connection.query(
-    getDeliveryInfosQuery,
-    userIdx
+      getDeliveryInfosQuery,
+      userIdx
   );
   return getDeliveryInfosRow;
 };
@@ -271,8 +237,8 @@ exports.getDeliveryInfo = async (connection, serviceApplicationIdx) => {
     where sa.serviceApplicationIdx = ?
   `;
   const [getDeliveryInfoQueryRow] = await connection.query(
-    getDeliveryInfoQuery,
-    serviceApplicationIdx
+      getDeliveryInfoQuery,
+      serviceApplicationIdx
   );
   return getDeliveryInfoQueryRow;
 };
@@ -286,33 +252,33 @@ exports.getOneDeliveryInfo = async (connection, serviceApplicationIdx) => {
     where rd.serviceApplicationIdx = ?   
   `;
   const [getOneDeliveryInfoRow] = await connection.query(
-    getOneDeliveryInfoQuery,
-    serviceApplicationIdx
+      getOneDeliveryInfoQuery,
+      serviceApplicationIdx
   );
   return getOneDeliveryInfoRow;
 };
 
 exports.insertDeliveryApply = async (
-  connection,
-  userIdx,
-  serviceApplicationIdx
+    connection,
+    userIdx,
+    serviceApplicationIdx
 ) => {
   const insertDeliveryApplyQuery = `
     insert into deliveryApplication(deliveryAgentIdx,serviceApplicationIdx)
     values(?,?)
   `;
   const [insertDeliveryApplyRow] = await connection.query(
-    insertDeliveryApplyQuery,
-    [userIdx, serviceApplicationIdx]
+      insertDeliveryApplyQuery,
+      [userIdx, serviceApplicationIdx]
   );
   return insertDeliveryApplyRow;
 };
 
 // 내가 이미 신청한 배달 서비스 요청인지 확인하기
 exports.existsDeliverApply = async (
-  connection,
-  userIdx,
-  serviceApplicationIdx
+    connection,
+    userIdx,
+    serviceApplicationIdx
 ) => {
   const existsDeliverApplyQuery = `
   select exists (
@@ -320,8 +286,8 @@ exports.existsDeliverApply = async (
     ) as exist
   `;
   const [existsDeliverApplyRow] = await connection.query(
-    existsDeliverApplyQuery,
-    [serviceApplicationIdx, userIdx]
+      existsDeliverApplyQuery,
+      [serviceApplicationIdx, userIdx]
   );
   return existsDeliverApplyRow;
 };
@@ -347,21 +313,15 @@ exports.getApplyInfos = async (connection, userIdx) => {
 
 // 배달 서비스 신청 수락/거절 하기 => 신청 등록자 입장에서
 exports.updateStatusOnAccept = async (
-  connection,
-  serviceApplicationIdx,
-  acceptFlag,
-  agentIdx
+    connection,
+    serviceApplicationIdx,
+    acceptFlag,
+    agentIdx
 ) => {
-  // 서비스 신청을 거절하면 serviceApplication 쪽의 status=0
-  // 서비스 신청을 수락하면 둘 다 1로 바뀜.
   const updateStatusOnAcceptQuery = [
     `update deliveryApplication set status = ${acceptFlag} where serviceApplicationIdx = ${serviceApplicationIdx} and deliveryAgentIdx = ${agentIdx};`,
-    `update serviceApplication set status =${
-      acceptFlag == 1 ? acceptFlag : 0
-    } where serviceApplicationIdx = ${serviceApplicationIdx}  ;`,
+    `update serviceApplication set status =${acceptFlag} where serviceApplicationIdx = ${serviceApplicationIdx}  ;`,
   ];
-
-  // 수락되었으면 다른 신청자들은 전부 거절로 할 수 있도록 한다.
   if (acceptFlag == 1) {
     const updateOtherStatusQuery = `
     update deliveryApplication set status = -1 where serviceApplicationIdx = ${serviceApplicationIdx} and deliveryAgentIdx != ${agentIdx};
@@ -371,10 +331,10 @@ exports.updateStatusOnAccept = async (
 
   let updateStatusOnAcceptRow = [];
   await Promise.all(
-    updateStatusOnAcceptQuery.map(async (v, i) => {
-      const [result] = await connection.query(v);
-      updateStatusOnAcceptRow.push(result);
-    })
+      updateStatusOnAcceptQuery.map(async (v, i) => {
+        const [result] = await connection.query(v);
+        updateStatusOnAcceptRow.push(result);
+      })
   );
 
   return updateStatusOnAcceptRow;
@@ -402,8 +362,8 @@ exports.getMostVisitedCafeIdx = async (connection, userIdx) => {
     LIMIT 3;
   `;
   const [getMostVisitedCafeIdxRow] = await connection.query(
-    getMostVisitedCafeIdxQuery,
-    userIdx
+      getMostVisitedCafeIdxQuery,
+      userIdx
   );
   return getMostVisitedCafeIdxRow;
 };
@@ -416,17 +376,17 @@ exports.nicknameCheck = async (connection, nickname) => {
       ) as exist
   `;
   const [[nicknameCheckRow]] = await connection.query(
-    nicknameCheckQuery,
-    nickname
+      nicknameCheckQuery,
+      nickname
   );
   return nicknameCheckRow.exist;
 };
 
 // 이미 신청한 내역인지 확인
 exports.checkAlreadyApply = async (
-  connection,
-  serviceApplicationIdx,
-  userIdx
+    connection,
+    serviceApplicationIdx,
+    userIdx
 ) => {
   const checkAlreadyApplyQuery = `
   select exists ( select * from deliveryApplication where serviceApplicationIdx = ? and deliveryAgentIdx = ?) as exist
@@ -447,21 +407,196 @@ exports.getDeliveryAgents = async (connection, serviceApplicationIdx) => {
 
   `;
   const [getDeliverAgents] = await connection.query(
-    getDeliverAgentsQuery,
-    serviceApplicationIdx
+      getDeliverAgentsQuery,
+      serviceApplicationIdx
   );
   return getDeliverAgents;
 };
 
-// 배달 대행자에 대한 평점 넣기
-exports.updateAgentScore = async (connection, userIdx) => {
-  const updateAgentScoreQuery = `
-    update user set deliveryAgentScore = deliveryAgentScore + 5
-    where userIdx = ?;
-    `;
-  const [updateAgentScoreRow] = await connection.query(
-    updateAgentScoreQuery,
-    userIdx
+// 유저의 정보(닉네임과 사진) 수정
+exports.updateUserInfo = async (connection, userIdx, nickname, userImg) => {
+  const updateUserInfoQuery = `
+  UPDATE User
+  SET nickname = ?, userImg = ?
+  WHERE userIdx = ?
+  `;
+  const [updateUserInfoRow] = await connection.query(
+      updateUserInfoQuery,
+      [nickname, userImg, userIdx]
   );
-  return updateAgentScoreRow;
+  console.log(userIdx,nickname,userImg)
+  return updateUserInfoRow;
+};
+
+// 배달 대행 신청의 상태 완료로 바꾸기
+exports.updateDeliveryApplicationStatus = async (connection, deliveryApplicationIdx) => {
+  const updateDeliveryApplicationStatusQuery = `
+  UPDATE deliveryApplication
+  SET status = 1
+  WHERE deliveryApplicationIdx = ?;
+  `;
+  const [updateDeliveryApplicationStatusRow] = await connection.query(
+      updateDeliveryApplicationStatusQuery,
+      [deliveryApplicationIdx, deliveryApplicationIdx]
+  );
+  return updateDeliveryApplicationStatusRow;
+};
+
+// 서비스 신청의 상태 완료로 바꾸기
+exports.updateServiceApplicationStatus = async (connection, deliveryApplicationIdx) => {
+  const updateServiceApplicationStatusQuery = `
+  UPDATE serviceApplication
+  SET status = 2
+  WHERE serviceApplicationIdx = (SELECT serviceApplicationIdx
+                                FROM deliveryApplication
+                                WHERE deliveryApplicationIdx = ?);
+  `;
+  const [updateServiceApplicationStatusRow] = await connection.query(
+      updateServiceApplicationStatusQuery,
+      [deliveryApplicationIdx, deliveryApplicationIdx]
+  );
+  return updateServiceApplicationStatusRow;
+};
+
+// 배달 대행 서비스의 상태 받아오기
+exports.getDeliveryApplicationStatus = async (connection, deliveryApplicationIdx) => {
+  const getDeliveryApplicationStatusQuery = `
+  select status from deliveryApplication
+  where deliveryApplicationIdx = ?
+  `;
+  const [[getDeliveryApplicationStatusRow]] = await connection.query(
+      getDeliveryApplicationStatusQuery,
+      deliveryApplicationIdx
+  );
+  return getDeliveryApplicationStatusRow;
+};
+
+// 배달 대행 신청의 대행자 userIdx 조회
+exports.getDeliveryApplicationUser = async (connection, deliveryApplicationIdx) => {
+  const getDeliveryApplicationUserQuery = `
+  select deliveryAgentIdx from deliveryApplication
+  where deliveryApplicationIdx = ?
+  `;
+  const [[getDeliveryApplicationUserRow]] = await connection.query(
+      getDeliveryApplicationUserQuery,
+      deliveryApplicationIdx
+  );
+  return getDeliveryApplicationUserRow;
+};
+
+// 배달 대행 신청의 대상(서비스 신청자) userIdx 조회
+exports.getServiceApplicationUser = async (connection, deliveryApplicationIdx) => {
+  const getServiceApplicationUserQuery = `
+  SELECT userIdx
+  FROM serviceApplication
+  WHERE serviceApplicationIdx = (SELECT serviceApplicationIdx
+                                 FROM deliveryApplication
+                                 WHERE deliveryApplicationIdx = ?);
+  `;
+  const [[getServiceApplicationUserRow]] = await connection.query(
+      getServiceApplicationUserQuery,
+      deliveryApplicationIdx
+  );
+  return getServiceApplicationUserRow;
+};
+
+// 유저한테 알림 생성
+exports.insertNotification = async (connection, userIdx, message) => {
+  const insertNotificationQuery = `
+  insert into notification(userIdx, message)
+  values(?, ?);
+  `;
+  const [insertNotificationRow] = await connection.query(
+      insertNotificationQuery,
+      [userIdx, message]
+  );
+  return insertNotificationRow;
+};
+
+// 유저의 모든 아직 읽지 않은 알림 정보 가져오기
+exports.getNotifications = async (connection, userIdx) => {
+  const getNotificationsQuery = `
+  SELECT notificationIdx, message, createdAt
+  FROM notification
+  WHERE userIdx = ? and readOrNot = 0;
+  `;
+  const [getNotificationsRow] = await connection.query(
+      getNotificationsQuery,
+      userIdx
+  );
+  return getNotificationsRow;
+};
+
+// 알림 읽음 처리
+exports.updateNotification = async (connection, notificationIdx) => {
+  const getNotificationsQuery = `
+  Update notification
+  set readOrNot=1 
+  WHERE notificationIdx = ?
+  `;
+  const [updateNotificationRow] = await connection.query(
+      getNotificationsQuery,
+      notificationIdx
+  );
+  return updateNotificationRow;
+};
+
+// 서비스 신청자 평점 개수 늘리기
+exports.updateApplicantScoreCnt = async (connection, applicantIdx) => {
+  const updateApplicantScoreCntQuery = `
+    INSERT INTO applicantScoreCnt (userIdx, count)
+    VALUES (?, 1)
+    ON DUPLICATE KEY
+    UPDATE count=count+1;
+    `;
+  const [updateApplicantScoreCntRow] = await connection.query(
+      updateApplicantScoreCntQuery,
+      applicantIdx
+  );
+  return updateApplicantScoreCntRow;
+};
+
+// 서비스 신청자에 대한 평점 부여
+exports.updateApplicantScore = async (connection, applicantIdx, score) => {
+  const updateApplicantScoreQuery = `
+    UPDATE user
+    SET applicantScore = (applicantScore *
+    ((SELECT count FROM applicantScoreCnt WHERE userIdx = ?)-1) + ?)
+    / (SELECT count FROM applicantScoreCnt WHERE userIdx = ?) WHERE userIdx=?;
+    `;
+  const [updateApplicantScoreRow] = await connection.query(
+      updateApplicantScoreQuery,
+      [applicantIdx,score,applicantIdx,applicantIdx]
+  );
+  return updateApplicantScoreRow;
+};
+
+// 배달 대행자 평점 개수 늘리기
+exports.updateDeliveryAgentScoreCnt = async (connection, deliveryAgentIdx) => {
+  const updateDeliveryAgentScoreCntQuery = `
+    INSERT INTO deliveryAgentScoreCnt (userIdx, count)
+    VALUES (?, 1)
+    ON DUPLICATE KEY
+    UPDATE count=count+1;
+    `;
+  const [updateDeliveryAgentScoreCntRow] = await connection.query(
+      updateDeliveryAgentScoreCntQuery,
+      deliveryAgentIdx
+  );
+  return updateDeliveryAgentScoreCntRow;
+};
+
+// 배달 대행자에 대한 평점 부여
+exports.updateDeliveryAgentScore = async (connection, deliveryAgentIdx, score) => {
+  const updateDeliveryAgentScoreQuery = `
+    UPDATE user
+    SET deliveryAgentScore = (deliveryAgentScore *
+    ((SELECT count FROM deliveryAgentScoreCnt WHERE userIdx = ?)-1) + ?)
+    / (SELECT count FROM deliveryAgentScoreCnt WHERE userIdx = ?) WHERE userIdx=?;
+    `;
+  const [updateDeliveryAgentScoreRow] = await connection.query(
+      updateDeliveryAgentScoreQuery,
+      [deliveryAgentIdx,score,deliveryAgentIdx,deliveryAgentIdx]
+  );
+  return updateDeliveryAgentScoreRow;
 };

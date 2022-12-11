@@ -73,4 +73,22 @@ router.get("/mypage", verifyAccessToken, userController.getMyPageInfo);
 //닉네임 존재 여부 확인
 router.post("/nicknameCheck", userController.nicknameCheck);
 
+// 마이페이지 정보(사진, 닉네임) 수정
+router.put("/",verifyAccessToken,userController.updateUserInfo);
+
+//배달 대행 완료 및 알림 생성
+router.post("/delivery/complete/:deliveryApplicationIdx",verifyAccessToken,userController.completeDelivery);
+
+//유저의 모든 아직 읽지 않은 알림 정보 가져오기
+router.get("/notifications", verifyAccessToken, userController.getNotificationAll);
+
+//알림 읽음 처리
+router.post("/notification/:notificationIdx",verifyAccessToken, userController.updateNotification);
+
+// 서비스 신청자에 대한 평점 넣기
+router.post("/rate/applicant",verifyAccessToken,userController.updateApplicantScore);
+
+// 배달 대행자에 대한 평점 넣기
+router.post("/rate/agent",verifyAccessToken,userController.updateDeliveryAgentScore);
+
 module.exports = router;

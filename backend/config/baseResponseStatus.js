@@ -1,11 +1,6 @@
 module.exports = {
   //성공
   SUCCESS: { isSuccess: true, code: 1000, message: "성공" }, //조회
-  PLEASE_CHECK_SERVERCODE: {
-    isSuccess: true,
-    code: 1000,
-    message: "chatController에 있는 io 이벤트 emit을 꼭 확인해주세요!",
-  }, //조회
   SIGN_UP_SUCCESS: {
     isSuccess: true,
     code: 1100,
@@ -184,21 +179,19 @@ module.exports = {
   NICKNAME_INVALID: {
     isSuccess: false,
     code: 2016,
-    message:
-      "닉네임은 2자 이상 8자 이하, 영어 또는 숫자 또는 한글로 구성되어야 합니다. ",
+    message: "닉네임은 2자 이상 8자 이하, 영어 또는 숫자 또는 한글로 구성되어야 합니다. ",
   },
 
-  USER_NOT_AGENT: {
+  NOT_MY_DELIVERY_APPLICATION:{
     isSuccess: false,
     code: 2017,
-    message:
-      "해당 유저는 배달 대행자가 아닙니다. 배달 완료는 배달 대행자가 해주세요!",
+    message: "자신이 신청한 배달 대행이 아닙니다.",
   },
-  USER_NOT_APPLICANT: {
+  ALREADY_COMPLETED_DELIVERY:{
     isSuccess: false,
-    code: 2017,
-    message:
-      "해당 유저는 배달 신청자가 아닙니다. 배달 대행자에 대한 평가는 신청자만 남길 수 있습니다!",
+    code: 2018,
+    message: "이미 완료된 배달 입니다.",
   },
+
   DB_ERROR: { isSuccess: false, code: 4000, message: "데이터 베이스 에러" },
 };

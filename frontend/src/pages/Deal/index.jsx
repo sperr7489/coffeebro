@@ -9,7 +9,7 @@ import Deliver from './components/Deliver';
 import style from './index.module.css';
 
 const Deal = () => {
-  const [cookies, setCookie, removeCookie] = useCookies(['id'])
+  const [cookies, setCookie, removeCookie] = useCookies(['id']);
   const [place, setPlace] = useState(0);
   const tabBar = [{ name: '배달신청' }, { name: '배달대행' }];
   const [pos, setPos] = useState(0);
@@ -32,7 +32,7 @@ const Deal = () => {
             ))}
           </ul>
         </div>
-        {place === 0 ? <Apply cookies={cookies.id}/> : <Deliver cookies={cookies.id}/>}
+        {place === 0 ? <Apply cookies={cookies.id} /> : <Deliver cookies={cookies.id} />}
       </div>
     </div>
   );
