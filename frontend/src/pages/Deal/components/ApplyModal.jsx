@@ -1,46 +1,52 @@
-import axios from 'axios'
+import axios from 'axios';
 import React from 'react';
-import style from '../index.module.css';
+import style from './index.module.css';
 import { useLayoutEffect } from 'react';
 import { useState } from 'react';
 
-const ApplyModal = ({ setOpen, list, modalindex }) => {
-  const [data, setData] = useState([])
-
+const ApplyModal = ({ setOpen, list, modalIdx }) => {
   const closeModal = () => {
     setOpen(false);
   };
 
-  useLayoutEffect(()=> {
-    let param = list[modalIdx].serviceApplicationIdx
-    
-    const getData = () => {
-        axios.get(`http://localhost:3000/user/delivery/info/${param}`,{
-        headers:{
-          accessToken: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzUsImlhdCI6MTY3MDMxNjM1NSwiZXhwIjoxNjcwNDAyNzU1fQ.QigaN31j2-SDY3KxcUCTogog1I5FGH2Xf0lnPDT9eLE"
-        }
-        })
-        .then(response => {
-          console.log(response)
-        })
-        .catch(error => {
-          console.log(error)
-        })
-        }
-        getData()
-    },[])
-
   return (
     <div className={style.container}>
-      <div className={style.closeOut}>
-        <input className={style.close} type="button" value="x" onClick={closeModal} />
+      <div className={style.upperContainer}>
+        <input
+          className={style.close}
+          type="button"
+          value="X"
+          onClick={() => {
+            setOpen(false);
+          }}
+        />
       </div>
-      <div>
-        배달 요청 시각: {list[modalIdx].receiptTime}
-      </div>
-      <div>
-        배달 수령 장소: {list[modalIdx].receiptPlace}
-      </div>
+      {list[modalIdx].deliveryInfo.map((data) => (
+        <div className={style.innerContainer}>
+          <div>
+            <img className={style.modalImg} src={data.drinkImage} />
+          </div>
+          <div>
+            <div>
+              <span>주문 음료 : {data.drinkName}</span>
+            </div>
+            <div>
+              <ul>
+                {data.optionList.map((opt) => (
+                  <li>{opt}</li>
+                ))}
+              </ul>
+            </div>
+            <div>
+              <span>음료 가격: {data.coffeePrice}</span>
+              <br />
+              <span>옵션 가격: {data.optionPrice}</span>
+              <br />
+              <span>{`주문 총 금액: ${data.optionPrice + data.coffeePrice}`}</span>
+            </div>
+          </div>
+        </div>
+      ))}
     </div>
   );
 };

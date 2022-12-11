@@ -1,0 +1,15 @@
+.menuOut{
+    position: absolute;
+    top: 35px;
+    border: 1px solid black;
+    z-index: 999;
+    background-color: white;
+    padding: 1% 0;
+    text-align: center;
+}
+
+.noDot{
+    list-style: none;   
+    padding: 10px 0;
+    margin-right: 40px;
+}
