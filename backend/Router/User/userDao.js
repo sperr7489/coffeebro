@@ -215,8 +215,8 @@ exports.getServiceApplicationIdx = async (connection, userIdx) => {
   `;
 
   const [getServiceApplicationIdxRow] = await connection.query(
-      getServiceApplicationIdxQuery,
-      userIdx
+    getServiceApplicationIdxQuery,
+    userIdx
   );
   return getServiceApplicationIdxRow;
 };
@@ -300,7 +300,7 @@ exports.existsDeliverApply = async (
 ) => {
   const existsDeliverApplyQuery = `
   select exists (
-    select * from deliveryApplication where  serviceApplicationIdx= ? and deliveryAgentIdx = ? ans status = 0
+    select * from deliveryApplication where  serviceApplicationIdx= ? and deliveryAgentIdx = ? and status = 0
     ) as exist
   `;
   const [existsDeliverApplyRow] = await connection.query(
@@ -438,30 +438,37 @@ exports.updateUserInfo = async (connection, userIdx, nickname, userImg) => {
   SET nickname = ?, userImg = ?
   WHERE userIdx = ?
   `;
-  const [updateUserInfoRow] = await connection.query(
-      updateUserInfoQuery,
-      [nickname, userImg, userIdx]
-  );
-  console.log(userIdx,nickname,userImg)
+  const [updateUserInfoRow] = await connection.query(updateUserInfoQuery, [
+    nickname,
+    userImg,
+    userIdx,
+  ]);
+  console.log(userIdx, nickname, userImg);
   return updateUserInfoRow;
 };
 
 // 배달 대행 신청의 상태 완료로 바꾸기
-exports.updateDeliveryApplicationStatus = async (connection, deliveryApplicationIdx) => {
+exports.updateDeliveryApplicationStatus = async (
+  connection,
+  deliveryApplicationIdx
+) => {
   const updateDeliveryApplicationStatusQuery = `
   UPDATE deliveryApplication
   SET status = 1
   WHERE deliveryApplicationIdx = ?;
   `;
   const [updateDeliveryApplicationStatusRow] = await connection.query(
-      updateDeliveryApplicationStatusQuery,
-      [deliveryApplicationIdx, deliveryApplicationIdx]
+    updateDeliveryApplicationStatusQuery,
+    [deliveryApplicationIdx, deliveryApplicationIdx]
   );
   return updateDeliveryApplicationStatusRow;
 };
 
 // 서비스 신청의 상태 완료로 바꾸기
-exports.updateServiceApplicationStatus = async (connection, deliveryApplicationIdx) => {
+exports.updateServiceApplicationStatus = async (
+  connection,
+  deliveryApplicationIdx
+) => {
   const updateServiceApplicationStatusQuery = `
   UPDATE serviceApplication
   SET status = 2
@@ -470,40 +477,49 @@ exports.updateServiceApplicationStatus = async (connection, deliveryApplicationI
                                 WHERE deliveryApplicationIdx = ?);
   `;
   const [updateServiceApplicationStatusRow] = await connection.query(
-      updateServiceApplicationStatusQuery,
-      [deliveryApplicationIdx, deliveryApplicationIdx]
+    updateServiceApplicationStatusQuery,
+    [deliveryApplicationIdx, deliveryApplicationIdx]
   );
   return updateServiceApplicationStatusRow;
 };
 
 // 배달 대행 서비스의 상태 받아오기
-exports.getDeliveryApplicationStatus = async (connection, deliveryApplicationIdx) => {
+exports.getDeliveryApplicationStatus = async (
+  connection,
+  deliveryApplicationIdx
+) => {
   const getDeliveryApplicationStatusQuery = `
   select status from deliveryApplication
   where deliveryApplicationIdx = ?
   `;
   const [[getDeliveryApplicationStatusRow]] = await connection.query(
-      getDeliveryApplicationStatusQuery,
-      deliveryApplicationIdx
+    getDeliveryApplicationStatusQuery,
+    deliveryApplicationIdx
   );
   return getDeliveryApplicationStatusRow;
 };
 
 // 배달 대행 신청의 대행자 userIdx 조회
-exports.getDeliveryApplicationUser = async (connection, deliveryApplicationIdx) => {
+exports.getDeliveryApplicationUser = async (
+  connection,
+  deliveryApplicationIdx
+) => {
   const getDeliveryApplicationUserQuery = `
   select deliveryAgentIdx from deliveryApplication
   where deliveryApplicationIdx = ?
   `;
   const [[getDeliveryApplicationUserRow]] = await connection.query(
-      getDeliveryApplicationUserQuery,
-      deliveryApplicationIdx
+    getDeliveryApplicationUserQuery,
+    deliveryApplicationIdx
   );
   return getDeliveryApplicationUserRow;
 };
 
 // 배달 대행 신청의 대상(서비스 신청자) userIdx 조회
-exports.getServiceApplicationUser = async (connection, deliveryApplicationIdx) => {
+exports.getServiceApplicationUser = async (
+  connection,
+  deliveryApplicationIdx
+) => {
   const getServiceApplicationUserQuery = `
   SELECT userIdx
   FROM serviceApplication
@@ -512,8 +528,8 @@ exports.getServiceApplicationUser = async (connection, deliveryApplicationIdx) =
                                  WHERE deliveryApplicationIdx = ?);
   `;
   const [[getServiceApplicationUserRow]] = await connection.query(
-      getServiceApplicationUserQuery,
-      deliveryApplicationIdx
+    getServiceApplicationUserQuery,
+    deliveryApplicationIdx
   );
   return getServiceApplicationUserRow;
 };
@@ -525,8 +541,8 @@ exports.insertNotification = async (connection, userIdx, message) => {
   values(?, ?);
   `;
   const [insertNotificationRow] = await connection.query(
-      insertNotificationQuery,
-      [userIdx, message]
+    insertNotificationQuery,
+    [userIdx, message]
   );
   return insertNotificationRow;
 };
@@ -539,8 +555,8 @@ exports.getNotifications = async (connection, userIdx) => {
   WHERE userIdx = ? and readOrNot = 0;
   `;
   const [getNotificationsRow] = await connection.query(
-      getNotificationsQuery,
-      userIdx
+    getNotificationsQuery,
+    userIdx
   );
   return getNotificationsRow;
 };
@@ -553,8 +569,8 @@ exports.updateNotification = async (connection, notificationIdx) => {
   WHERE notificationIdx = ?
   `;
   const [updateNotificationRow] = await connection.query(
-      getNotificationsQuery,
-      notificationIdx
+    getNotificationsQuery,
+    notificationIdx
   );
   return updateNotificationRow;
 };
@@ -568,8 +584,8 @@ exports.updateApplicantScoreCnt = async (connection, applicantIdx) => {
     UPDATE count=count+1;
     `;
   const [updateApplicantScoreCntRow] = await connection.query(
-      updateApplicantScoreCntQuery,
-      applicantIdx
+    updateApplicantScoreCntQuery,
+    applicantIdx
   );
   return updateApplicantScoreCntRow;
 };
@@ -583,8 +599,8 @@ exports.updateApplicantScore = async (connection, applicantIdx, score) => {
     / (SELECT count FROM applicantScoreCnt WHERE userIdx = ?) WHERE userIdx=?;
     `;
   const [updateApplicantScoreRow] = await connection.query(
-      updateApplicantScoreQuery,
-      [applicantIdx,score,applicantIdx,applicantIdx]
+    updateApplicantScoreQuery,
+    [applicantIdx, score, applicantIdx, applicantIdx]
   );
   return updateApplicantScoreRow;
 };
@@ -598,14 +614,18 @@ exports.updateDeliveryAgentScoreCnt = async (connection, deliveryAgentIdx) => {
     UPDATE count=count+1;
     `;
   const [updateDeliveryAgentScoreCntRow] = await connection.query(
-      updateDeliveryAgentScoreCntQuery,
-      deliveryAgentIdx
+    updateDeliveryAgentScoreCntQuery,
+    deliveryAgentIdx
   );
   return updateDeliveryAgentScoreCntRow;
 };
 
 // 배달 대행자에 대한 평점 부여
-exports.updateDeliveryAgentScore = async (connection, deliveryAgentIdx, score) => {
+exports.updateDeliveryAgentScore = async (
+  connection,
+  deliveryAgentIdx,
+  score
+) => {
   const updateDeliveryAgentScoreQuery = `
     UPDATE user
     SET deliveryAgentScore = (deliveryAgentScore *
@@ -613,8 +633,8 @@ exports.updateDeliveryAgentScore = async (connection, deliveryAgentIdx, score) =
     / (SELECT count FROM deliveryAgentScoreCnt WHERE userIdx = ?) WHERE userIdx=?;
     `;
   const [updateDeliveryAgentScoreRow] = await connection.query(
-      updateDeliveryAgentScoreQuery,
-      [deliveryAgentIdx,score,deliveryAgentIdx,deliveryAgentIdx]
+    updateDeliveryAgentScoreQuery,
+    [deliveryAgentIdx, score, deliveryAgentIdx, deliveryAgentIdx]
   );
   return updateDeliveryAgentScoreRow;
 };
