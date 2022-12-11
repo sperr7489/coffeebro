@@ -2,7 +2,7 @@ import { Route, Routes } from 'react-router-dom';
 import ApplicationPage from './pages/Application';
 import ChatPage from './pages/Chat';
 import MainPage from './pages/Main';
-import MyPage from './pages/Mypage';
+import MyPage from './pages/MyPage';
 import Header from './components/Header';
 
 import Deal from './pages/Deal';

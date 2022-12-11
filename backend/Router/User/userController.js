@@ -283,3 +283,58 @@ exports.nicknameCheck = async (req, res) => {
 
   return res.send(basicResponse(baseResponseStatus.NICKNAME_CONFIRM_SUCCESS));
 };
+
+// 마이페이지 정보(사진, 닉네임) 수정
+exports.updateUserInfo = async (req, res) => {
+  const userIdx = req.userIdx;
+  const {nickname,userImg} = req.body;
+
+  if (!nickname || !userImg)
+    return res.send(basicResponse(baseResponseStatus.PARAMS_NOT_EXACT));
+
+  const updateUserInfoResult = await userService.updateUserInfo(userIdx,nickname,userImg);
+
+  return res.send(updateUserInfoResult);
+}
+
+// 배달 대행 완료 및 알림 생성
+exports.completeDelivery = async (req, res) =>{
+  const userIdx = req.userIdx;
+  const {deliveryApplicationIdx}= req.params;
+
+  const completeDeliveryResult = await userService.updateServiceApplicationStatus(userIdx,deliveryApplicationIdx);
+
+  return res.send(completeDeliveryResult);
+}
+
+// 유저의 모든 아직 읽지 않은 알림 정보 가져오기
+exports.getNotificationAll = async (req, res) => {
+  const userIdx = req.userIdx;
+
+  const getNotificationsResult = await userProvider.getNotifications(userIdx);
+  return res.send(resultResponse(baseResponseStatus.SUCCESS, getNotificationsResult));
+};
+
+// 알림 읽음 처리
+exports.updateNotification = async (req, res) => {
+  const {notificationIdx}= req.params;
+
+  const updateNotificationResult = await userService.updateNotification(notificationIdx);
+  return res.send(updateNotificationResult);
+};
+
+// 서비스 신청자에 대한 평점 부여
+exports.updateApplicantScore = async (req, res) => {
+  const {applicantIdx,score}= req.body;
+
+  const updateApplicantScoreResult = await userService.updateApplicantScore(applicantIdx,score);
+  return res.send(updateApplicantScoreResult);
+};
+
+// 배달 대행자에 대한 평점 부여
+exports.updateDeliveryAgentScore = async (req, res) => {
+  const {deliveryAgentIdx,score}= req.body;
+
+  const updateDeliveryAgentScoreResult = await userService.updateDeliveryAgentScore(deliveryAgentIdx,score);
+  return res.send(updateDeliveryAgentScoreResult);
+};

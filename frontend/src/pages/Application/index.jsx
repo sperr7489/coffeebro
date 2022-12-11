@@ -1,17 +1,28 @@
 import { forwardRef, useEffect, useRef, useState } from 'react';
 import Button from '../../components/Button';
-import Header from '../../components/Header';
 import ApplicationModal from './components/Modal';
-import { cafeList, hourList, minuteList } from '../../utils/constants';
+import { hourList, minuteList } from '../../utils/constants';
 import { CafeSelect, Container, MainForm, TimeContainer } from './index.style';
 import MenuInfo from './components/MenuInfo';
+import axios from 'axios';
 import LoginCheck from '../Login/components/LoginCheck';
+import { api, authApi } from '../../../axios.config';
 
 export default function ApplicationPage() {
   const [isAm, setisAm] = useState(true);
   const [menuList, setMenuList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [cafeList, setCafeList] = useState([]);
+  const [cafeIdx, setCafeIdx] = useState(1);
   const modalRef = useRef();
+
+  const handleCafeChange = (e) => {
+    setCafeIdx(e.target.value);
+  };
+  useEffect(() => {
+    setMenuList([]);
+  }, [cafeIdx]);
+
   const clickEvent = (e) => {
     console.log(modalRef.current);
     if (isModalOpen && !modalRef.current?.contains(e.target)) {
@@ -21,40 +32,69 @@ export default function ApplicationPage() {
   const toggleIsAm = () => {
     setisAm((prev) => !prev);
   };
+  useEffect(() => {
+    async function getData() {
+      api.get('/cafe').then((res) => {
+        setCafeList(res.data.result);
+      });
+    }
+    getData();
+  }, []);
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log(e.target);
+    const drinkInfos = [];
+    for (const idx in menuList) {
+      for (let i = 0; i < menuList[idx].num; i++) {
+        drinkInfos.push({
+          drinkIdx: menuList[idx].menu.drinkIdx,
+          optionList: menuList[idx].request,
+        });
+      }
+    }
+    const date = new Date();
+    const hour = e.target.hour.value;
+    const minute = e.target.minute.value;
+
+    authApi
+      .post(`/user/delivery`, {
+        cafeIdx: e.target.cafe.value,
+        receiptTime: `${date.getFullYear()}/${date.getMonth()}/${date.getDate()} ${
+          isAm ? `${hour.length === 1 ? '0' : ''}${hour}` : Number(hour) + 12
+        }:${minute.length === 1 ? '0' : ''}${minute}`,
+        receiptPlace: e.target.location.value,
+        drinkInfos: drinkInfos,
+      })
+      .then((res) => {
+        if (res.data.isSuccess) {
+          alert('등록성공');
+        }
+        console.log(res);
+      });
   };
-  useEffect(() => {
-    // console.log(isModalOpen);
-    // window.addEventListener("click", clickEvent);
-    // return () => {
-    // 	window.removeEventListener("click", clickEvent);
-    // };
-  }, [isModalOpen]);
+
   return (
     <Container>
       <LoginCheck />
       <MainForm onSubmit={handleSubmit}>
         <label htmlFor="cafe">카페</label>
-        <CafeSelect name="cafe">
-          {cafeList.map((cafeName) => (
-            <option key={cafeName} value={cafeName}>
-              {cafeName}
+        <CafeSelect name="cafe" onChange={handleCafeChange}>
+          {cafeList.map((cafe, idx) => (
+            <option key={`${cafe.cafeName} ${idx}`} value={cafe.cafeIdx}>
+              {cafe.cafeName}
             </option>
           ))}
         </CafeSelect>
         <TimeContainer>
           <div>
-            <label htmlFor="cafe">희망 시간 대</label>
+            <label>희망 시간 대</label>
             <button type="button" onClick={toggleIsAm}>
               {isAm ? '오전' : '오후'}
             </button>
           </div>
           <div>
             <select name="hour" id="hour">
-              {hourList.map((hour) => (
-                <option key={hour} value={hour}>
+              {hourList.map((hour, idx) => (
+                <option key={`${hour} ${idx}`} value={hour}>
                   {hour}
                 </option>
               ))}
@@ -63,8 +103,8 @@ export default function ApplicationPage() {
           </div>
           <div>
             <select name="minute" id="minute">
-              {minuteList.map((minute) => (
-                <option key={minute} value={minute}>
+              {minuteList.map((minute, idx) => (
+                <option key={`${minute} ${idx}`} value={minute}>
                   {minute}
                 </option>
               ))}
@@ -86,9 +126,6 @@ export default function ApplicationPage() {
           }}
         />
         <MenuInfo menuInfoList={menuList} setMenuInfoList={setMenuList} />
-        {/* {menuList.map((menu) => (
-					<div>{menu.cafe}</div>
-				))} */}
         <Button handleClick={() => {}} content="신청하기" />
       </MainForm>
       {isModalOpen && (
@@ -97,6 +134,7 @@ export default function ApplicationPage() {
           setMenuList={setMenuList}
           menuList={menuList}
           setIsModalOpen={setIsModalOpen}
+          cafeIdx={cafeIdx}
         />
       )}
     </Container>
