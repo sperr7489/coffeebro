@@ -8,13 +8,14 @@ const Deliver = ({cookies}) => {
 
   useEffect(() => {
     const getDeliverList = () => {
-      axios.get('http://localhost:3000/user/apply/delivery/infos',{
+      axios.get('http://localhost:3001/user/apply/delivery/infos',{
         headers:{
           accessToken: cookies
         }
       })
       .then(response => {
         setList(response.data.result)
+        console.log(response.data)
       })
       .catch(error => {
         console.log(error)
@@ -74,6 +75,7 @@ const Deliver = ({cookies}) => {
       </div>
     </div>
   );
+  return <></>
 };
 
 export default Deliver;

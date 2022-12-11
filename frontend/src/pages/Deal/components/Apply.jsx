@@ -20,7 +20,7 @@ const Apply = ({ cookies }) => {
 
   const registButton = (deliveryAgentIdx, serviceApplicationIdx) => {
     authApi
-      .post(`http://localhost:3000/user/apply/acception/${serviceApplicationIdx}`, {
+      .post(`http://localhost:3001/user/apply/acception/${serviceApplicationIdx}`, {
         params: {
           acceptFlag: 1,
           deliveryAgentIdx: deliveryAgentIdx,
@@ -59,7 +59,7 @@ const Apply = ({ cookies }) => {
 
     earlyGet();
     cafeList();
-  })
+  }, [])
 
   return (
     <div className={style.contentOutter}>

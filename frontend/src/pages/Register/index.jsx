@@ -197,7 +197,7 @@ const Register = () => {
           nickname: nick,
           sex: sex,
           studentId: Number(id),
-          userImg: ""
+          userImg: img
         })
         .then((response) => {
           console.log(response);
