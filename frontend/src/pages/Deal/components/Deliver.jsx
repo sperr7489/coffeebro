@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { api, authApi } from '../../../../axios.config';
 import axios from 'axios'
 import style from '../index.module.css';
 
@@ -8,11 +9,8 @@ const Deliver = ({cookies}) => {
 
   useEffect(() => {
     const getDeliverList = () => {
-      axios.get('http://localhost:3000/user/apply/delivery/infos',{
-        headers:{
-          accessToken: cookies
-        }
-      })
+      authApi
+      .get('/user/apply/delivery/infos')
       .then(response => {
         setList(response.data.result)
         console.log(response.data)
