@@ -7,7 +7,7 @@ import {
   MainModalContainer,
   MenuInfoContainer,
 } from './index.style';
-
+import axios from 'axios';
 export default function MainModal(props) {
   const {
     serviceApplicationIdx,
@@ -16,11 +16,16 @@ export default function MainModal(props) {
     receiptPlace,
     receiptTime,
     grade,
-    drinkInfos,
+    deliveryInfo,
     closeModal,
   } = props;
   const handleApplyClick = () => {
-    axio;
+    axios.post(`http://localhost:3001/user/delivery/${serviceApplicationIdx}`, {
+      headers: {
+        accessToken:
+          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgsImlhdCI6MTY3MDczMDk5MCwiZXhwIjoxNjcwODE3MzkwfQ.2375noDphWiChFf2BHgXCwYDN-wq3t7va9GQB1iqu7Y',
+      },
+    });
   };
   return (
     <MainModalContainer>
@@ -35,16 +40,18 @@ export default function MainModal(props) {
               <span>메뉴 이름</span>
               <span className="option">옵션</span>
               <span>개수</span>
+              <span>가격</span>
             </div>
-            {drinkInfos.map((info) => (
-              <div>
-                <span>{info.name}</span>
+            {deliveryInfo.map((info, idx) => (
+              <div key={`${info.drinkName} ${idx}`}>
+                <span>{info.drinkName}</span>
                 <span className="option">{info.option.join(', ')}</span>
                 <span>개수</span>
+                <span>{info.optionPrice + info.price}</span>
               </div>
             ))}
           </MenuInfoContainer>
-          <span>평점 : {grade}</span>
+          <span>신청자 평점 : {grade}</span>
           <span>배달 시간 : {receiptTime}</span>
           <span>배달 위치 : {receiptPlace}</span>
         </InfoContainer>
