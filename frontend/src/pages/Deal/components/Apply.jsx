@@ -20,12 +20,7 @@ const Apply = ({ cookies }) => {
 
   const registButton = (deliveryAgentIdx, serviceApplicationIdx) => {
     authApi
-      .post(`/user/apply/acception/${serviceApplicationIdx}`, {
-        params: {
-          acceptFlag: 1,
-          deliveryAgentIdx: deliveryAgentIdx,
-        },
-      })
+      .post(`/user/apply/acception/${serviceApplicationIdx}?acceptFlag=1&deliveryAgentIdx=${deliveryAgentIdx}`,)
       .then((response) => {
         console.log(response);
       })
@@ -60,6 +55,7 @@ const Apply = ({ cookies }) => {
     earlyGet();
     cafeList();
   }, [])
+  {console.log(list)}
 
   return (
     <div className={style.contentOutter}>
@@ -101,7 +97,7 @@ const Apply = ({ cookies }) => {
                   <div>
                     <input
                       type="button"
-                      value="신청하기"
+                      value="수락하기"
                       onClick={() => {
                         registButton(deliver.deliveryAgentIdx, data.serviceApplicationIdx);
                       }}
