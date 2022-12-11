@@ -4,7 +4,7 @@ import axios from 'axios';
 const cookies = new Cookies();
 
 export const api = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: 'http://localhost:3001',
   responseType: 'json',
 
   headers: {
@@ -13,11 +13,12 @@ export const api = axios.create({
 });
 
 export const authApi = axios.create({
-  baseURL: 'http://localhost:3000',
+  baseURL: 'http://localhost:3001',
   responseType: 'json',
 
   headers: {
     'Content-Type': 'application/json',
-    accessToken: cookies.get('id'),
+    // accessToken: cookies.get('id'),
   },
 });
+authApi.defaults.headers.accessToken = cookies.get('id');
