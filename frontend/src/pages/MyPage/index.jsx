@@ -29,12 +29,10 @@ export default function MyPage() {
         nickname: nickname,
       })
       .then((res) => {
-        if (res.isSuccess) {
-          alert(res.message);
+        alert(res.data.message);
+        if (res.data.isSuccess) {
           setIsChecked(true);
-          return;
         }
-        alert('사용중인 닉네임입니다.');
       });
   };
 
