@@ -3,6 +3,9 @@ const SocketIO = require("socket.io");
 
 const cookieParser = require("cookie-parser");
 const cookie = require("cookie-signature"); // 쿠키 암호화
+const chatController = require("../Router/Chat/chatController");
+const chatProvider = require("../Router/Chat/chatProvider");
+const Chat = require("../schemas/chat");
 
 //socketIo 역시 미들웨어를 사용할 수 있다.
 
@@ -63,6 +66,23 @@ module.exports = (server, app) => {
       chat: `${req.session.color}님이 입장하셨습니다.`,
     });
 
+    socket.on("send_message", (data) => {
+      const { fromIdx, toIdx, message } = data;
+      // const { applicantIdx, agentIdx } = await chatProvider.getChatRoomInfo(
+      //   chatRoomIdx
+      // );
+
+      // 디비에 채팅 내역 저장하기
+      Chat.create({
+        chatRoomIdx: chatRoomIdx,
+        fromIdx,
+        toIdx,
+        message: message,
+      }).then(() => {
+        console.log("DB에 채팅 내역 저장 성공");
+      });
+    });
+
     console.log("chat 네임스페이스에 접속하였다. ");
     socket.on("disconnect", () => {
       console.log("chat 네임스페이스 접속 해제");
@@ -94,4 +114,15 @@ module.exports = (server, app) => {
       console.error(error);
     });
   });
+  ㅋ; //   });
+  //   ws.on("reply", (data) => {
+  //     // 클라이언트로부터 메시지
+  //     console.log(data);
+  //   });
+  //   ws.interval = setInterval(() => {
+  //     // 3초마다 클라이언트로 메시지 전송
+  //     if (ws.readyState === ws.OPEN)
+  //       ws.send("서버에서 클라이언트로 요청 계속 보냄!");
+  //   }, 3000);
+  // });
 };
