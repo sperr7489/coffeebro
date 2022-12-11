@@ -232,6 +232,22 @@ exports.getServiceApplicationIdxList = async (connection) => {
   return getServiceApplicationIdxListRow;
 };
 
+// 배달 서비스를 신청한 사람의 정보 가져오기
+exports.getApplicantInfo = async (connection, serviceApplicationIdx) => {
+  const getApplicantInfoQuery = `
+  select u.userIdx,u.userName,u.nickname,u.department,u.sex,u.studentId,u.applicantScore,u.userImg from serviceApplication sa 
+  left join user u on u.userIdx = sa.userIdx
+  where sa.serviceApplicationIdx = ?
+  ;
+  `;
+
+  const [getApplicantInfoRow] = await connection.query(
+      getApplicantInfoQuery,
+      serviceApplicationIdx
+  );
+  return getApplicantInfoRow;
+};
+
 // 자신이 신청한 모든 정보 가져오기
 exports.getDeliveryInfos = async (connection, userIdx) => {
   const getDeliveryInfosQuery = `
