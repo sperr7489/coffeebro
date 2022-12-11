@@ -14,7 +14,7 @@ const Deal = () => {
   useEffect(() => {
     const beforeRender = () => {
       axios
-        .get('http://localhost:3000/user/apply/infos', {
+        .get('http://localhost:3001/user/apply/infos', {
           headers: {
             accessToken:
               'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsImlhdCI6MTY3MDE2OTQ1OSwiZXhwIjoxNjcwMjU1ODU5fQ.AgN9VdmVPda0LjbmaWUmHszwp-_GGaU0s_mlHNxwIK8',
