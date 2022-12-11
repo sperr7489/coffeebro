@@ -6,6 +6,7 @@ import { CafeSelect, Container, MainForm, TimeContainer } from './index.style';
 import MenuInfo from './components/MenuInfo';
 import axios from 'axios';
 import LoginCheck from '../Login/components/LoginCheck';
+import { api, authApi } from '../../../axios.config';
 
 export default function ApplicationPage() {
   const [isAm, setisAm] = useState(true);
@@ -33,8 +34,7 @@ export default function ApplicationPage() {
   };
   useEffect(() => {
     async function getData() {
-      axios.get(`http://localhost:3001/cafe`).then((res) => {
-        console.log(res);
+      api.get('/cafe').then((res) => {
         setCafeList(res.data.result);
       });
     }
@@ -55,8 +55,8 @@ export default function ApplicationPage() {
     const hour = e.target.hour.value;
     const minute = e.target.minute.value;
 
-    axios
-      .post(`http://localhost:3001/user/delivery`, {
+    authApi
+      .post(`/user/delivery`, {
         cafeIdx: e.target.cafe.value,
         receiptTime: `${date.getFullYear()}/${date.getMonth()}/${date.getDate()} ${
           isAm ? `${hour.length === 1 ? '0' : ''}${hour}` : Number(hour) + 12
@@ -64,7 +64,12 @@ export default function ApplicationPage() {
         receiptPlace: e.target.location.value,
         drinkInfos: drinkInfos,
       })
-      .then((res) => console.log(res));
+      .then((res) => {
+        if (res.data.isSuccess) {
+          alert('등록성공');
+        }
+        console.log(res);
+      });
   };
 
   return (

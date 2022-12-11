@@ -4,10 +4,11 @@ import { useCookies } from 'react-cookie';
 import Header from '../../components/Header';
 import style from './index.module.css';
 import axios from 'axios';
+import { api } from '../../../axios.config';
 
 const LoginPage = () => {
   const navigate = useNavigate();
-  const [cookies, setCookie] = useCookies(['id'])
+  const [cookies, setCookie] = useCookies(['id']);
   const [email, setEmail] = useState('');
   const [pwd, setPwd] = useState('');
 
@@ -37,15 +38,15 @@ const LoginPage = () => {
       return;
     }
 
-    axios
-      .post('http://localhost:3000/user/login', {
+    api
+      .post('/user/login', {
         email: email,
         passwd: pwd,
       })
       .then((response) => {
         if (response.data.code === 1112) {
-          setCookie('id', response.data.result.accessToken)
-          console.log(response)
+          setCookie('id', response.data.result.accessToken);
+          console.log(response);
           navigate('/');
         } else if (response.data.code === 2008) {
           alert('회원가입 때 등록한 비밀번호를 입력해주세요');

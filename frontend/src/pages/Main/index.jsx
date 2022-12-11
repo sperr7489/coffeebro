@@ -5,6 +5,7 @@ import ApplicantCard from './components/ApplicantCard';
 import MainModal from './components/Modal';
 import axios from 'axios';
 import { Container, MainContentContainer } from './index.style';
+import { authApi } from '../../../axios.config';
 
 export default function MainPage() {
   const [applicants, setApplicants] = useState([]);
@@ -21,17 +22,9 @@ export default function MainPage() {
   };
   useEffect(() => {
     async function getData() {
-      axios
-        .get(`http://localhost:3001/user/delivery/infos/all`, {
-          headers: {
-            accessToken:
-              '"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgsImlhdCI6MTY3MDczMDk0NywiZXhwIjoxNjcwODE3MzQ3fQ.olemICi9PqjBvfaPWZWwtoXvLCFuuckK1mwClMtkGx8"',
-          },
-        })
-        .then((res) => {
-          console.log(res);
-          setApplicants(res.data.result);
-        });
+      authApi.get(`/user/delivery/infos/all`).then((res) => {
+        setApplicants(res.data.result);
+      });
     }
     getData();
   }, []);

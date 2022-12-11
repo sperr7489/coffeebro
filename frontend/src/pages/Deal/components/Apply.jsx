@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState, useLayoutEffect } from 'react';
+import { api, authApi } from '../../../../axios.config';
 import style from '../index.module.css';
 import ApplyModal from './ApplyModal';
 
@@ -18,20 +19,13 @@ const Apply = ({ cookies }) => {
   };
 
   const registButton = (deliveryAgentIdx, serviceApplicationIdx) => {
-    axios
-      .post(
-        `http://localhost:3000/user/apply/acception/${serviceApplicationIdx}`,
-        {},
-        {
-          headers: {
-            accessToken: cookies,
-          },
-          params: {
-            acceptFlag: 1,
-            deliveryAgentIdx: deliveryAgentIdx,
-          },
+    authApi
+      .post(`http://localhost:3000/user/apply/acception/${serviceApplicationIdx}`, {
+        params: {
+          acceptFlag: 1,
+          deliveryAgentIdx: deliveryAgentIdx,
         },
-      )
+      })
       .then((response) => {
         console.log(response);
       })
@@ -43,12 +37,8 @@ const Apply = ({ cookies }) => {
   useLayoutEffect(() => {
     let user;
     const earlyGet = () => {
-      axios
-        .get('http://localhost:3000/user/apply/infos', {
-          headers: {
-            accessToken: cookies,
-          },
-        })
+      authApi
+        .get('/user/apply/infos')
         .then((response) => {
           setList(response.data.result);
         })
@@ -58,8 +48,8 @@ const Apply = ({ cookies }) => {
     };
 
     const cafeList = () => {
-      axios
-        .get('http://localhost:3000/cafe')
+      api
+        .get('/cafe')
         .then((response) => {
           setCafe(response.data.result);
         })
@@ -70,18 +60,6 @@ const Apply = ({ cookies }) => {
           console.log(error);
         });
     };
-
-    const cafeList = () => {
-      axios
-        .get('http://localhost:3001/cafe')
-        .then((response) => {
-          setCafe(response.data.result);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    };
-
     earlyGet();
     cafeList();
   }, []);

@@ -10,6 +10,7 @@ import {
   RequestContainer,
   RequestListContainer,
 } from './index.style';
+import { api } from '../../../../../axios.config';
 
 export default function ApplicationModal(props) {
   const { menuList, setMenuList, refs, setIsModalOpen, cafeIdx } = props;
@@ -36,8 +37,7 @@ export default function ApplicationModal(props) {
   };
   useEffect(() => {
     async function getData() {
-      console.log(cafeIdx);
-      axios.get(`http://localhost:3001/cafe/${cafeIdx}/menu`).then((res) => {
+      api.get(`/cafe/${cafeIdx}/menu`).then((res) => {
         setCafeMenuList(res.data.result.drinkMenu);
         setOptionList(res.data.result.drinkOption);
       });

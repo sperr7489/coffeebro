@@ -8,6 +8,7 @@ import {
   MenuInfoContainer,
 } from './index.style';
 import axios from 'axios';
+import { authApi } from '../../../../../axios.config';
 export default function MainModal(props) {
   const {
     serviceApplicationIdx,
@@ -20,12 +21,7 @@ export default function MainModal(props) {
     closeModal,
   } = props;
   const handleApplyClick = () => {
-    axios.post(`http://localhost:3001/user/delivery/${serviceApplicationIdx}`, {
-      headers: {
-        accessToken:
-          'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzgsImlhdCI6MTY3MDczMDk5MCwiZXhwIjoxNjcwODE3MzkwfQ.2375noDphWiChFf2BHgXCwYDN-wq3t7va9GQB1iqu7Y',
-      },
-    });
+    authApi.post(`/user/delivery/${serviceApplicationIdx}`).then((res) => console.log(res));
   };
   return (
     <MainModalContainer>
@@ -46,7 +42,7 @@ export default function MainModal(props) {
               <div key={`${info.drinkName} ${idx}`}>
                 <span>{info.drinkName}</span>
                 <span className="option">{info.option.join(', ')}</span>
-                <span>개수</span>
+                <span>{info.num}</span>
                 <span>{info.optionPrice + info.price}</span>
               </div>
             ))}
