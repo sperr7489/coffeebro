@@ -114,7 +114,6 @@ module.exports = (server, app) => {
       console.error(error);
     });
   });
-  ㅋ; //   });
   //   ws.on("reply", (data) => {
   //     // 클라이언트로부터 메시지
   //     console.log(data);
