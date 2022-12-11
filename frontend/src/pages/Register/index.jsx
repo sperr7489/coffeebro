@@ -199,6 +199,7 @@ const Register = () => {
           nickname: nick,
           sex: sex,
           studentId: Number(id),
+          userImg: ""
         })
         .then((response) => {
           console.log(response)
