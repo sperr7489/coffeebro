@@ -203,6 +203,24 @@ exports.insertRequestDrink = async (
 //   return insertRequestOptionRow;
 // };
 
+// 배달 대행 중에서 해당 유저가 배달 대행을 하겠다고 지원한 신청 내역들 가져오기
+/***
+ * @todo : 배달  대행 지원 내역 가져오기 API 짜기
+ *
+ */
+exports.getServiceApplicationIdx = async (connection, userIdx) => {
+  const getServiceApplicationIdxQuery = `
+  select * from deliveryApplication 
+  where deliveryAgentIdx = ?
+  `;
+
+  const [getServiceApplicationIdxRow] = await connection.query(
+    getServiceApplicationIdxQuery,
+    userIdx
+  );
+  return getServiceApplicationIdxRow;
+};
+
 // 모든 ServiceApplicationIdx 가져오기
 exports.getServiceApplicationIdxList = async (connection) => {
   const getServiceApplicationIdxListQuery = `
@@ -212,6 +230,22 @@ exports.getServiceApplicationIdxList = async (connection) => {
     getServiceApplicationIdxListQuery
   );
   return getServiceApplicationIdxListRow;
+};
+
+// 배달 서비스를 신청한 사람의 정보 가져오기
+exports.getApplicantInfo = async (connection, serviceApplicationIdx) => {
+  const getApplicantInfoQuery = `
+  select u.userIdx,u.userName,u.nickname,u.department,u.sex,u.studentId,u.applicantScore,u.userImg from serviceApplication sa 
+  left join user u on u.userIdx = sa.userIdx
+  where sa.serviceApplicationIdx = ?
+  ;
+  `;
+
+  const [getApplicantInfoRow] = await connection.query(
+    getApplicantInfoQuery,
+    serviceApplicationIdx
+  );
+  return getApplicantInfoRow;
 };
 
 // 자신이 신청한 모든 정보 가져오기
@@ -282,7 +316,7 @@ exports.existsDeliverApply = async (
 ) => {
   const existsDeliverApplyQuery = `
   select exists (
-    select * from deliveryApplication where  serviceApplicationIdx= ? and deliveryAgentIdx = ? ans status = 0
+    select * from deliveryApplication where  serviceApplicationIdx= ? and deliveryAgentIdx = ? and status = 0
     ) as exist
   `;
   const [existsDeliverApplyRow] = await connection.query(
@@ -318,10 +352,16 @@ exports.updateStatusOnAccept = async (
   acceptFlag,
   agentIdx
 ) => {
+  // 서비스 신청을 거절하면 serviceApplication 쪽의 status=0
+  // 서비스 신청을 수락하면 둘 다 1로 바뀜.
   const updateStatusOnAcceptQuery = [
     `update deliveryApplication set status = ${acceptFlag} where serviceApplicationIdx = ${serviceApplicationIdx} and deliveryAgentIdx = ${agentIdx};`,
-    `update serviceApplication set status =${acceptFlag} where serviceApplicationIdx = ${serviceApplicationIdx}  ;`,
+    `update serviceApplication set status =${
+      acceptFlag == 1 ? acceptFlag : 0
+    } where serviceApplicationIdx = ${serviceApplicationIdx}  ;`,
   ];
+
+  // 수락되었으면 다른 신청자들은 전부 거절로 할 수 있도록 한다.
   if (acceptFlag == 1) {
     const updateOtherStatusQuery = `
     update deliveryApplication set status = -1 where serviceApplicationIdx = ${serviceApplicationIdx} and deliveryAgentIdx != ${agentIdx};
@@ -411,4 +451,17 @@ exports.getDeliveryAgents = async (connection, serviceApplicationIdx) => {
     serviceApplicationIdx
   );
   return getDeliverAgents;
+};
+
+// 배달 대행자에 대한 평점 넣기
+exports.updateAgentScore = async (connection, userIdx) => {
+  const updateAgentScoreQuery = `
+    update user set deliveryAgentScore = deliveryAgentScore + 5
+    where userIdx = ?;
+    `;
+  const [updateAgentScoreRow] = await connection.query(
+    updateAgentScoreQuery,
+    userIdx
+  );
+  return updateAgentScoreRow;
 };

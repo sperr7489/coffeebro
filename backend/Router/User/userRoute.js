@@ -4,9 +4,14 @@ const userController = require("./userController");
 const email = require("../../config/email");
 const { sessionValid } = require("../../config/session");
 const { verifyAccessToken } = require("../../config/jwt");
+const { upload } = require("../../config/multer");
 
-// 회원가입
-router.post("/signUp", userController.signUp);
+// 회원가입 => multer을 이용하여 이미지 업로드 추가
+router.post(
+  "/signUp",
+  upload.single("userImg"), //6개까지의 게시물을 등록한다.
+  userController.signUp
+);
 
 // 이메일 인증 코드 보내기
 router.post("/email", email.emailValidation);
@@ -55,10 +60,11 @@ router.post(
 /**
  * @todo 해당 로그인 한 유저가 본인이 배달을 대신 해주겠다고 한 것에 대해서 반환값이 어떻게 나올지부터 판단하자.
  */
+// 유저 본인이 지원한 배달 대행 내역들 확인
 router.get(
   "/apply/delivery/infos",
   verifyAccessToken,
-  userController.getApplyDeleveryInfos
+  userController.getApplyDeliveryInfos
 );
 
 //마이페이지 정보(이름, 자주 신청하는 카페 3개, 신청자 평점, 배달자 평점) 가져오기

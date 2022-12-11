@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import Button from '../../components/Button';
+import LoginCheck from '../Login/components/LoginCheck';
 import InfoImage from './components/InfoImage';
 import { MypageContainer, UserInfoContainer } from './index.style';
 import axios from 'axios';
@@ -54,6 +55,7 @@ export default function MyPage() {
 
   return (
     <MypageContainer>
+      <LoginCheck />
       <InfoImage image={image} setImage={setImage} file={file} setFile={setFile}></InfoImage>
       <UserInfoContainer>
         <div>
