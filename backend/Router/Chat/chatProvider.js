@@ -70,3 +70,17 @@ exports.getChatRoomInfo = async (chatRoomIdx) => {
     connection.release();
   }
 };
+
+// chatRoomIdx가 존재하는 지 검사하기
+exports.chatRoomIdxExist = async (chatRoomIdx) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    const [{ exist }] = await chatDao.chatRoomIdxExist(connection, chatRoomIdx);
+    return exist;
+  } catch (error) {
+    console.log(error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};

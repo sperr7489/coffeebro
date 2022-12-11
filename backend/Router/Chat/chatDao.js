@@ -53,3 +53,17 @@ exports.updateChatRoomStatus = async (connection, chatRoomIdx) => {
   );
   return updateChatRoomStatusRow;
 };
+
+// 채팅룸이 존재하는지 아닌지 판단하기
+exports.chatRoomIdxExist = async (connection, chatRoomIdx) => {
+  const chatRoomIdxExistQuery = `
+  select exists (
+    select * from chatRoom where  chatRoomIdx= ? and status = 0
+    ) as exist
+  `;
+  const [chatRoomIdxExistRow] = await connection.query(
+    chatRoomIdxExistQuery,
+    chatRoomIdx
+  );
+  return chatRoomIdxExistRow;
+};
