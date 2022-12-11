@@ -189,7 +189,7 @@ const Register = () => {
   const finalButtonHandle = () => {
     if (isName && isPwd && isDept && isSex && isPwdConfirm && isId) {
       api
-        .post('http://localhost:3001/user/signUp', {
+        .post('/user/signUp', {
           email: email,
           passwd: pwd,
           userName: name,
@@ -197,7 +197,7 @@ const Register = () => {
           nickname: nick,
           sex: sex,
           studentId: Number(id),
-          userImg: img
+          userImg: "test"
         })
         .then((response) => {
           console.log(response);
