@@ -3,8 +3,8 @@ const SocketIO = require("socket.io");
 
 const cookieParser = require("cookie-parser");
 const cookie = require("cookie-signature"); // 쿠키 암호화
-const chatController = require("../Router/Chat/chatController");
-const chatProvider = require("../Router/Chat/chatProvider");
+// const chatController = require("../Router/Chat/chatController");
+// const chatProvider = require("../Router/Chat/chatProvider");
 const Chat = require("../schemas/chat");
 
 //socketIo 역시 미들웨어를 사용할 수 있다.
@@ -114,7 +114,6 @@ module.exports = (server, app) => {
       console.error(error);
     });
   });
-  ㅋ; //   });
   //   ws.on("reply", (data) => {
   //     // 클라이언트로부터 메시지
   //     console.log(data);
