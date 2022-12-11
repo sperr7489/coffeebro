@@ -2,14 +2,16 @@ const baseResponseStatus = require("../../config/baseResponseStatus");
 const { basicResponse, resultResponse } = require("../../config/response");
 const userService = require("./userService");
 const userProvider = require("./userProvider");
+const chatService = require("../Chat/chatService");
 const regex = require("../../config/regex");
 const response = require("../../config/response");
+const Room = require("../../schemas/room");
 
 //회원가입
 exports.signUp = async (req, res) => {
   const { email, passwd, userName, department, sex, studentId, nickname } =
     req.body;
-
+  const userImage = req.file;
   // 어느하나라도 제대로 입력되지 않았을 때
   if (
     !email ||
@@ -37,7 +39,8 @@ exports.signUp = async (req, res) => {
     department,
     sex,
     studentId,
-    nickname
+    nickname,
+    userImg
   );
   return res.send(basicResponse(baseResponseStatus.SIGN_UP_SUCCESS));
 };
@@ -199,18 +202,41 @@ exports.getApplyInfos = async (req, res) => {
 // 배달 서비스 신청 수락/거절 하기 => 신청 등록자 입장에서
 // 수락 시 채팅방이 생성되어야 한다.
 exports.acception = async (req, res) => {
-  const userIdx = req.userIdx;
+  const userIdx = req.userIdx; // 서비스 신청자.
   const { serviceApplicationIdx } = req.params;
   const { acceptFlag, deliveryAgentIdx: agentIdx } = req.query;
 
+  console.log("acceptFlag : ", acceptFlag);
   const acceptionResult = await userService.acception(
+    //mysql에 저장된 chatRoomIdx
     userIdx,
     serviceApplicationIdx,
     acceptFlag,
     agentIdx
   );
 
-  return res.send(acceptionResult);
+  const { userName: applicantName } = await userProvider.getUserInfo(userIdx);
+  const { userName: agentName } = await userProvider.getUserInfo(agentIdx);
+
+  if (acceptionResult != -1) {
+    // 수락되어 채팅 내역을 만들어야 한다는 뜻.
+    // const newRoom = await Room.create({
+    //   roomIdx: chatRoomIdx,
+    //   applicant: {
+    //     userIdx: userIdx,
+    //     userName: applicantName,
+    //   },
+    //   agent: {
+    //     userIdx: agentIdx,
+    //     userName: agentName,
+    //   },
+    // });
+    // const io = req.app.get("io"); // io를 통해서 소켓 통신 연결 유지.
+    // // 방을 새로 만들었다는 이벤트를 발생시킨다.
+    // io.of("/room").emit("createRoom", newRoom);
+  }
+
+  return res.send(basicResponse(baseResponseStatus.SUCCESS));
 };
 
 // 유저 본인이 지원한 배달 대행 내역들 확인

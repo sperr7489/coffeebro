@@ -4,13 +4,18 @@ const userController = require("./userController");
 const email = require("../../config/email");
 const { sessionValid } = require("../../config/session");
 const { verifyAccessToken } = require("../../config/jwt");
+const { upload } = require("../../config/multer");
 
-// 회원가입
-router.post("/signUp", userController.signUp);
+// 회원가입 => multer을 이용하여 이미지 업로드 추가
+router.post(
+  "/signUp",
+  upload.single("userImg"), //6개까지의 게시물을 등록한다.
+  userController.signUp
+);
 
 // 이메일 인증 코드 보내기
-
 router.post("/email", email.emailValidation);
+
 // 로그인
 router.post("/login", userController.login);
 

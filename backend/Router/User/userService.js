@@ -14,7 +14,8 @@ exports.createUser = async (
   department,
   sex,
   studentId,
-  nickname
+  nickname,
+  userImg
 ) => {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
@@ -238,24 +239,45 @@ exports.acception = async (
       agentIdx
     );
 
-    if (acceptFlag) {
+    if (parseInt(acceptFlag) == 1) {
       // 채팅방을 개설해야한다.
       // userIdx : 배달 서비스 신청자
       // agentIdx : 배달 대행 신청자
-      const { insertId } = await chatDao.createChatRoom(
+      // const [{ insertId: chatRoomId }] = await chatDao.createChatRoom(
+      //   connection,
+      //   serviceApplicationIdx
+      // );
+      const { insertId: chatRoomIdx } = await chatDao.createChatRoom(
         connection,
         serviceApplicationIdx,
         userIdx,
         agentIdx
       );
+
+      console.log("chatRoomIdx : ", chatRoomIdx);
+      return chatRoomIdx;
     }
 
     await connection.commit();
 
-    return basicResponse(baseResponseStatus.SUCCESS);
+    return -1; // -1 을 반환했다는 것은 거절했다는 뜻.
   } catch (error) {
     await connection.rollback();
     console.log(error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
+
+// 배달 대행자에 대한 평점 넣기
+exports.updateAgentScore = async (agentIdx) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    await userDao.updateAgentScore(connection, userIdx);
+  } catch (error) {
+    await connection.rollback();
+
     return basicResponse(baseResponseStatus.DB_ERROR);
   } finally {
     connection.release();
