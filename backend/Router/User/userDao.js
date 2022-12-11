@@ -16,8 +16,8 @@ exports.insertUser = async (connection, insertUserParams) => {
           VALUES (?,?,?,?,?,?,?);    
       `;
   const [insertUserRow] = await connection.query(
-      insertUserQuery,
-      insertUserParams
+    insertUserQuery,
+    insertUserParams
   );
   return insertUserRow;
 };
@@ -44,8 +44,8 @@ exports.CheckPasswd = async (connection, email) => {
         where email = ?;
     `;
   const [[signInCheckPasswdRow]] = await connection.query(
-      signInCheckPasswdQuery,
-      email
+    signInCheckPasswdQuery,
+    email
   );
   return signInCheckPasswdRow;
 };
@@ -57,25 +57,25 @@ exports.getUserShortInfo = async (connection, email) => {
     where email = ?;
   `;
   const [[getUserShortInfoRow]] = await connection.query(
-      getUserShortInfoQuery,
-      email
+    getUserShortInfoQuery,
+    email
   );
   return getUserShortInfoRow;
 };
 
 // Refresh 토큰 추가하기
 exports.insertRefreshToken = async (
-    connection,
-    userIdx,
-    refreshToken,
-    accessToken
+  connection,
+  userIdx,
+  refreshToken,
+  accessToken
 ) => {
   const insertRefreshTokenQuery = `
     insert into token(userIdx,refreshToken,accessToken) value(?,?,?);
   `;
   const [insertRefreshTokenRow] = await connection.query(
-      insertRefreshTokenQuery,
-      [userIdx, refreshToken, accessToken]
+    insertRefreshTokenQuery,
+    [userIdx, refreshToken, accessToken]
   );
 
   return insertRefreshTokenRow;
@@ -83,10 +83,10 @@ exports.insertRefreshToken = async (
 
 // 토큰 업데이트 하기
 exports.updateToken = async (
-    connection,
-    userIdx,
-    refreshToken,
-    accessToken
+  connection,
+  userIdx,
+  refreshToken,
+  accessToken
 ) => {
   const updateTokenQuery = `
   update token set refreshToken= ?, accessToken = ? 
@@ -108,8 +108,8 @@ exports.refreshTokenExist = async (connection, userIdx) => {
     ) as exist
 `;
   const [[refreshTokenExistRow]] = await connection.query(
-      refreshTokenExistQuery,
-      userIdx
+    refreshTokenExistQuery,
+    userIdx
   );
   return refreshTokenExistRow;
 };
@@ -121,8 +121,8 @@ exports.getRefreshToken = async (connection, accessToken) => {
     where accessToken = ?
   `;
   const [[getRefreshTokenRow]] = await connection.query(
-      getRefreshTokenQuery,
-      accessToken
+    getRefreshTokenQuery,
+    accessToken
   );
   return getRefreshTokenRow;
 };
@@ -141,11 +141,11 @@ exports.updateAccessToken = async (connection, id, accessToken) => {
 
 // 배달 대행 서비스 신청자 기입하기
 exports.insertServiceApplication = async (
-    connection,
-    applicantIdx,
-    cafeIdx,
-    receiptTime,
-    receiptPlace
+  connection,
+  applicantIdx,
+  cafeIdx,
+  receiptTime,
+  receiptPlace
 ) => {
   const insertServiceApplicationQuery = `
   insert into serviceApplication (
@@ -158,8 +158,8 @@ exports.insertServiceApplication = async (
   `;
 
   const [insertServiceApplicationRow] = await connection.query(
-      insertServiceApplicationQuery,
-      [applicantIdx, cafeIdx, receiptTime, receiptPlace]
+    insertServiceApplicationQuery,
+    [applicantIdx, cafeIdx, receiptTime, receiptPlace]
   );
 
   console.log("test : 더!");
@@ -168,10 +168,10 @@ exports.insertServiceApplication = async (
 
 // 배달 신청한 음료를 넣기
 exports.insertRequestDrink = async (
-    connection,
-    insertId,
-    drinkIdx,
-    optionList
+  connection,
+  insertId,
+  drinkIdx,
+  optionList
 ) => {
   const insertRequestDrinkQuery = `
   insert into requestDrinkList
@@ -181,8 +181,8 @@ exports.insertRequestDrink = async (
   `;
 
   const [insertRequestDrinkRow] = await connection.query(
-      insertRequestDrinkQuery,
-      [insertId, drinkIdx, optionList]
+    insertRequestDrinkQuery,
+    [insertId, drinkIdx, optionList]
   );
   return insertRequestDrinkRow;
 };
@@ -203,13 +203,31 @@ exports.insertRequestDrink = async (
 //   return insertRequestOptionRow;
 // };
 
+// 배달 대행 중에서 해당 유저가 배달 대행을 하겠다고 지원한 신청 내역들 가져오기
+/***
+ * @todo : 배달  대행 지원 내역 가져오기 API 짜기
+ *
+ */
+exports.getServiceApplicationIdx = async (connection, userIdx) => {
+  const getServiceApplicationIdxQuery = `
+  select * from deliveryApplication 
+  where deliveryAgentIdx = ?
+  `;
+
+  const [getServiceApplicationIdxRow] = await connection.query(
+      getServiceApplicationIdxQuery,
+      userIdx
+  );
+  return getServiceApplicationIdxRow;
+};
+
 // 모든 ServiceApplicationIdx 가져오기
 exports.getServiceApplicationIdxList = async (connection) => {
   const getServiceApplicationIdxListQuery = `
     select * from serviceApplication;
   `;
   const [getServiceApplicationIdxListRow] = await connection.query(
-      getServiceApplicationIdxListQuery
+    getServiceApplicationIdxListQuery
   );
   return getServiceApplicationIdxListRow;
 };
@@ -221,8 +239,8 @@ exports.getDeliveryInfos = async (connection, userIdx) => {
   where userIdx = ?
 `;
   const [getDeliveryInfosRow] = await connection.query(
-      getDeliveryInfosQuery,
-      userIdx
+    getDeliveryInfosQuery,
+    userIdx
   );
   return getDeliveryInfosRow;
 };
@@ -237,8 +255,8 @@ exports.getDeliveryInfo = async (connection, serviceApplicationIdx) => {
     where sa.serviceApplicationIdx = ?
   `;
   const [getDeliveryInfoQueryRow] = await connection.query(
-      getDeliveryInfoQuery,
-      serviceApplicationIdx
+    getDeliveryInfoQuery,
+    serviceApplicationIdx
   );
   return getDeliveryInfoQueryRow;
 };
@@ -252,42 +270,42 @@ exports.getOneDeliveryInfo = async (connection, serviceApplicationIdx) => {
     where rd.serviceApplicationIdx = ?   
   `;
   const [getOneDeliveryInfoRow] = await connection.query(
-      getOneDeliveryInfoQuery,
-      serviceApplicationIdx
+    getOneDeliveryInfoQuery,
+    serviceApplicationIdx
   );
   return getOneDeliveryInfoRow;
 };
 
 exports.insertDeliveryApply = async (
-    connection,
-    userIdx,
-    serviceApplicationIdx
+  connection,
+  userIdx,
+  serviceApplicationIdx
 ) => {
   const insertDeliveryApplyQuery = `
     insert into deliveryApplication(deliveryAgentIdx,serviceApplicationIdx)
     values(?,?)
   `;
   const [insertDeliveryApplyRow] = await connection.query(
-      insertDeliveryApplyQuery,
-      [userIdx, serviceApplicationIdx]
+    insertDeliveryApplyQuery,
+    [userIdx, serviceApplicationIdx]
   );
   return insertDeliveryApplyRow;
 };
 
 // 내가 이미 신청한 배달 서비스 요청인지 확인하기
 exports.existsDeliverApply = async (
-    connection,
-    userIdx,
-    serviceApplicationIdx
+  connection,
+  userIdx,
+  serviceApplicationIdx
 ) => {
   const existsDeliverApplyQuery = `
   select exists (
-    select * from deliveryApplication where  serviceApplicationIdx= ? and deliveryAgentIdx = ? and status = 0
+    select * from deliveryApplication where  serviceApplicationIdx= ? and deliveryAgentIdx = ? ans status = 0
     ) as exist
   `;
   const [existsDeliverApplyRow] = await connection.query(
-      existsDeliverApplyQuery,
-      [serviceApplicationIdx, userIdx]
+    existsDeliverApplyQuery,
+    [serviceApplicationIdx, userIdx]
   );
   return existsDeliverApplyRow;
 };
@@ -313,10 +331,10 @@ exports.getApplyInfos = async (connection, userIdx) => {
 
 // 배달 서비스 신청 수락/거절 하기 => 신청 등록자 입장에서
 exports.updateStatusOnAccept = async (
-    connection,
-    serviceApplicationIdx,
-    acceptFlag,
-    agentIdx
+  connection,
+  serviceApplicationIdx,
+  acceptFlag,
+  agentIdx
 ) => {
   const updateStatusOnAcceptQuery = [
     `update deliveryApplication set status = ${acceptFlag} where serviceApplicationIdx = ${serviceApplicationIdx} and deliveryAgentIdx = ${agentIdx};`,
@@ -331,10 +349,10 @@ exports.updateStatusOnAccept = async (
 
   let updateStatusOnAcceptRow = [];
   await Promise.all(
-      updateStatusOnAcceptQuery.map(async (v, i) => {
-        const [result] = await connection.query(v);
-        updateStatusOnAcceptRow.push(result);
-      })
+    updateStatusOnAcceptQuery.map(async (v, i) => {
+      const [result] = await connection.query(v);
+      updateStatusOnAcceptRow.push(result);
+    })
   );
 
   return updateStatusOnAcceptRow;
@@ -362,8 +380,8 @@ exports.getMostVisitedCafeIdx = async (connection, userIdx) => {
     LIMIT 3;
   `;
   const [getMostVisitedCafeIdxRow] = await connection.query(
-      getMostVisitedCafeIdxQuery,
-      userIdx
+    getMostVisitedCafeIdxQuery,
+    userIdx
   );
   return getMostVisitedCafeIdxRow;
 };
@@ -376,17 +394,17 @@ exports.nicknameCheck = async (connection, nickname) => {
       ) as exist
   `;
   const [[nicknameCheckRow]] = await connection.query(
-      nicknameCheckQuery,
-      nickname
+    nicknameCheckQuery,
+    nickname
   );
   return nicknameCheckRow.exist;
 };
 
 // 이미 신청한 내역인지 확인
 exports.checkAlreadyApply = async (
-    connection,
-    serviceApplicationIdx,
-    userIdx
+  connection,
+  serviceApplicationIdx,
+  userIdx
 ) => {
   const checkAlreadyApplyQuery = `
   select exists ( select * from deliveryApplication where serviceApplicationIdx = ? and deliveryAgentIdx = ?) as exist
@@ -407,8 +425,8 @@ exports.getDeliveryAgents = async (connection, serviceApplicationIdx) => {
 
   `;
   const [getDeliverAgents] = await connection.query(
-      getDeliverAgentsQuery,
-      serviceApplicationIdx
+    getDeliverAgentsQuery,
+    serviceApplicationIdx
   );
   return getDeliverAgents;
 };
