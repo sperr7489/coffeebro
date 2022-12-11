@@ -125,3 +125,37 @@
   background-color: lightgreen;
   margin: 0% 5%;
 }
+
+.noOrder{
+  font-size: 25px;
+  background-color: lightgreen;
+  padding: 17% 0%;
+  border: 2px solid black;
+  margin-left: 40px;
+}
+
+.innerNoOrder{
+  background-color: lightgreen;
+  font-size: 50px;
+}
+
+.menuImg{
+  width: 150px;
+  height: 150px;
+}
+
+.complicatedInner{
+  display: flex;
+  justify-content: center;
+  margin: 5% 30%;
+  border: 2px solid black;
+  border-radius: 2em;
+}
+
+.nodeliver{
+  background-color: lightgreen;
+  padding: 17% 0%;
+  font-size: 23px;
+  border: 2px solid black;
+  margin-left: 5px;
+}

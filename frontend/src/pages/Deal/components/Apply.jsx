@@ -1,5 +1,5 @@
 import axios from 'axios';
-import React, { useState, useLayoutEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { api, authApi } from '../../../../axios.config';
 import style from '../index.module.css';
 import ApplyModal from './ApplyModal';
@@ -20,7 +20,7 @@ const Apply = ({ cookies }) => {
 
   const registButton = (deliveryAgentIdx, serviceApplicationIdx) => {
     authApi
-      .post(`http://localhost:3000/user/apply/acception/${serviceApplicationIdx}`, {
+      .post(`/user/apply/acception/${serviceApplicationIdx}`, {
         params: {
           acceptFlag: 1,
           deliveryAgentIdx: deliveryAgentIdx,
@@ -34,39 +34,37 @@ const Apply = ({ cookies }) => {
       });
   };
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     let user;
+
     const earlyGet = () => {
-      authApi
-        .get('/user/apply/infos')
-        .then((response) => {
-          setList(response.data.result);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    };
+      authApi.get('/user/apply/infos')
+      .then((response) => {
+        setList(response.data.result)
+      })
+      .catch((error) => {
+        console.log(error)
+      })
+    }
 
     const cafeList = () => {
-      api
-        .get('/cafe')
-        .then((response) => {
-          setCafe(response.data.result);
-        })
-        .then((response) => {
-          setList(response.data.result);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
-    };
+      api.get('/cafe')
+      .then((response) => {
+        setCafe(response.data.result);
+      })
+      .then((error) => {
+        console.log(error)
+      })
+    }
+
     earlyGet();
     cafeList();
-  }, []);
+  }, [])
 
   return (
     <div className={style.contentOutter}>
       <div className={style.left}>
+        {list.length === 0 ? <span className={style.noOrder}>주문 내역이 없습니다!</span> :
         <ul className={style.inMenu}>
           {list.map((data, index) =>
             cafe
@@ -84,10 +82,12 @@ const Apply = ({ cookies }) => {
               )),
           )}
         </ul>
+        }
         {open && <ApplyModal setOpen={setOpen} list={list} modalIdx={modalIdx} />}
       </div>
       <div className={style.right}>
         <div className={style.title}>배달 신청자 목록</div>
+        {list.length === 0 ? <span className={style.innerNoOrder}>배달 지원자가 없습니다!</span> : 
         <div>
           {list.map((data, index) =>
             index === num ? (
@@ -114,6 +114,7 @@ const Apply = ({ cookies }) => {
             ),
           )}
         </div>
+        }
       </div>
     </div>
   );

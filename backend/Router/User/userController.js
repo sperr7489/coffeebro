@@ -11,7 +11,7 @@ const Room = require("../../schemas/room");
 exports.signUp = async (req, res) => {
   const { email, passwd, userName, department, sex, studentId, nickname } =
     req.body;
-  const userImage = req.file;
+  const userImg = req.file;
   // 어느하나라도 제대로 입력되지 않았을 때
   if (
     !email ||
