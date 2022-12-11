@@ -22,6 +22,12 @@ exports.inTheChat = async (req, res) => {
   const userIdx = req.userIdx; //현재 입장한 사람의 userIdx
   const { chatRoomIdx } = req.params;
 
+  const chatRoomIdxExist = await chatProvider.chatRoomIdxExist(chatRoomIdx);
+
+  if (chatRoomIdxExist == 0) {
+    return res.send(basicResponse(baseResponseStatus.CHATROOM_NOT_EXIST));
+  }
+
   // 해당 채팅방에 user가 누구인지 먼저 검사하기
   const { applicantIdx, agentIdx } = await chatProvider.getChatRoomInfo(
     chatRoomIdx
