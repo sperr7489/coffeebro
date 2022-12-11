@@ -4,10 +4,11 @@ import { data } from './data';
 import axios from 'axios';
 import { Navigate } from 'react-router-dom';
 import style from './index.module.css';
+import { api } from '../../../axios.config';
 
 const Register = () => {
   const [name, setName] = useState('');
-  const [nick, setNick] = useState("")
+  const [nick, setNick] = useState('');
   const [email, setEmail] = useState('');
   const [emailCode, setEmailCode] = useState();
   const [typeCode, setTypeCode] = useState('');
@@ -19,19 +20,19 @@ const Register = () => {
 
   const [isName, setIsName] = useState(false); //가입하기 버튼 클릭할 때 검증
   const [isEmailConfirm, setIsEmailConfirm] = useState(false); //가입하기 버튼 클릭할 때 검증
-  const [isNick, setIsNick] = useState(false)//가입하기 버튼 클릭할 때 검증
+  const [isNick, setIsNick] = useState(false); //가입하기 버튼 클릭할 때 검증
   const [isPwd, setIsPwd] = useState(false); //
   const [isDept, setIsDept] = useState(false); //가입하기 버튼 클릭할 때 검증
   const [isSex, setIsSex] = useState(false); //가입하기 버튼 클릭할 때 검증
   const [isPwdConfirm, setIsPwdConfirm] = useState(false); //가입하기 버튼 클릭할 때 검증
   const [isId, setIsId] = useState(false); //가입하기 버튼 클릭할 때 검증
 
-  const [pwdConfirmMsg, setPwdConfirmMsg] = useState("")
-  const [nickConfirmMsg, setNickconfirmMsg] = useState("")
-  const [emailMsg, setEmailMsg] = useState("")
-  const [emailConfirmMsg, setEmailConfirmMsg] = useState("")
-  const [pwdMsg, setPwdMsg]= useState("")
-  const [idMsg, setIdMsg] = useState("")
+  const [pwdConfirmMsg, setPwdConfirmMsg] = useState('');
+  const [nickConfirmMsg, setNickconfirmMsg] = useState('');
+  const [emailMsg, setEmailMsg] = useState('');
+  const [emailConfirmMsg, setEmailConfirmMsg] = useState('');
+  const [pwdMsg, setPwdMsg] = useState('');
+  const [idMsg, setIdMsg] = useState('');
 
   const [test, setTest] = useState(0);
 
@@ -50,22 +51,22 @@ const Register = () => {
 
   const nickHandler = (event) => {
     setNick(event.target.value);
-  }
+  };
 
   const nickButtonHandler = () => {
-    axios.post("http://localhost:3000/user/nicknameCheck",{
-      nickname: nick
-    })
-    .then(response => {
-      setNickconfirmMsg(response.data.message)
-      if(response.data.code === 1102)
-        setIsNick(true)
-      console.log(response)
-    })
-    .catch(error => {
-      console.log(error)
-    })
-  }
+    api
+      .post('/user/nicknameCheck', {
+        nickname: nick,
+      })
+      .then((response) => {
+        setNickconfirmMsg(response.data.message);
+        if (response.data.code === 1102) setIsNick(true);
+        console.log(response);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  };
 
   const sexHandler = (event) => {
     setSex(event.target.value);
@@ -86,18 +87,17 @@ const Register = () => {
   };
 
   const idHandler = (event) => {
-      setId(() => {
-        if(event.target.value.length === 9){
-          console.log(event.target.value)
-          setIdMsg("")
-          setIsId(true)
-        }
-        else{
-          setIdMsg("학번은 9자리로 입력해주십시오")
-          setIsId(false)
-        }
-        return event.target.value
-      })
+    setId(() => {
+      if (event.target.value.length === 9) {
+        console.log(event.target.value);
+        setIdMsg('');
+        setIsId(true);
+      } else {
+        setIdMsg('학번은 9자리로 입력해주십시오');
+        setIsId(false);
+      }
+      return event.target.value;
+    });
   };
 
   const emailHandler = (event) => {
@@ -105,27 +105,26 @@ const Register = () => {
   };
 
   const emailButtonHandle = () => {
-    let url = "localhost:3000/user/email"
-    let regex = new RegExp('[a-z0-9]+@ajou.ac.kr')
+    let url = 'localhost:3001/user/email';
+    let regex = new RegExp('[a-z0-9]+@ajou.ac.kr');
 
     if (regex.test(email) === false) {
-      setEmailMsg("아주대학교 이메일 형식으로 입력해주세요.")
+      setEmailMsg('아주대학교 이메일 형식으로 입력해주세요.');
       return;
     } else {
-      axios
-        .post('http://localhost:3000/user/email', {
+      api
+        .post('/user/email', {
           email: email,
         })
         .then((response) => {
           //성공시 code:1000 msg="성공"
           //실패시 code:2003 msg= "이미존재"
-          console.log(response.data)
-          if(response.data.code === 1000){
-            setEmailMsg("인증번호를 입력해주세요")
-            setEmailCode(response.data.result)
-          }
-          else{
-            setEmailMsg("이미 존재하는 이메일 계정입니다")
+          console.log(response.data);
+          if (response.data.code === 1000) {
+            setEmailMsg('인증번호를 입력해주세요');
+            setEmailCode(response.data.result);
+          } else {
+            setEmailMsg('이미 존재하는 이메일 계정입니다');
           }
         })
         .catch((error) => {
@@ -140,15 +139,15 @@ const Register = () => {
 
   const confirmButtonHandle = (event) => {
     if (emailCode === undefined) {
-      setEmailConfirmMsg("이메일 인증을 먼저 해주시기 바랍니다")
+      setEmailConfirmMsg('이메일 인증을 먼저 해주시기 바랍니다');
       return;
     }
     if (emailCode === Number(typeCode)) {
       setIsEmailConfirm(true);
-      setEmailConfirmMsg("인증이 완료되었습니다")
+      setEmailConfirmMsg('인증이 완료되었습니다');
     } else {
       setIsEmailConfirm(false);
-      setEmailConfirmMsg("인증번호가 다릅니다")
+      setEmailConfirmMsg('인증번호가 다릅니다');
     }
   };
 
@@ -156,7 +155,6 @@ const Register = () => {
     const reg = /(?=.*\d{1,50})(?=.*[~`!@#$%\^&*()-+=]{1,50})(?=.*[a-zA-Z]{2,50}).{8,50}$/;
 
     setPwd(() => {
-
       if (!reg.test(event.target.value)) {
         setPwdMsg('8자 이상 영문자, 숫자, 특수문자를 사용하세요');
         setIsPwd(false);
@@ -190,8 +188,8 @@ const Register = () => {
 
   const finalButtonHandle = () => {
     if (isName && isPwd && isDept && isSex && isPwdConfirm && isId) {
-      axios
-        .post('http://localhost:3000/user/signUp', {
+      api
+        .post('http://localhost:3001/user/signUp', {
           email: email,
           passwd: pwd,
           userName: name,
@@ -201,17 +199,15 @@ const Register = () => {
           studentId: Number(id),
         })
         .then((response) => {
-          console.log(response)
-          if(response.data.code === 1100)
-              window.location.href = '/';
+          console.log(response);
+          if (response.data.code === 1100) window.location.href = '/';
         })
         .catch((error) => {
           console.log(error);
         });
-    } 
-      else{
-        alert("모든 정보를 기입하여주시기 바랍니다")
-      };
+    } else {
+      alert('모든 정보를 기입하여주시기 바랍니다');
+    }
   };
 
   return (
@@ -231,8 +227,8 @@ const Register = () => {
           <br />
           <div className={style.inOutter}>
             <input className={style.inner} type="text" onChange={nickHandler} />
-            <input type="button" value="중복확인" onClick={nickButtonHandler}/>
-          <br />
+            <input type="button" value="중복확인" onClick={nickButtonHandler} />
+            <br />
           </div>
           <span>{nickConfirmMsg}</span>
         </div>
@@ -261,7 +257,8 @@ const Register = () => {
           <input type="text" onChange={idHandler} className={style.input} />
         </div>
         <span>{idMsg}</span>
-        <br /><br />
+        <br />
+        <br />
         <span className={style.label}>이메일</span>
         <br />
         <div className={style.inOutter}>

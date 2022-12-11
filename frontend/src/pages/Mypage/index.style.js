@@ -12,8 +12,7 @@ export const MypageContainer = styled.div`
 `;
 
 export const UserInfoContainer = styled.div`
-  margin-left: 20px;
   & > div {
-    height: 50px;
+    margin: 20px 0px 20px 20px;
   }
 `;

@@ -4,6 +4,7 @@ import LoginCheck from '../Login/components/LoginCheck';
 import InfoImage from './components/InfoImage';
 import { MypageContainer, UserInfoContainer } from './index.style';
 import axios from 'axios';
+import { api, authApi } from '../../../axios.config';
 
 export default function MyPage() {
   const [image, setImage] = useState();
@@ -25,8 +26,8 @@ export default function MyPage() {
   };
 
   const handleCheckClick = () => {
-    axios
-      .post(`http://localhost:3001/user/nicknameCheck`, {
+    api
+      .post(`/user/nicknameCheck`, {
         nickname: nickname,
       })
       .then((res) => {
@@ -39,16 +40,10 @@ export default function MyPage() {
 
   useEffect(() => {
     async function getData() {
-      axios
-        .get(`http://localhost:3001/user/mypage`, {
-          headers: {
-            accessToken:
-              'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MzEsImlhdCI6MTY3MDE2OTQ1OSwiZXhwIjoxNjcwMjU1ODU5fQ.AgN9VdmVPda0LjbmaWUmHszwp-_GGaU0s_mlHNxwIK8',
-          },
-        })
-        .then((res) => {
-          console.log(res);
-        });
+      authApi.get(`/user/mypage`).then((res) => {
+        setUserInfo(res.data.result);
+        setNickname(res.data.result.nickname);
+      });
     }
     getData();
   }, []);
@@ -60,7 +55,7 @@ export default function MyPage() {
       <UserInfoContainer>
         <div>
           <b>이름: </b>
-          <span>이름이다</span>
+          <span>{userInfo.userName}</span>
         </div>
         <div>
           <b>닉네임: </b>
@@ -72,7 +67,9 @@ export default function MyPage() {
         <div>
           <b>자주가는카페</b>
           <br />
-          <span>dd</span>
+          {userInfo.mostVisitedCafeNames?.map((cafeName, idx) => {
+            return cafeName !== '없음' && <p key={`${cafeName} ${idx}`}>{cafeName}</p>;
+          })}
         </div>
         <div>
           <span>평점: </span>
