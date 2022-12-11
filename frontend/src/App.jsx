@@ -18,6 +18,7 @@ function App() {
         <Route path="/application" element={<ApplicationPage />} />
         <Route path="/login" element={<LoginPage />} />
         <Route path="/chat" element={<ChatPage />} />
+        <Route path="/chat/:chatRoomIdx" element={<ChatPage />} />
         <Route path="/mypage" element={<MyPage />} />
         <Route path="/Login" element={<LoginPage />} />
         <Route path="/Register" element={<Register />} />
