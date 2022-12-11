@@ -28,11 +28,12 @@
 .contentOutter {
   padding-top: 70px;
   width: 100%;
+  display: flex;
 }
 
 .left {
   float: left;
-  width: 300px;
+  width: 25%;
   height: 800px;
   overflow-y: auto;
   background-color: lightgray;
@@ -41,7 +42,7 @@
 
 .right {
   float: left;
-  width: 1309px;
+  width: 75%;
   height: 800px;
   margin: 10px 10px;
   overflow-y: auto;
@@ -103,17 +104,16 @@
   background-color: rgb(237, 231, 231);
 }
 
-
 .term {
   margin: 30px 0;
 }
 
-.detail{
+.detail {
   padding: 2% 10%;
   margin-top: 4%;
 }
 
-.innerDeliver{
+.innerDeliver {
   display: flex;
   flex-direction: row;
   justify-content: space-around;
@@ -126,7 +126,7 @@
   margin: 0% 5%;
 }
 
-.noOrder{
+.noOrder {
   font-size: 25px;
   background-color: lightgreen;
   padding: 17% 0%;
@@ -134,17 +134,17 @@
   margin-left: 40px;
 }
 
-.innerNoOrder{
+.innerNoOrder {
   background-color: lightgreen;
   font-size: 50px;
 }
 
-.menuImg{
+.menuImg {
   width: 150px;
   height: 150px;
 }
 
-.complicatedInner{
+.complicatedInner {
   display: flex;
   justify-content: center;
   margin: 5% 30%;
@@ -152,7 +152,7 @@
   border-radius: 2em;
 }
 
-.nodeliver{
+.nodeliver {
   background-color: lightgreen;
   padding: 17% 0%;
   font-size: 23px;
