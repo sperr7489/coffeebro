@@ -11,37 +11,39 @@ import {
   RequestListContainer,
 } from './index.style';
 
-const dummyRequestList = ['연하게', '샷추가', '시럽추가', '짜게', '맛있게'];
 export default function ApplicationModal(props) {
-  const { menuList, setMenuList, refs, setIsModalOpen } = props;
+  const { menuList, setMenuList, refs, setIsModalOpen, cafeIdx } = props;
   const [modalIdx, setModalIdx] = useState(0);
-  const [menuInfo, setMenuInfo] = useState({ cafe: {}, menu: {} });
+  const [menuInfo, setMenuInfo] = useState();
   const [requestList, setRequestList] = useState([]);
   const [menuInfoList, setMenuInfoList] = useState(menuList);
   const [animationName, setAnimationName] = useState('slide-in');
   const [isRequestOpen, setIsRequestOpen] = useState(false);
-  const [cafeList, setCafeList] = useState([]);
   const [cafeMenuList, setCafeMenuList] = useState([]);
   const [optionList, setOptionList] = useState([]);
 
   const handleItemClick = (item) => {
     setMenuInfo((prev) => {
       const newState = { ...prev };
-      newState[modalIdx === 0 ? 'cafe' : 'menu'] = item;
+      newState['menu'] = item;
       return newState;
     });
     if (modalIdx === 0) {
-      axios.get(`http://localhost:3001/cafe/${item.cafeIdx}/menu`).then((res) => {
-        setCafeMenuList(res.data.result.drinkMenu);
-        setOptionList(res.data.result.drinkOption);
-      });
-    }
-    if (modalIdx === 1) {
       setIsRequestOpen(true);
       return;
     }
     setModalIdx((prev) => prev + 1);
   };
+  useEffect(() => {
+    async function getData() {
+      console.log(cafeIdx);
+      axios.get(`http://localhost:3001/cafe/${cafeIdx}/menu`).then((res) => {
+        setCafeMenuList(res.data.result.drinkMenu);
+        setOptionList(res.data.result.drinkOption);
+      });
+    }
+    getData();
+  }, [cafeIdx]);
 
   const removeRequestModal = () => {
     if (!isRequestOpen) {
@@ -65,7 +67,7 @@ export default function ApplicationModal(props) {
   useEffect(() => {
     setIsRequestOpen(false);
     setRequestList([]);
-    if (modalIdx === 2) {
+    if (modalIdx === 1) {
       const request = [];
       for (const item in requestList) {
         request.push(requestList[item].optionName);
@@ -75,26 +77,18 @@ export default function ApplicationModal(props) {
     }
   }, [modalIdx]);
 
-  useEffect(() => {
-    async function getData() {
-      axios.get(`http://localhost:3001/cafe`).then((res) => {
-        setCafeList(res.data.result);
-      });
-    }
-    getData();
-  }, []);
   return (
     <ModalBackground>
       <ApplicationModalContainer ref={refs}>
         <button onClick={() => setIsModalOpen(false)}>x</button>
-        {modalIdx === 2 ? (
+        {modalIdx === 1 ? (
           <MenuInfo menuInfoList={menuInfoList} setMenuInfoList={setMenuInfoList} />
         ) : (
           <ItemListConatiner onScroll={removeRequestModal}>
-            {(modalIdx === 0 ? cafeList : cafeMenuList).map((item, idx) => (
+            {cafeMenuList.map((item, idx) => (
               <div onClick={() => handleItemClick(item)} key={`${item.cafeName} ${idx}`}>
                 <img src={item.imaPath} />
-                <span>{item[modalIdx === 0 ? 'cafeName' : 'drinkName']}</span>
+                <span>{item['drinkName']}</span>
               </div>
             ))}
           </ItemListConatiner>
@@ -118,7 +112,7 @@ export default function ApplicationModal(props) {
           </RequestListContainer>
         )}
         <ButtonWrapper>
-          {modalIdx === 2 ? (
+          {modalIdx === 1 ? (
             <button onClick={() => setModalIdx(0)}>메뉴 추가하기</button>
           ) : (
             <button onClick={() => setModalIdx((prev) => (prev === 0 ? prev : prev - 1))}>

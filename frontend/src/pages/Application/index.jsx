@@ -11,7 +11,16 @@ export default function ApplicationPage() {
   const [menuList, setMenuList] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [cafeList, setCafeList] = useState([]);
+  const [cafeIdx, setCafeIdx] = useState(1);
   const modalRef = useRef();
+
+  const handleCafeChange = (e) => {
+    setCafeIdx(e.target.value);
+  };
+  useEffect(() => {
+    setMenuList([]);
+  }, [cafeIdx]);
+
   const clickEvent = (e) => {
     console.log(modalRef.current);
     if (isModalOpen && !modalRef.current?.contains(e.target)) {
@@ -24,6 +33,7 @@ export default function ApplicationPage() {
   useEffect(() => {
     async function getData() {
       axios.get(`http://localhost:3001/cafe`).then((res) => {
+        console.log(res);
         setCafeList(res.data.result);
       });
     }
@@ -41,22 +51,26 @@ export default function ApplicationPage() {
       }
     }
     const date = new Date();
+    const hour = e.target.hour.value;
+    const minute = e.target.minute.value;
 
-    axios.post(`http://localhost:3001/user/delivery`, {
-      cafeIdx: e.target.cafe.value,
-      receiptTime: `${date.getFullYear()}/${date.getMonth()}/${date.getDate()} ${
-        isAm ? Number(e.target.hour.value) : Number(e.target.hour.value) + 12
-      }:${e.target.minute.value}`,
-      receiptPlace: e.target.location.value,
-      drinkInfos: drinkInfos,
-    });
+    axios
+      .post(`http://localhost:3001/user/delivery`, {
+        cafeIdx: e.target.cafe.value,
+        receiptTime: `${date.getFullYear()}/${date.getMonth()}/${date.getDate()} ${
+          isAm ? `${hour.length === 1 ? '0' : ''}${hour}` : Number(hour) + 12
+        }:${minute.length === 1 ? '0' : ''}${minute}`,
+        receiptPlace: e.target.location.value,
+        drinkInfos: drinkInfos,
+      })
+      .then((res) => console.log(res));
   };
 
   return (
     <Container>
       <MainForm onSubmit={handleSubmit}>
         <label htmlFor="cafe">카페</label>
-        <CafeSelect name="cafe">
+        <CafeSelect name="cafe" onChange={handleCafeChange}>
           {cafeList.map((cafe, idx) => (
             <option key={`${cafe.cafeName} ${idx}`} value={cafe.cafeIdx}>
               {cafe.cafeName}
@@ -113,6 +127,7 @@ export default function ApplicationPage() {
           setMenuList={setMenuList}
           menuList={menuList}
           setIsModalOpen={setIsModalOpen}
+          cafeIdx={cafeIdx}
         />
       )}
     </Container>
