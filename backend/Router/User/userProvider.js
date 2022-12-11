@@ -351,3 +351,20 @@ exports.checkAlreadyApply = async (serviceApplicationIdx, userIdx) => {
   }
 };
 
+// 유저의 모든 아직 읽지 않은 알림 정보 가져오기
+exports.getNotifications = async (userIdx) => {
+    const connection = await pool.getConnection(async (conn) => conn);
+    try {
+        const getNotificationsResult = await userDao.getNotifications(
+            connection,
+            userIdx
+        );
+
+        return getNotificationsResult;
+    } catch (error) {
+        console.log(error);
+        return basicResponse(baseResponseStatus.DB_ERROR);
+    } finally {
+        connection.release();
+    }
+};

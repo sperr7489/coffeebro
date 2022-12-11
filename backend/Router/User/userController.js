@@ -280,3 +280,19 @@ exports.completeDelivery = async (req, res) =>{
 
   return res.send(completeDeliveryResult);
 }
+
+// 유저의 모든 아직 읽지 않은 알림 정보 가져오기
+exports.getNotificationAll = async (req, res) => {
+  const userIdx = req.userIdx;
+
+  const getNotificationsResult = await userProvider.getNotifications(userIdx);
+  return res.send(resultResponse(baseResponseStatus.SUCCESS, getNotificationsResult));
+};
+
+// 알림 읽음 처리
+exports.updateNotification = async (req, res) => {
+  const {notificationIdx}= req.params;
+
+  const updateNotificationResult = await userService.updateNotification(notificationIdx);
+  return res.send(updateNotificationResult);
+};

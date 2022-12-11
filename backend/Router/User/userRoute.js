@@ -73,4 +73,10 @@ router.put("/",verifyAccessToken,userController.updateUserInfo);
 //배달 대행 완료 및 알림 생성
 router.post("/delivery/complete/:deliveryApplicationIdx",verifyAccessToken,userController.completeDelivery);
 
+//유저의 모든 아직 읽지 않은 알림 정보 가져오기
+router.get("/notifications", verifyAccessToken, userController.getNotificationAll);
+
+//알림 읽음 처리
+router.post("/notification/:notificationIdx",userController.updateNotification);
+
 module.exports = router;

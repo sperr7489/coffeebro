@@ -320,3 +320,21 @@ exports.updateServiceApplicationStatus = async (userIdx, deliveryApplicationIdx)
         connection.release();
     }
 };
+
+// 알림 읽음 처리
+exports.updateNotification = async (notificationIdx) => {
+    const connection = await pool.getConnection(async (conn) => conn);
+    try {
+        await connection.beginTransaction();
+
+        await userDao.updateNotification(connection,notificationIdx);
+
+        return basicResponse(baseResponseStatus.SUCCESS);
+    } catch (error) {
+        await connection.rollback();
+        console.log(error)
+        return basicResponse(baseResponseStatus.DB_ERROR);
+    } finally {
+        connection.release();
+    }
+};

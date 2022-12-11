@@ -512,3 +512,31 @@ exports.insertNotification = async (connection, userIdx, message) => {
   );
   return insertNotificationRow;
 };
+
+// 유저의 모든 아직 읽지 않은 알림 정보 가져오기
+exports.getNotifications = async (connection, userIdx) => {
+  const getNotificationsQuery = `
+  SELECT notificationIdx, message, createdAt
+  FROM notification
+  WHERE userIdx = ? and readOrNot = 0;
+  `;
+  const [getNotificationsRow] = await connection.query(
+      getNotificationsQuery,
+      userIdx
+  );
+  return getNotificationsRow;
+};
+
+// 알림 읽음 처리
+exports.updateNotification = async (connection, notificationIdx) => {
+  const getNotificationsQuery = `
+  Update notification
+  set readOrNot=1 
+  WHERE notificationIdx = ?
+  `;
+  const [updateNotificationRow] = await connection.query(
+      getNotificationsQuery,
+      notificationIdx
+  );
+  return updateNotificationRow;
+};
