@@ -296,3 +296,19 @@ exports.updateNotification = async (req, res) => {
   const updateNotificationResult = await userService.updateNotification(notificationIdx);
   return res.send(updateNotificationResult);
 };
+
+// 서비스 신청자에 대한 평점 부여
+exports.updateApplicantScore = async (req, res) => {
+  const {applicantIdx,score}= req.body;
+
+  const updateApplicantScoreResult = await userService.updateApplicantScore(applicantIdx,score);
+  return res.send(updateApplicantScoreResult);
+};
+
+// 배달 대행자에 대한 평점 부여
+exports.updateDeliveryAgentScore = async (req, res) => {
+  const {deliveryAgentIdx,score}= req.body;
+
+  const updateDeliveryAgentScoreResult = await userService.updateDeliveryAgentScore(deliveryAgentIdx,score);
+  return res.send(updateDeliveryAgentScoreResult);
+};

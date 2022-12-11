@@ -338,3 +338,37 @@ exports.updateNotification = async (notificationIdx) => {
         connection.release();
     }
 };
+
+// 서비스 신청자에 대한 평점 부여
+exports.updateApplicantScore = async (applicantIdx, score) => {
+    const connection = await pool.getConnection(async (conn) => conn);
+    try {
+        await userDao.updateApplicantScoreCnt(connection,applicantIdx);
+        await userDao.updateApplicantScore(connection, applicantIdx, score);
+
+        return basicResponse(baseResponseStatus.SUCCESS);
+    } catch (error) {
+        await connection.rollback();
+        console.log(error);
+        return basicResponse(baseResponseStatus.DB_ERROR);
+    } finally {
+        connection.release();
+    }
+};
+
+// 배달 대행자에 대한 평점 부여
+exports.updateDeliveryAgentScore = async (deliveryAgentIdx, score) => {
+    const connection = await pool.getConnection(async (conn) => conn);
+    try {
+        await userDao.updateDeliveryAgentScoreCnt(connection,deliveryAgentIdx);
+        await userDao.updateDeliveryAgentScore(connection, deliveryAgentIdx, score);
+
+        return basicResponse(baseResponseStatus.SUCCESS);
+    } catch (error) {
+        await connection.rollback();
+        console.log(error);
+        return basicResponse(baseResponseStatus.DB_ERROR);
+    } finally {
+        connection.release();
+    }
+};

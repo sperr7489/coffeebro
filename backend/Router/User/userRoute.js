@@ -79,4 +79,10 @@ router.get("/notifications", verifyAccessToken, userController.getNotificationAl
 //알림 읽음 처리
 router.post("/notification/:notificationIdx",userController.updateNotification);
 
+// 서비스 신청자에 대한 평점 넣기
+router.post("/rate/applicant",verifyAccessToken,userController.updateApplicantScore);
+
+// 배달 대행자에 대한 평점 넣기
+router.post("/rate/agent",verifyAccessToken,userController.updateDeliveryAgentScore);
+
 module.exports = router;
