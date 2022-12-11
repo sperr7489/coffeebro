@@ -8,43 +8,54 @@ import Menu from './components/Menu';
 
 export default function Header() {
   const navigate = useNavigate();
-  const [cookies, setCookie, removeCookies] = useCookies(['id'])
+  const [cookies, setCookie, removeCookies] = useCookies(['id']);
   const [showMenu, setShowMenu] = useState(false);
   const [showAlarm, setShowAlarm] = useState(false);
-  
 
   const menuClick = () => {
     setShowMenu(!showMenu);
   };
-  
+
   const alramClick = () => {
-    setShowAlarm(!showAlarm)
+    setShowAlarm(!showAlarm);
   };
 
   const logout = () => {
-    removeCookies('id')
-    navigate("/")
-  }
+    removeCookies('id');
+    navigate('/');
+  };
 
   return (
     <HeaderContainer>
-      <img src={icMenu} onClick={menuClick}/>
-      <span onClick={() => {navigate("/")}}>커피가게아저씨</span>
-      {showMenu ? <Menu /> : <></>}
-      {cookies.id === undefined ? <input type="button" value="로그인" onClick={() => {navigate("/login")}}/> : 
-      <RightChildContainer>
-        <button>
-          <img src={icAlarm} onClick={alramClick}/>
-        </button>
-        {showAlarm ? <Alarm /> : <></>}
-        <button onClick={() => navigate('/mypage')}>
-          <img src={icUser} />
-        </button>
-        <button onClick={logout}>
-          로그아웃
-        </button>
-      </RightChildContainer>
-}
+      <img src={icMenu} onClick={menuClick} />
+      <h2
+        onClick={() => {
+          navigate('/');
+        }}
+      >
+        커피가게아저씨
+      </h2>
+      {showMenu ? <Menu closeModal={() => setShowMenu(false)} /> : <></>}
+      {cookies.id === undefined ? (
+        <input
+          type="button"
+          value="로그인"
+          onClick={() => {
+            navigate('/login');
+          }}
+        />
+      ) : (
+        <RightChildContainer>
+          <button>
+            <img src={icAlarm} onClick={alramClick} />
+          </button>
+          {showAlarm ? <Alarm /> : <></>}
+          <button onClick={() => navigate('/mypage')}>
+            <img src={icUser} />
+          </button>
+          <button onClick={logout}>로그아웃</button>
+        </RightChildContainer>
+      )}
     </HeaderContainer>
   );
 }

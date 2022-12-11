@@ -3,7 +3,7 @@ import userImage from '../../../../assets/images/img_user.png';
 
 export default function ApplicantCard(props) {
   const { imgPath, cafeName, receiptPlace, receiptTime, onClick } = props;
-  console.log(!!imgPath);
+
   return (
     <CardContainer onClick={onClick}>
       <img src={!!imgPath ? imgPath : userImage} />
