@@ -77,7 +77,7 @@ router.post("/delivery/complete/:deliveryApplicationIdx",verifyAccessToken,userC
 router.get("/notifications", verifyAccessToken, userController.getNotificationAll);
 
 //알림 읽음 처리
-router.post("/notification/:notificationIdx",userController.updateNotification);
+router.post("/notification/:notificationIdx",verifyAccessToken, userController.updateNotification);
 
 // 서비스 신청자에 대한 평점 넣기
 router.post("/rate/applicant",verifyAccessToken,userController.updateApplicantScore);
