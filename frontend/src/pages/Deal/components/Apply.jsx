@@ -18,6 +18,7 @@ const Apply = ({cookies}) => {
   };
 
   const registButton = (deliveryAgentIdx, serviceApplicationIdx) => {
+    console.log(deliveryAgentIdx)
       axios.post(`http://localhost:3000/user/apply/acception/${serviceApplicationIdx}`,{}, {
         headers: {
           accessToken: cookies
