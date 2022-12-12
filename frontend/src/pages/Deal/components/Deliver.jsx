@@ -40,7 +40,7 @@ const Deliver = ({cookies}) => {
         <ul className={style.inMenu}>
           {list.map((data, index) => 
             <li className={style.applyName} onClick={() => setNum(index)}>
-              <span>{data.applicantInfo[0].userName}</span><br /><br />
+              {data.applicantInfo.length > 0 ? <span>{data.applicantInfo[0].userName}<br /><br /></span> : <></>}
               <div className={data.status === 1 ? style.green : data.status === 0 ? style.yellow : style.red}>
                 {data.status === 1 ? "수락" : data.status === 0 ? "대기" : "거절" }
               </div>
