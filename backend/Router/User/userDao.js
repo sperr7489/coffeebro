@@ -12,8 +12,8 @@ exports.emailCheck = async (connection, email) => {
 // DB에 유저 등록
 exports.insertUser = async (connection, insertUserParams) => {
   const insertUserQuery = `
-       INSERT INTO user (email, passwd, userName, department, sex, studentId, nickname)
-          VALUES (?,?,?,?,?,?,?);    
+       INSERT INTO user (email, passwd, userName, department, sex, studentId, nickname,userImg)
+          VALUES (?,?,?,?,?,?,?,?);    
       `;
   const [insertUserRow] = await connection.query(
     insertUserQuery,
@@ -242,8 +242,8 @@ exports.getApplicantInfo = async (connection, serviceApplicationIdx) => {
   `;
 
   const [getApplicantInfoRow] = await connection.query(
-      getApplicantInfoQuery,
-      serviceApplicationIdx
+    getApplicantInfoQuery,
+    serviceApplicationIdx
   );
   return getApplicantInfoRow;
 };
@@ -459,7 +459,6 @@ exports.updateUserInfo = async (connection, userIdx, nickname, userImg) => {
     userImg,
     userIdx,
   ]);
-  console.log(userIdx, nickname, userImg);
   return updateUserInfoRow;
 };
 

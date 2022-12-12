@@ -35,6 +35,7 @@ exports.createUser = async (
       sex,
       studentId,
       nickname,
+      userImg,
     ];
 
     const signUpResult = await userDao.insertUser(connection, insertUserParams);
@@ -248,10 +249,10 @@ exports.acception = async (
       //   serviceApplicationIdx
       // );
       const { insertId: chatRoomIdx } = await chatDao.createChatRoom(
-          connection,
-          serviceApplicationIdx,
-          userIdx,
-          agentIdx
+        connection,
+        serviceApplicationIdx,
+        userIdx,
+        agentIdx
       );
 
       console.log("chatRoomIdx : ", chatRoomIdx);
@@ -285,11 +286,7 @@ exports.updateAgentScore = async (agentIdx) => {
 };
 
 // 유저의 정보(닉네임과 사진) 수정
-exports.updateUserInfo = async (
-    userIdx,
-    nickname,
-    userImg
-) => {
+exports.updateUserInfo = async (userIdx, nickname, userImg) => {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     await connection.beginTransaction();
@@ -301,7 +298,7 @@ exports.updateUserInfo = async (
     return basicResponse(baseResponseStatus.USER_INFO_UPDATE_SUCCESS);
   } catch (error) {
     await connection.rollback();
-    console.log(error)
+    console.log(error);
     return basicResponse(baseResponseStatus.DB_ERROR);
   } finally {
     connection.release();
@@ -309,26 +306,53 @@ exports.updateUserInfo = async (
 };
 
 // 배달 대행 완료 및 알림 생성
-exports.updateServiceApplicationStatus = async (userIdx, deliveryApplicationIdx) => {
+exports.updateServiceApplicationStatus = async (
+  userIdx,
+  deliveryApplicationIdx
+) => {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     await connection.beginTransaction();
 
-    if((await userDao.getDeliveryApplicationUser(connection,deliveryApplicationIdx)).deliveryAgentIdx != userIdx)
+    if (
+      (
+        await userDao.getDeliveryApplicationUser(
+          connection,
+          deliveryApplicationIdx
+        )
+      ).deliveryAgentIdx != userIdx
+    )
       return basicResponse(baseResponseStatus.NOT_MY_DELIVERY_APPLICATION);
 
-
-    if((await userDao.getDeliveryApplicationStatus(connection,deliveryApplicationIdx)).status==1)
+    if (
+      (
+        await userDao.getDeliveryApplicationStatus(
+          connection,
+          deliveryApplicationIdx
+        )
+      ).status == 1
+    )
       return basicResponse(baseResponseStatus.ALREADY_COMPLETED_DELIVERY);
 
-    await userDao.updateDeliveryApplicationStatus(connection, deliveryApplicationIdx);
+    await userDao.updateDeliveryApplicationStatus(
+      connection,
+      deliveryApplicationIdx
+    );
 
-    await userDao.updateServiceApplicationStatus(connection,deliveryApplicationIdx);
+    await userDao.updateServiceApplicationStatus(
+      connection,
+      deliveryApplicationIdx
+    );
 
     await userDao.insertNotification(
-        connection,
-        (await userDao.getServiceApplicationUser(connection,deliveryApplicationIdx)).userIdx,
-        "배달이 완료되었습니다. 배달원의 평점을 남겨주세요."
+      connection,
+      (
+        await userDao.getServiceApplicationUser(
+          connection,
+          deliveryApplicationIdx
+        )
+      ).userIdx,
+      "배달이 완료되었습니다. 배달원의 평점을 남겨주세요."
     );
 
     await connection.commit();
@@ -336,7 +360,7 @@ exports.updateServiceApplicationStatus = async (userIdx, deliveryApplicationIdx)
     return basicResponse(baseResponseStatus.SUCCESS);
   } catch (error) {
     await connection.rollback();
-    console.log(error)
+    console.log(error);
     return basicResponse(baseResponseStatus.DB_ERROR);
   } finally {
     connection.release();
@@ -349,12 +373,12 @@ exports.updateNotification = async (notificationIdx) => {
   try {
     await connection.beginTransaction();
 
-    await userDao.updateNotification(connection,notificationIdx);
+    await userDao.updateNotification(connection, notificationIdx);
 
     return basicResponse(baseResponseStatus.SUCCESS);
   } catch (error) {
     await connection.rollback();
-    console.log(error)
+    console.log(error);
     return basicResponse(baseResponseStatus.DB_ERROR);
   } finally {
     connection.release();
@@ -365,7 +389,7 @@ exports.updateNotification = async (notificationIdx) => {
 exports.updateApplicantScore = async (applicantIdx, score) => {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
-    await userDao.updateApplicantScoreCnt(connection,applicantIdx);
+    await userDao.updateApplicantScoreCnt(connection, applicantIdx);
     await userDao.updateApplicantScore(connection, applicantIdx, score);
 
     return basicResponse(baseResponseStatus.SUCCESS);
@@ -393,4 +417,4 @@ exports.updateDeliveryAgentScore = async (deliveryAgentIdx, score) => {
   } finally {
     connection.release();
   }
-}
+};

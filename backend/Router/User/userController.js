@@ -9,9 +9,14 @@ const Room = require("../../schemas/room");
 
 //회원가입
 exports.signUp = async (req, res) => {
+  // const { email, passwd, userName, department, sex, studentId, nickname } =
+  //   req.body; // 둘 중 뭐로 해야 맞을까나?
+  const { data } = req.body;
+  const userImg = req.file.location;
+  const body = JSON.parse(data);
   const { email, passwd, userName, department, sex, studentId, nickname } =
-    req.body;
-  const userImg = req.file;
+    body;
+
   // 어느하나라도 제대로 입력되지 않았을 때
   if (
     !email ||
@@ -21,8 +26,9 @@ exports.signUp = async (req, res) => {
     !sex ||
     !studentId ||
     !nickname
-  )
+  ) {
     return res.send(basicResponse(baseResponseStatus.PARAMS_NOT_EXACT));
+  }
   const emailCheck = await userProvider.emailCheck(email);
   if (emailCheck) {
     return res.send(basicResponse(baseResponseStatus.EMAIL_EXISTS));
@@ -287,8 +293,8 @@ exports.nicknameCheck = async (req, res) => {
 // 마이페이지 정보(사진, 닉네임) 수정
 exports.updateUserInfo = async (req, res) => {
   const userIdx = req.userIdx;
-  const { nickname, userImg } = req.body;
-
+  const { nickname } = req.body;
+  const userImg = req.file.location;
   if (!nickname || !userImg)
     return res.send(basicResponse(baseResponseStatus.PARAMS_NOT_EXACT));
 
