@@ -14,7 +14,7 @@ export default function useSocket(props) {
     }
     socket.connect();
     const roomList = chatRoomInfo.map((info) => info.chatRoomIdx);
-    socket.emit('JOIN_CHATROOM', roomList);
+    socket.emit('join_chatroom', roomList);
   }, []);
 
   socket.on('send_message', (data) => {
