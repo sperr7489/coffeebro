@@ -18,8 +18,9 @@ const Apply = ({ cookies }) => {
     setModalIdx(index);
   };
 
-  const registButton = (deliveryAgentIdx, serviceApplicationIdx) => {
-    authApi
+  const registButton = (deliveryAgentIdx, serviceApplicationIdx, name) => {
+    if(window.confirm(`${name}님에게 배달을 맡기시겠습니까?`)){
+      authApi
       .post(
         `/user/apply/acception/${serviceApplicationIdx}?acceptFlag=1&deliveryAgentIdx=${deliveryAgentIdx}`,
       )
@@ -29,6 +30,10 @@ const Apply = ({ cookies }) => {
       .catch((error) => {
         console.log(error);
       });
+    }
+    else{
+      console.log("no")
+    }
   };
 
   useEffect(() => {
@@ -104,9 +109,9 @@ const Apply = ({ cookies }) => {
                     <div>
                       <input
                         type="button"
-                        value="신청하기"
+                        value="수락하기"
                         onClick={() => {
-                          registButton(deliver.deliveryAgentIdx, data.serviceApplicationIdx);
+                          registButton(deliver.deliveryAgentIdx, data.serviceApplicationIdx, deliver.userName);
                         }}
                       />
                     </div>
