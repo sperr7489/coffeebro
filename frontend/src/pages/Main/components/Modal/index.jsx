@@ -19,6 +19,7 @@ export default function MainModal(props) {
     grade,
     deliveryInfo,
     closeModal,
+    userInfo,
   } = props;
   const handleApplyClick = () => {
     authApi.post(`/user/delivery/${serviceApplicationIdx}`).then((res) => {
@@ -29,12 +30,14 @@ export default function MainModal(props) {
       closeModal();
     });
   };
+  console.log(userInfo);
   return (
     <MainModalContainer>
       <CancleBtn onClick={closeModal}>x</CancleBtn>
       <ContentContainer>
         <img src={!!imgPath ? imgPath : userImage} />
         <InfoContainer>
+          <span>닉네임 : {userInfo.nickname}</span>
           <span>카페 : {cafeName}</span>
           <span>메뉴 </span>
           <MenuInfoContainer>
@@ -53,7 +56,7 @@ export default function MainModal(props) {
               </div>
             ))}
           </MenuInfoContainer>
-          <span>신청자 평점 : {grade}</span>
+          <span>신청자 평점 : {userInfo.applicantScore}</span>
           <span>배달 시간 : {receiptTime}</span>
           <span>배달 위치 : {receiptPlace}</span>
         </InfoContainer>
