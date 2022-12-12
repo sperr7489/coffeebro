@@ -23,9 +23,18 @@ const Deliver = ({cookies}) => {
     getDeliverList()
   }, [])
 
+  const okButton = () => {
+    authApi.post(`/user/delivery/complete/${list[num].deliveryApplicationIdx}`)
+    .then(response => {
+      alert("배달 완료!")
+    })
+    .catch(error => {
+      console.log(error)
+    })
+  }
+
   return (
     <div className={style.contentOutter}>
-      {console.log(list)}
       <div className={style.left}>
         {list.length === 0 ? <span className={style.nodeliver}>배달 대행 신청 내역이 없습니다!</span> :
         <ul className={style.inMenu}>
@@ -67,7 +76,7 @@ const Deliver = ({cookies}) => {
                 </div>)
             }
           </div>
-          {list.length === 0 ? "" : list[num].status === 0 ? <input className={style.deliverButton} type="button" value="배달완료"/> : ""}
+          {list.length === 0 ? "" : <input className={style.deliverButton} type="button" value="배달완료" onClick = {okButton}/>}
         </div>
         }
       </div>
