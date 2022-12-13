@@ -70,7 +70,12 @@ router.get("/mypage", verifyAccessToken, userController.getMyPageInfo);
 router.post("/nicknameCheck", userController.nicknameCheck);
 
 // 마이페이지 정보(사진, 닉네임) 수정
-router.put("/", verifyAccessToken, userController.updateUserInfo);
+router.put(
+  "/",
+  verifyAccessToken,
+  upload.single("userImg"),
+  userController.updateUserInfo
+);
 
 //배달 대행 완료 및 알림 생성
 router.post(
