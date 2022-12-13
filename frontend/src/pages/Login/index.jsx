@@ -21,12 +21,12 @@ const LoginPage = () => {
   };
 
   const buttonHandler = () => {
-    let regex = new RegExp('[a-z0-9]+@ajou.ac.kr');
+    // let regex = new RegExp('[a-z0-9]+@ajou.ac.kr');
 
-    if (regex.test(email) === false) {
-      alert('아주대학교 이메일 계정으로 로그인 바랍니다.');
-      return;
-    }
+    // if (regex.test(email) === false) {
+    //   alert('아주대학교 이메일 계정으로 로그인 바랍니다.');
+    //   return;
+    // }
 
     if (email === '') {
       alert('아이디를 입력해주세요.');
