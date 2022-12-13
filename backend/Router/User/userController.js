@@ -11,11 +11,19 @@ const Room = require("../../schemas/room");
 exports.signUp = async (req, res) => {
   // const { email, passwd, userName, department, sex, studentId, nickname } =
   //   req.body; // 둘 중 뭐로 해야 맞을까나?
-  const { data } = req.body;
+  const data = req.body;
+
   const userImg = req.file.location;
-  const body = JSON.parse(data);
-  const { email, passwd, userName, department, sex, studentId, nickname } =
-    body;
+  // const body = JSON.parse(data);
+  const {
+    email,
+    passwd,
+    userName,
+    department,
+    sex,
+    studentId,
+    nickName: nickname,
+  } = data;
 
   // 어느하나라도 제대로 입력되지 않았을 때
   if (
