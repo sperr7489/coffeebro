@@ -69,11 +69,13 @@ router.get("/mypage", verifyAccessToken, userController.getMyPageInfo);
 //닉네임 존재 여부 확인
 router.post("/nicknameCheck", userController.nicknameCheck);
 
-//유저 닉네임 수정
-router.put("/nickname",verifyAccessToken,userController.updateUserNickname);
-
-//유저 사진 수정
-router.put("/userImg",verifyAccessToken,userController.updateUserImg);
+// 마이페이지 정보(사진, 닉네임) 수정
+router.put(
+  "/",
+  verifyAccessToken,
+  upload.single("userImg"),
+  userController.updateUserInfo
+);
 
 //배달 대행 완료 및 알림 생성
 router.post(
