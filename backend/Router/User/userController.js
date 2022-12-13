@@ -290,18 +290,31 @@ exports.nicknameCheck = async (req, res) => {
   return res.send(basicResponse(baseResponseStatus.NICKNAME_CONFIRM_SUCCESS));
 };
 
-// 마이페이지 정보(사진, 닉네임) 수정
-exports.updateUserInfo = async (req, res) => {
+// 유저 닉네임 수정
+exports.updateUserNickname = async (req, res) => {
   const userIdx = req.userIdx;
   const { nickname } = req.body;
-  const userImg = req.file.location;
-  if (!nickname || !userImg)
+  if (!nickname)
     return res.send(basicResponse(baseResponseStatus.PARAMS_NOT_EXACT));
 
-  const updateUserInfoResult = await userService.updateUserInfo(
+  const updateUserInfoResult = await userService.updateUserNickname(
     userIdx,
-    nickname,
-    userImg
+    nickname
+  );
+
+  return res.send(updateUserInfoResult);
+};
+
+// 유조 사진 수정
+exports.updateUserImg = async (req, res) => {
+  const userIdx = req.userIdx;
+  const userImg = req.file.location;
+  if (!userImg)
+    return res.send(basicResponse(baseResponseStatus.PARAMS_NOT_EXACT));
+
+  const updateUserInfoResult = await userService.updateUserImg(
+      userIdx,
+      userImg
   );
 
   return res.send(updateUserInfoResult);
