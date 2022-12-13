@@ -22,7 +22,6 @@ export default function ApplicationModal(props) {
   const [isRequestOpen, setIsRequestOpen] = useState(false);
   const [cafeMenuList, setCafeMenuList] = useState([]);
   const [optionList, setOptionList] = useState([]);
-
   const handleItemClick = (item) => {
     setMenuInfo((prev) => {
       const newState = { ...prev };
@@ -95,7 +94,6 @@ export default function ApplicationModal(props) {
         )}
         {isRequestOpen && (
           <RequestListContainer className={animationName}>
-            <button>aa</button>
             <div>
               {optionList.map((request, idx) => (
                 <RequestContainer
