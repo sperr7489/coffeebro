@@ -24,7 +24,7 @@ exports.getChatRoom = async (userIdx) => {
         );
 
         const chat = await Chat.find({
-          $and: [{ chatRoomIdx: chatRoomIdx }, { fromIdx: otherIdx }],
+          chatRoomIdx: chatRoomIdx,
         })
           .sort({ createdAt: -1 })
           .limit(1);
