@@ -24,11 +24,19 @@ export const UserInfoContainer = styled.div`
   }
   & > div {
     margin-right: 10px;
+    img {
+      width: 50px;
+      height: 50px;
+      border: 1px solid black;
+      margin-bottom: 10px;
+    }
     div {
       width: 50px;
       height: 50px;
       border: 1px solid black;
       margin-bottom: 10px;
+      img {
+      }
     }
   }
 `;

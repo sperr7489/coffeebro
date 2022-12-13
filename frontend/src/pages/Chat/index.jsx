@@ -26,7 +26,11 @@ export default function ChatPage() {
     <ChatPageContainer>
       <LoginCheck />
       <ChatMainContainer>
-        <Chatting chatRoomIdx={chatRoomIdx} chatRoomInfo={chatRoomInfo} />
+        <Chatting
+          chatRoomIdx={chatRoomIdx}
+          chatRoomInfo={chatRoomInfo}
+          setChatRoomInfo={setChatRoomInfo}
+        />
         <UserList
           chatRoomInfo={chatRoomInfo}
           setChatRoomIdx={setChatRoomIdx}
