@@ -60,6 +60,7 @@ export default function MyPage() {
         console.log(res);
         setUserInfo(res.data.result);
         setNickname(res.data.result.nickname);
+        setImage(res.data.result.userImg);
       });
     }
     getData();

@@ -49,22 +49,25 @@ module.exports = (server, app) => {
 	 */
 	chat.on("connection", (socket) => {
 		// io객체에 대한 connection이 일어나면 socket에 대한 콜백함수가 발생.
-
+		console.log(1);
 		const req = socket.request;
 		const {
 			headers: { referer },
 		} = req;
-		const chatRoomIdx = referer.split("/")[referer.split("/").length - 1].replace(/ \?.+/, "");
+		// const chatRoomIdx = referer.split("/")[referer.split("/").length - 1].replace(/ \?.+/, "");
 		// console.log("referer : ", referer);
 		//6393f2cbfd0c06af4a93d17d?password=
 		//6393f2cbfd0c06af4a93d17d?password=
-		socket.join(chatRoomIdx); // join을 하는 순간 해당 roomId로 들어가게 됨.
-
-		socket.to(chatRoomIdx).emit("join", {
-			// join이라는 이벤트에 전달해주는 data
-			user: "system",
-			chat: `님이 입장하셨습니다.`,
+		socket.on("join_chatRoom", (chatRoomIdx) => {
+			socket.join(chatRoomIdx);
 		});
+		// join을 하는 순간 해당 roomId로 들어가게 됨.
+
+		// socket.to(chatRoomIdx).emit("join", {
+		// 	// join이라는 이벤트에 전달해주는 data
+		// 	user: "system",
+		// 	chat: `님이 입장하셨습니다.`,
+		// });
 
 		socket.on("send_message", (data) => {
 			const { fromIdx, toIdx, message, chatRoomIdx } = data;
@@ -73,6 +76,7 @@ module.exports = (server, app) => {
 			// );
 
 			// 디비에 채팅 내역 저장하기
+			console.log(data);
 			const createdAt = new Date();
 			Chat.create({
 				chatRoomIdx: chatRoomIdx,
@@ -82,7 +86,7 @@ module.exports = (server, app) => {
 				createdAt: createdAt,
 			}).then(() => {
 				console.log("DB에 채팅 내역 저장 성공");
-				socket.emit("send_message", { ...data, createdAt: createdAt });
+				socket.to(chatRoomIdx).emit("send_message", { ...data, createdAt: createdAt });
 			});
 		});
 

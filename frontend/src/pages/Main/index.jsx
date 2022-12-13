@@ -24,6 +24,7 @@ export default function MainPage() {
     async function getData() {
       authApi.get(`/user/delivery/infos/all`).then((res) => {
         setApplicants(res.data.result);
+        console.log(res.data.result);
       });
     }
     getData();
