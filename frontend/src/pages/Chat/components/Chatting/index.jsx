@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Navigate } from 'react-router-dom';
 import { authApi } from '../../../../../axios.config';
+import ClientSocket from '../../../../hooks/useSocket';
 import useSocket from '../../../../hooks/useSocket';
 import {
   ChatListContainer,
@@ -19,17 +20,23 @@ export default function Chatting(props) {
     const date = new Date(data.createdAt);
     const hour = date.getHours();
     const minute = date.getMinutes();
+    console.log(chatRoomIdx);
     setChatInfo((prev) => [
       ...prev,
       {
         ...data,
         isSend:
-          chatRoomInfo.find((info) => info.chatRoomIdx === chatRoomIdx).ownUserIdx === data.fromIdx,
+          chatRoomInfo.find((info) => info.chatRoomIdx === chatRoomIdx)?.ownUserIdx ===
+          data.fromIdx,
         createdAt: `${hour < 10 ? '0' : ''}${hour}:${minute < 10 ? '0' : ''}${minute}`,
       },
     ]);
   };
-  const [sendMessage] = useSocket({ chatRoomInfo, getChatMessage });
+  const clientSocket = new ClientSocket({ chatRoomIdx, getChatMessage });
+  // const [sendMessage, connectSocket, disconnectSocket] = useSocket({
+  //   chatRoomInfo,
+  //   getChatMessage,
+  // });
 
   const scrollToBottom = () => {
     scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
@@ -38,6 +45,8 @@ export default function Chatting(props) {
     scrollToBottom();
   }, [chatInfo, chatRoomIdx]);
   useEffect(() => {
+    clientSocket.connect();
+    clientSocket.addEvent();
     async function getData() {
       if (chatRoomIdx === 0) {
         return;
@@ -64,6 +73,10 @@ export default function Chatting(props) {
       });
     }
     getData();
+    return () => {
+      clientSocket.deleteEvent();
+      clientSocket.disconnect();
+    };
   }, [chatRoomIdx]);
 
   const handleKeyUp = (e) => {
@@ -82,7 +95,7 @@ export default function Chatting(props) {
       return;
     }
     messageRef.current.value = '';
-    sendMessage({
+    clientSocket.sendMessage({
       chatRoomIdx: info.chatRoomIdx,
       fromIdx: info.ownUserIdx,
       toIdx: info.otherIdx,

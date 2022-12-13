@@ -1,28 +1,43 @@
 import { useEffect } from 'react';
 import { io } from 'socket.io-client';
-export default function useSocket(props) {
-  const { chatRoomInfo, getChatMessage, setMessage } = props;
-  const socket = io('http://localhost:3001/chat', {
-    cors: {
-      origin: '*',
-    },
-    path: '/socket.io',
-  });
-  useEffect(() => {
-    if (socket) {
+export default class ClientSocket {
+  constructor(props) {
+    const { chatRoomIdx, getChatMessage } = props;
+    this.connect(chatRoomIdx);
+    this.getChatMessage = getChatMessage;
+  }
+  connect(chatRoomIdx) {
+    if (this.socket) {
       return;
     }
-    socket.connect();
-    const roomList = chatRoomInfo.map((info) => info.chatRoomIdx);
-    socket.emit('join_chatroom', roomList);
-  }, []);
-
-  socket.on('send_message', (data) => {
-    getChatMessage(data);
-  });
-  const sendMessage = (chatInfo) => {
-    socket.emit('send_message', chatInfo);
-  };
-
-  return [sendMessage];
+    this.socket = io(`http://localhost:3001/chat`, {
+      cors: {
+        origin: '*',
+      },
+      path: '/socket.io',
+    });
+    this.socket.emit('join_chatRoom', chatRoomIdx);
+  }
+  disconnect() {
+    if (this.socket == null || this.socket.connected === false) {
+      return;
+    }
+    this.socket.disconnect();
+    this.socket = null;
+  }
+  addEvent() {
+    this.socket.on('send_message', (data) => {
+      console.log(this.getChatMessage);
+      this.getChatMessage(data);
+    });
+  }
+  deleteEvent() {
+    this.socket.off('send_message', (data) => {
+      console.log(this.getChatMessage);
+      this.getChatMessage(data);
+    });
+  }
+  sendMessage(chatInfo) {
+    this.socket.emit('send_message', chatInfo);
+  }
 }
