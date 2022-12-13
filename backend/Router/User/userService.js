@@ -165,7 +165,6 @@ exports.delivery = async (
 
     await Promise.all(
       drinkInfos.map(async (v, i) => {
-        console.log("v.optionList : ", v.optionList);
         await userDao.insertRequestDrink(
           connection,
           insertId,
@@ -230,8 +229,6 @@ exports.acception = async (
 ) => {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
-    await connection.beginTransaction();
-
     // acceptFlag가 1이면 승낙, -1이면 거절 => 승낙할 경우 다른 대행 신청자들에 대한 내역은 -1로 바꿔준다.
     const acceptionStaus = await userDao.updateStatusOnAccept(
       connection,
@@ -254,8 +251,8 @@ exports.acception = async (
         userIdx,
         agentIdx
       );
-
       console.log("chatRoomIdx : ", chatRoomIdx);
+
       return chatRoomIdx;
     }
 
@@ -263,7 +260,6 @@ exports.acception = async (
 
     return -1; // -1 을 반환했다는 것은 거절했다는 뜻.
   } catch (error) {
-    await connection.rollback();
     console.log(error);
     return basicResponse(baseResponseStatus.DB_ERROR);
   } finally {

@@ -13,7 +13,6 @@ exports.insertCafe = async (cafeName, cafeImg) => {
       cafeName,
       cafeImg
     );
-    console.log("insertCafeResult :", insertCafeResult);
     return insertCafeResult;
   } catch (error) {
     await connection.rollback();

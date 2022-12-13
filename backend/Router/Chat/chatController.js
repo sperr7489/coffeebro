@@ -32,6 +32,13 @@ exports.inTheChat = async (req, res) => {
   const { applicantIdx, agentIdx } = await chatProvider.getChatRoomInfo(
     chatRoomIdx
   );
+  console.log(
+    "특정 채팅방에 입장하기 : ",
+    "applicantIdx  :",
+    applicantIdx,
+    "agentIdx : ",
+    agentIdx
+  );
   /**
    {
      "chatRoomIdx": 32,

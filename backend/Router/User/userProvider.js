@@ -115,8 +115,6 @@ exports.getDeliveryInfo = async (serviceApplicationIdx) => {
         drinkInfo["option"] = optionNameList;
         drinkInfo["optionPrice"] = optionPrice;
         drinkInfo["coffeePrice"] = optionPrice + v.price;
-        console.log("price :", v.price);
-        console.log("drinkInfo : ", drinkInfo);
         drinkInfos.push(drinkInfo);
         // v.optionList = optionNameList;
       })
@@ -169,7 +167,6 @@ exports.getApplyInfos = async (userIdx) => {
     await Promise.all(
       // 하나의 서비스 신청 정보에 대해서 판단하기 위한 로직
       getDeliveryInfos.map(async (v, i) => {
-        console.log(v);
         const serviceIdx = v.serviceApplicationIdx;
         const deliveryInfo = await userDao.getOneDeliveryInfo(
           connection,
@@ -338,11 +335,6 @@ exports.getApplyDeliveryInfos = async (userIdx) => {
         const oneDelivery = resultArr;
         v["deliveryInfo"] = oneDelivery;
       })
-    );
-
-    console.log(
-      "getServiceApplicationIdxList : ",
-      getServiceApplicationIdxList
     );
     return getServiceApplicationIdxList;
   } catch (error) {

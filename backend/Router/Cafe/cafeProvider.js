@@ -8,7 +8,6 @@ exports.getCafeInfo = async () => {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     const cafeInfos = await cafeDao.getCafeInfos(connection);
-    console.log("cafeInfos : ", cafeInfos);
     return cafeInfos;
   } catch (error) {
     console.log(error, " : getCafeInfos");
@@ -22,7 +21,6 @@ exports.cafeNameIdx = async (cafeName) => {
   const connection = await pool.getConnection(async (conn) => conn);
   try {
     const cafeNameIdx = await cafeDao.getCafeIdx(connection, cafeName);
-    console.log("cafeNameIdx: ", cafeNameIdx);
     return cafeNameIdx;
   } catch (error) {
     console.log("cafeNameExist Provider Error ", error);
