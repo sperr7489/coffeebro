@@ -12,7 +12,7 @@ import { authApi } from '../../../../../axios.config';
 export default function MainModal(props) {
   const {
     serviceApplicationIdx,
-    imgPath,
+    userImg,
     cafeName,
     receiptPlace,
     receiptTime,
@@ -35,7 +35,7 @@ export default function MainModal(props) {
     <MainModalContainer>
       <CancleBtn onClick={closeModal}>x</CancleBtn>
       <ContentContainer>
-        <img src={!!imgPath ? imgPath : userImage} />
+        <img src={!!userImg ? userImg : userImage} />
         <InfoContainer>
           <span>닉네임 : {userInfo.nickname}</span>
           <span>카페 : {cafeName}</span>
