@@ -155,7 +155,14 @@ exports.getDeliveryInfosAll = async (req, res) => {
     })
   );
 
-  return res.send(resultResponse(baseResponseStatus.SUCCESS, result));
+  return res.send(
+    resultResponse(
+      baseResponseStatus.SUCCESS,
+      result.sort((a, b) => {
+        return b.createdAt - a.createdAt;
+      })
+    )
+  );
 };
 // 한 유저의 배달 서비스 신청 정보 모두 가져오기
 exports.getDeliveryInfos = async (req, res) => {
@@ -220,6 +227,7 @@ exports.acception = async (req, res) => {
   const { serviceApplicationIdx } = req.params;
   const { acceptFlag, deliveryAgentIdx: agentIdx } = req.query;
 
+  console.log("agentIdx : ", agentIdx);
   console.log("acceptFlag : ", acceptFlag);
   const acceptionResult = await userService.acception(
     //mysql에 저장된 chatRoomIdx
@@ -228,27 +236,6 @@ exports.acception = async (req, res) => {
     acceptFlag,
     agentIdx
   );
-
-  const { userName: applicantName } = await userProvider.getUserInfo(userIdx);
-  const { userName: agentName } = await userProvider.getUserInfo(agentIdx);
-
-  if (acceptionResult != -1) {
-    // 수락되어 채팅 내역을 만들어야 한다는 뜻.
-    // const newRoom = await Room.create({
-    //   roomIdx: chatRoomIdx,
-    //   applicant: {
-    //     userIdx: userIdx,
-    //     userName: applicantName,
-    //   },
-    //   agent: {
-    //     userIdx: agentIdx,
-    //     userName: agentName,
-    //   },
-    // });
-    // const io = req.app.get("io"); // io를 통해서 소켓 통신 연결 유지.
-    // // 방을 새로 만들었다는 이벤트를 발생시킨다.
-    // io.of("/room").emit("createRoom", newRoom);
-  }
 
   return res.send(basicResponse(baseResponseStatus.SUCCESS));
 };

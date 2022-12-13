@@ -162,7 +162,6 @@ exports.insertServiceApplication = async (
     [applicantIdx, cafeIdx, receiptTime, receiptPlace]
   );
 
-  console.log("test : 더!");
   return insertServiceApplicationRow;
 };
 
@@ -224,7 +223,7 @@ exports.getServiceApplicationIdx = async (connection, userIdx) => {
 // 모든 ServiceApplicationIdx 가져오기
 exports.getServiceApplicationIdxList = async (connection) => {
   const getServiceApplicationIdxListQuery = `
-    select * from serviceApplication;
+    select * from serviceApplication order by createdAt desc;
   `;
   const [getServiceApplicationIdxListRow] = await connection.query(
     getServiceApplicationIdxListQuery
@@ -264,7 +263,7 @@ exports.getDeliveryInfos = async (connection, userIdx) => {
 // 배달 신청의 정보가져오기
 exports.getDeliveryInfo = async (connection, serviceApplicationIdx) => {
   const getDeliveryInfoQuery = `
-    select sa.serviceApplicationIdx,sa.userIdx,c.cafeIdx,c.cafeName,sa.receiptTime,sa.receiptPlace,sa.status,rd.optionList, d.drinkName,d.price from serviceApplication sa 
+    select sa.serviceApplicationIdx,sa.userIdx,c.cafeIdx,c.cafeName,sa.receiptTime,sa.receiptPlace,sa.status,rd.optionList, d.drinkName,d.price,sa.createdAt from serviceApplication sa 
     join requestDrinkList rd on rd.serviceApplicationIdx =sa.serviceApplicationIdx
     join drink d on d.drinkIdx =rd.drinkIdx 
     join cafe c on c.cafeIdx = d.cafeIdx
