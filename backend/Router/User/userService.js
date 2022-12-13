@@ -299,6 +299,42 @@ exports.updateUserInfo = async (userIdx, nickname, userImg) => {
   } catch (error) {
     await connection.rollback();
     console.log(error);
+  }
+};
+// 유저의 닉네임)
+exports.updateUserNickname = async (userIdx, nickname) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    await connection.beginTransaction();
+
+    await userDao.updateUserNickname(connection, userIdx, nickname);
+
+    await connection.commit();
+
+    return basicResponse(baseResponseStatus.SUCCESS);
+  } catch (error) {
+    await connection.rollback();
+    console.log(error);
+    return basicResponse(baseResponseStatus.DB_ERROR);
+  } finally {
+    connection.release();
+  }
+};
+
+// 유저의 사진 수정
+exports.updateUserImg = async (userIdx, nickname, userImg) => {
+  const connection = await pool.getConnection(async (conn) => conn);
+  try {
+    await connection.beginTransaction();
+
+    await userDao.updateUserImg(connection, userIdx, userImg);
+
+    await connection.commit();
+
+    return basicResponse(baseResponseStatus.SUCCESS);
+  } catch (error) {
+    await connection.rollback();
+    console.log(error);
     return basicResponse(baseResponseStatus.DB_ERROR);
   } finally {
     connection.release();
