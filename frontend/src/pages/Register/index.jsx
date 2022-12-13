@@ -213,7 +213,7 @@ const Register = () => {
         })
         .then((response) => {
           console.log(response);
-          // if (response.data.code === 1100) window.location.href = '/';
+          if (response.data.code === 1100) window.location.href = '/';
         })
         .catch((error) => {
           console.log(error);
@@ -309,8 +309,9 @@ const Register = () => {
           <br />
           <span>{pwdConfirmMsg}</span>
         </div>
-        <div>
-          <input type="file" accept="image/*" onChange={onUploadImg} />
+        <div className={style.info}>
+          <span className={style.label}>프로필 사진 업로드</span><br /><br />
+          <input type="file" accept='image/*' onChange={onUploadImg}/><br />
         </div>
         <div className={style.finalButton}>
           <input

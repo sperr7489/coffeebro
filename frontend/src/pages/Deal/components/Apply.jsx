@@ -1,6 +1,7 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { api, authApi } from '../../../../axios.config';
+import ChatPage from '../../Chat';
 import style from '../index.module.css';
 import ApplyModal from './ApplyModal';
 
@@ -26,6 +27,7 @@ const Apply = ({ cookies }) => {
       )
       .then((response) => {
         console.log(response);
+        window.location.href = '/chat';
       })
       .catch((error) => {
         console.log(error);
