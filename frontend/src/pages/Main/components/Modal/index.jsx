@@ -12,7 +12,6 @@ import { authApi } from '../../../../../axios.config';
 export default function MainModal(props) {
   const {
     serviceApplicationIdx,
-    userImg,
     cafeName,
     receiptPlace,
     receiptTime,
@@ -21,6 +20,7 @@ export default function MainModal(props) {
     closeModal,
     userInfo,
   } = props;
+  const { userImg } = userInfo;
   const handleApplyClick = () => {
     authApi.post(`/user/delivery/${serviceApplicationIdx}`).then((res) => {
       if (!res.data.isSuccess) {
@@ -37,7 +37,7 @@ export default function MainModal(props) {
       <ContentContainer>
         <img src={!!userImg ? userImg : userImage} />
         <InfoContainer>
-          <span>닉네임 : {userInfo.nickname}</span>
+          <span>닉네임 : {userInfo.nickname ? userInfo.nickname : '닉없음'}</span>
           <span>카페 : {cafeName}</span>
           <span>메뉴 </span>
           <MenuInfoContainer>
