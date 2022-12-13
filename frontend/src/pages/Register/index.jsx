@@ -17,6 +17,7 @@ const Register = () => {
   const [dept, setDept] = useState('');
   const [sex, setSex] = useState('');
   const [id, setId] = useState('');
+  const [img, setImg] = useState('')
 
   const [isName, setIsName] = useState(false); //가입하기 버튼 클릭할 때 검증
   const [isEmailConfirm, setIsEmailConfirm] = useState(false); //가입하기 버튼 클릭할 때 검증
@@ -186,22 +187,36 @@ const Register = () => {
     });
   };
 
+  const onUploadImg = (event) => {
+    if (!event.target.files)
+      return
+    else{
+      setImg(event.target.files[0])
+    }
+  }
+
   const finalButtonHandle = () => {
     if (isName && isPwd && isDept && isSex && isPwdConfirm && isId) {
-      api
-        .post('/user/signUp', {
-          email: email,
-          passwd: pwd,
-          userName: name,
-          department: dept,
-          nickname: nick,
-          sex: sex,
-          studentId: Number(id),
-          userImg: "test"
-        })
+      const user = new FormData();
+      user.append('email', email)
+      user.append('passwd', pwd)
+      user.append('userName', name)
+      user.append('department', dept)
+      user.append('nickName', nick)
+      user.append('sex', sex)
+      user.append('studentId', Number(id))
+      user.append('userImg', img)
+      axios
+        .post('http://localhost:3000/user/signUp' ,user
+        ,{
+          headers:{
+            'Content-Type': 'multipart/form-data',
+          }
+        }
+        )
         .then((response) => {
           console.log(response);
-          if (response.data.code === 1100) window.location.href = '/';
+          // if (response.data.code === 1100) window.location.href = '/';
         })
         .catch((error) => {
           console.log(error);
@@ -296,6 +311,9 @@ const Register = () => {
           <input type="password" onChange={pwdConfirmHandler} className={style.input} />
           <br />
           <span>{pwdConfirmMsg}</span>
+        </div>
+        <div>
+          <input type="file" accept='image/*' onChange={onUploadImg}/>
         </div>
         <div className={style.finalButton}>
           <input

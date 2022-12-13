@@ -307,6 +307,36 @@ exports.updateUserInfo = async (req, res) => {
   return res.send(updateUserInfoResult);
 };
 
+// 유저 닉네임 수정
+exports.updateUserNickname = async (req, res) => {
+  const userIdx = req.userIdx;
+  const { nickname } = req.body;
+  if (!nickname)
+    return res.send(basicResponse(baseResponseStatus.PARAMS_NOT_EXACT));
+
+  const updateUserInfoResult = await userService.updateUserNickname(
+    userIdx,
+    nickname
+  );
+
+  return res.send(updateUserInfoResult);
+};
+
+// 유조 사진 수정
+exports.updateUserImg = async (req, res) => {
+  const userIdx = req.userIdx;
+  const userImg = req.file.location;
+  if (!userImg)
+    return res.send(basicResponse(baseResponseStatus.PARAMS_NOT_EXACT));
+
+  const updateUserInfoResult = await userService.updateUserImg(
+    userIdx,
+    userImg
+  );
+
+  return res.send(updateUserInfoResult);
+};
+
 // 배달 대행 완료 및 알림 생성
 exports.completeDelivery = async (req, res) => {
   const userIdx = req.userIdx;
