@@ -106,7 +106,7 @@ const Register = () => {
   };
 
   const emailButtonHandle = () => {
-    let url = 'localhost:3001/user/email';
+    let url = '52.79.141.59:3001/user/email';
     let regex = new RegExp('[a-z0-9]+@ajou.ac.kr');
 
     if (regex.test(email) === false) {
@@ -206,7 +206,7 @@ const Register = () => {
       user.append('studentId', Number(id));
       user.append('userImg', img);
       axios
-        .post('http://localhost:3001/user/signUp', user, {
+        .post('http://52.79.141.59:3001/user/signUp', user, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },
@@ -310,8 +310,11 @@ const Register = () => {
           <span>{pwdConfirmMsg}</span>
         </div>
         <div className={style.info}>
-          <span className={style.label}>프로필 사진 업로드</span><br /><br />
-          <input type="file" accept='image/*' onChange={onUploadImg}/><br />
+          <span className={style.label}>프로필 사진 업로드</span>
+          <br />
+          <br />
+          <input type="file" accept="image/*" onChange={onUploadImg} />
+          <br />
         </div>
         <div className={style.finalButton}>
           <input

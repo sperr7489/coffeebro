@@ -10,7 +10,7 @@ export default class ClientSocket {
     if (this.socket) {
       return;
     }
-    this.socket = io(`http://localhost:3001/chat`, {
+    this.socket = io(`http://52.79.141.59:3001/chat`, {
       cors: {
         origin: '*',
       },

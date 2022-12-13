@@ -30,7 +30,7 @@ export default function MyPage() {
     console.log(file);
     const cookies = new Cookies();
     axios
-      .put(`http://localhost:3001/user`, formData, {
+      .put(`http://52.79.141.59:3001/user`, formData, {
         headers: {
           'Contest-Type': 'multipart/form-data',
           accessToken: cookies.get('id'),

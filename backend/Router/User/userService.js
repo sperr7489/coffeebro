@@ -260,6 +260,7 @@ exports.acception = async (
 
     return -1; // -1 을 반환했다는 것은 거절했다는 뜻.
   } catch (error) {
+    giu;
     console.log(error);
     return basicResponse(baseResponseStatus.DB_ERROR);
   } finally {

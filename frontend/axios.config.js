@@ -4,7 +4,7 @@ import axios from 'axios';
 const cookies = new Cookies();
 
 export const api = axios.create({
-  baseURL: 'http://localhost:3001',
+  baseURL: 'http://52.79.141.59:3001',
   responseType: 'json',
 
   headers: {
@@ -13,7 +13,7 @@ export const api = axios.create({
 });
 
 export const authApi = axios.create({
-  baseURL: 'http://localhost:3001',
+  baseURL: 'http://52.79.141.59:3001',
   responseType: 'json',
 
   headers: {
