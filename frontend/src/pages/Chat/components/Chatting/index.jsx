@@ -11,7 +11,7 @@ import {
 } from './index.style';
 
 export default function Chatting(props) {
-  const { chatRoomInfo, chatRoomIdx } = props;
+  const { chatRoomInfo, chatRoomIdx, setChatRoomInfo } = props;
   const [chatInfo, setChatInfo] = useState([]);
   const scrollRef = useRef();
   const messageRef = useRef();
@@ -31,6 +31,12 @@ export default function Chatting(props) {
         createdAt: `${hour < 10 ? '0' : ''}${hour}:${minute < 10 ? '0' : ''}${minute}`,
       },
     ]);
+    setChatRoomInfo((prev) => {
+      console.log(prev);
+      const newState = [...prev].filter((info) => info.chatRoomIdx !== chatRoomIdx);
+      const chatInfo = [...prev].find((info) => info.chatRoomIdx === chatRoomIdx);
+      return [{ ...chatInfo, lastChatOfOther: [data] }, ...newState];
+    });
   };
   const clientSocket = new ClientSocket({ chatRoomIdx, getChatMessage });
   // const [sendMessage, connectSocket, disconnectSocket] = useSocket({
