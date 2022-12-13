@@ -4,9 +4,9 @@ import ApplicationModal from './components/Modal';
 import { hourList, minuteList } from '../../utils/constants';
 import { CafeSelect, Container, MainForm, TimeContainer } from './index.style';
 import MenuInfo from './components/MenuInfo';
-import axios from 'axios';
 import LoginCheck from '../Login/components/LoginCheck';
 import { api, authApi } from '../../../axios.config';
+import { useNavigate } from 'react-router-dom';
 
 export default function ApplicationPage() {
   const [isAm, setisAm] = useState(true);
@@ -15,6 +15,7 @@ export default function ApplicationPage() {
   const [cafeList, setCafeList] = useState([]);
   const [cafeIdx, setCafeIdx] = useState(1);
   const modalRef = useRef();
+  const navigate = useNavigate();
 
   const handleCafeChange = (e) => {
     setCafeIdx(e.target.value);
@@ -66,7 +67,9 @@ export default function ApplicationPage() {
       })
       .then((res) => {
         if (res.data.isSuccess) {
-          alert('등록성공');
+          if (!alert('등록성공')) {
+            navigate('/');
+          }
         }
         console.log(res);
       });

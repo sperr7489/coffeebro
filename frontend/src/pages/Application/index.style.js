@@ -16,7 +16,6 @@ export const Container = styled.div`
   }
 
   option {
-    background-color: black;
     font-size: 12px;
   }
 `;
