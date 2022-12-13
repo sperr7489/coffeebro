@@ -216,7 +216,7 @@ const Register = () => {
         )
         .then((response) => {
           console.log(response);
-          // if (response.data.code === 1100) window.location.href = '/';
+          if (response.data.code === 1100) window.location.href = '/';
         })
         .catch((error) => {
           console.log(error);
