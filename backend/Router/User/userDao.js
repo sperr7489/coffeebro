@@ -447,15 +447,28 @@ exports.getDeliveryAgents = async (connection, serviceApplicationIdx) => {
   return getDeliverAgents;
 };
 
-// 유저의 정보(닉네임과 사진) 수정
-exports.updateUserInfo = async (connection, userIdx, nickname, userImg) => {
+// 유저의 닉네임 수정
+exports.updateUserNickname = async (connection, userIdx, nickname) => {
   const updateUserInfoQuery = `
   UPDATE User
-  SET nickname = ?, userImg = ?
+  SET nickname = ?
   WHERE userIdx = ?
   `;
   const [updateUserInfoRow] = await connection.query(updateUserInfoQuery, [
     nickname,
+    userIdx,
+  ]);
+  return updateUserInfoRow;
+};
+
+// 유저의 정보(닉네임과 사진) 수정
+exports.updateUserImg = async (connection, userIdx, userImg) => {
+  const updateUserInfoQuery = `
+  UPDATE User
+  SET  userImg = ?
+  WHERE userIdx = ?
+  `;
+  const [updateUserInfoRow] = await connection.query(updateUserInfoQuery, [
     userImg,
     userIdx,
   ]);
